@@ -15,8 +15,8 @@ type JsonResponse struct {
 }
 
 // 返回成功
-func Success(ctx *gin.Context, data ...any) {
-	ctx.JSON(http.StatusOK, JsonResponse{
+func Success(c *gin.Context, data any) {
+	c.JSON(http.StatusOK, JsonResponse{
 		Code:    http.StatusOK,
 		Message: "请求成功",
 		Data:    data,
@@ -24,8 +24,8 @@ func Success(ctx *gin.Context, data ...any) {
 }
 
 // 返回失败
-func Fail(ctx *gin.Context, code int, msg string) {
-	ctx.JSON(code, JsonResponse{
+func Fail(c *gin.Context, code int, msg string) {
+	c.JSON(code, JsonResponse{
 		Code:    code,
 		Message: msg,
 	})

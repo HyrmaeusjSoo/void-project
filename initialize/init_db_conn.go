@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
+	"runtime"
 	"time"
 
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
@@ -24,8 +27,8 @@ func InitMySQL() {
 		Port     uint16
 		DBName   string
 	}{}
-	// dir, _ := os.Getwd()
-	file, _ := os.Open("D:/WorkSpace/GoSpace/chat/config/mysql.json")
+	_, currentFile, _, _ := runtime.Caller(0)
+	file, _ := os.Open(path.Dir(path.Dir(currentFile)) + "/config/mysql.json")
 	defer file.Close()
 	if err := json.NewDecoder(file).Decode(&op); err != nil {
 		panic(err)
@@ -47,6 +50,31 @@ func InitMySQL() {
 	db.MySQL, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: newLogger,
 	})
+	if err != nil {
+		panic(err)
+	}
+}
+
+// 初始化SQLite连接
+func InitSQLite() {
+	dir, _ := os.Getwd()
+	//读取配置文件
+	op := struct {
+		Path     string
+		User     string
+		Password string
+	}{}
+	_, currentFile, _, _ := runtime.Caller(0)
+	file, _ := os.Open(path.Dir(path.Dir(currentFile)) + "/config/sqlite.json")
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	err2 := decoder.Decode(&op)
+	if err2 != nil {
+		panic(err2)
+	}
+
+	var err error
+	db.SQLite, err = gorm.Open(sqlite.Open(dir+op.Path), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}

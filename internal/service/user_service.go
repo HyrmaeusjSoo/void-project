@@ -7,23 +7,29 @@ import (
 
 type UserService struct{}
 
+var udb = &mysql.User{}
+
+// 获取账号
 func (*UserService) Fetch(id uint) (any, error) {
-	udb := mysql.User{}
-	res, err := udb.GetById(id)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return udb.GetById(id)
 }
 
+// 账号是否存在
 func (*UserService) ExistsAccount(account string) bool {
-	return (&mysql.User{}).ExistsAccount(account)
+	return udb.ExistsAccount(account)
 }
 
+// 注册用户
 func (*UserService) Register(user *model.User) error {
-	return (&mysql.User{}).CreateUser(user)
+	return udb.CreateUser(user)
 }
 
+// 按账号获取账户
 func (*UserService) GetByAccount(account string) (*model.User, error) {
-	return nil, nil
+	return udb.GetByAccount(account)
+}
+
+// 账号密码获取账户
+func (*UserService) GetByAccountPassword(account, password string) (*model.User, error) {
+	return udb.GetByAccountPassword(account, password)
 }

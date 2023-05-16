@@ -17,10 +17,10 @@ func SetApiRouter(gin *gin.Engine) {
 
 	u := v1.Group("user")
 	{
-		u.POST("register", userApi.Register)
+		u.POST("", userApi.Register)
 		u.POST("login", userApi.Login)
-		u.GET("fetch", userApi.Fetch).Use(middleware.JWTAuth())
-		u.GET("file", userApi.Download).Use(middleware.JWTAuth())
+		u.GET("/:id", middleware.JWTAuth(), userApi.Fetch)
+		u.PUT("", middleware.JWTAuth(), userApi.Update)
 	}
 
 	relation := v1.Group("relation").Use(middleware.JWTAuth())
