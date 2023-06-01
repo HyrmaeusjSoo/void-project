@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -57,7 +58,6 @@ func InitMySQL() {
 
 // 初始化SQLite连接
 func InitSQLite() {
-	dir, _ := os.Getwd()
 	//读取配置文件
 	op := struct {
 		Path     string
@@ -65,11 +65,10 @@ func InitSQLite() {
 		Password string
 	}{}
 	_, currentFile, _, _ := runtime.Caller(0)
-	file, _ := os.Open(path.Dir(path.Dir(currentFile)) + "/config/sqlite.json")
+	dir := path.Dir(path.Dir(currentFile))
+	file, _ := os.Open(dir + "/config/sqlite.json")
 	defer file.Close()
-	decoder := json.NewDecoder(file)
-	err2 := decoder.Decode(&op)
-	if err2 != nil {
+	if err2 := json.NewDecoder(file).Decode(&op); err2 != nil {
 		panic(err2)
 	}
 
@@ -78,4 +77,16 @@ func InitSQLite() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// 初始化Redis连接
+func InitRedis() {
+	op := redis.Options{}
+	_, currentFile, _, _ := runtime.Caller(0)
+	file, _ := os.Open(path.Dir(path.Dir(currentFile)) + "/config/redis.json")
+	defer file.Close()
+	if err := json.NewDecoder(file).Decode(&op); err != nil {
+		panic(err)
+	}
+	db.Redis = redis.NewClient(&op)
 }

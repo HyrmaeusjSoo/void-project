@@ -11,13 +11,19 @@ import (
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.PostForm("token")
+		token := c.GetHeader("token")
 		if token == "" {
-			token = c.Request.Header.Get("token")
+			token = c.Query("token")
+			if token == "" {
+				token = c.PostForm("token")
+			}
 		}
-		user := c.Query("userId")
+		user := c.GetHeader("userId")
 		if user == "" {
-			user = c.Request.Header.Get("userId")
+			user = c.Query("userId")
+			if user == "" {
+				user = c.PostForm("userId")
+			}
 		}
 		userId, err := strconv.Atoi(user)
 		if err != nil {
@@ -38,7 +44,7 @@ func JWTAuth() gin.HandlerFunc {
 		claims, err := jwt.ParseToken(token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, map[string]string{
-				"message": "token失效",
+				"message": "token已失效",
 			})
 			c.Abort()
 			return

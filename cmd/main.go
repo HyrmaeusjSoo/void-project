@@ -9,6 +9,7 @@ import (
 
 func main() {
 	initialize.InitMySQL()
+    initialize.InitRedis()
 
 	r := gin.Default()
 	router.SetApiRouter(r)

@@ -1,0 +1,23 @@
+/**
+// +---------------------------------------------------------------------------------------+
+// | Hylea Soo's from past to present 在りし日のふたり Void Chaos False Philosophy code.     |
+// +---------------------------------------------------------------------------------------+
+// | Elysium, in the Blue Sky. ファンタジーアドベンチャー。 ぼくらは同じ空を見上げている。        |
+// +---------------------------------------------------------------------------------------+
+// | Hermaeus Mora's Oghma Infinium. _wabbajack Zeno Human Requests.                 2022  |
+// +---------------------------------------------------------------------------------------+
+// | 彩                                                           —————— 龍が如く Hylea Soo  |
+// +---------------------------------------------------------------------------------------+
+//const _Simulator = "63067#1.2.3.";
+*/
+
+.jsonData {
+    font-family: "Maple Mono SC NF", "Fira Code Retina", "HarmonyOS Sans SC", "Microsoft YaHei", Console, Verdana, monospace;
+    font-size: 13px;
+    outline: 1px solid rgb(7, 238, 223);
+}
+.jsonData .key {color: #a31515}
+.jsonData .string {color: #0451a5}
+.jsonData .number {color: #098658}
+.jsonData .boolean {color: blue}
+.jsonData .null {color: magenta}

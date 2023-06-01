@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>JavaScript:;</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="./css/json.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./js/rium.js"></script>
+    <script src="./js/main.js"></script>
+    <script>
+        const host = 'http://127.0.0.1:5555/v1/';
+
+        const login = (account, password) => {
+            request(`${host}user/login`, 'POST', {account: account, password: password}).then(r => {
+                (r.data && r.data.userId && r.data.token && r.data.expireTime && (
+                    localStorage.setItem('userId', r.data.userId),
+                    localStorage.setItem('token', r.data.token),
+                    localStorage.setItem('expireTime', r.data.expireTime)
+                ), true) || (r.message && alert(r.message), true) || alert('登录失败');
+            });
+        }
+        localStorage.getItem('token') && Date.now() < localStorage.getItem('expireTime') || login(...prompt().split(','));
+    </script>
+    <script>
+        request(`${host}astro/milky way`).then(r => document.body.append(renderJson(r)));
+    </script>
+</head>
+
+<body class="body">
+    <input type="button" id="loginBtn" value="login">
+    <script>
+        loginBtn.onclick = _ => login(...prompt().split(','));
+    </script>
+</body>
+
+</html>

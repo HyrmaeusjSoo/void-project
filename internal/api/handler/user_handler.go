@@ -81,7 +81,7 @@ func (*User) Login(c *gin.Context) {
 
 	ok := md5.CheckPassword(param.Password, data.Salt, data.Password)
 	if !ok {
-		response.Fail(c, http.StatusOK, err.Error())
+		response.Fail(c, http.StatusOK, "密码错误")
 		return
 	}
 
@@ -96,10 +96,16 @@ func (*User) Login(c *gin.Context) {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
 	}
+	claims, err := jwt.ParseToken(token)
+	if err != nil {
+		response.Fail(c, http.StatusOK, err.Error())
+		return
+	}
 
 	response.Success(c, map[string]any{
-		"token":  token,
-		"userId": user.ID,
+		"token":      token,
+		"userId":     user.ID,
+		"expireTime": claims.ExpiresAt.UnixMilli(),
 	})
 }
 
