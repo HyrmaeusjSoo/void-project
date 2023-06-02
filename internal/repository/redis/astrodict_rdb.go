@@ -2,7 +2,7 @@ package redis
 
 import (
 	"chat/internal/model"
-	"chat/internal/repository/db"
+	"chat/internal/repository/driver"
 	"context"
 	"encoding/json"
 	"time"
@@ -19,12 +19,12 @@ func (*AstroDict) Save(astrodict model.AstroDict) error {
 	if err != nil {
 		return err
 	}
-	err = db.Redis.Set(ctx, "astrodict_ce", string(val), 2*time.Hour).Err()
+	err = driver.Redis.Set(ctx, "astrodict_ce", string(val), 2*time.Hour).Err()
 	return err
 }
 
 func (*AstroDict) Fetch() (ad *model.AstroDict, err error) {
-	val, err1 := db.Redis.Get(ctx, "astrodict_ce").Result()
+	val, err1 := driver.Redis.Get(ctx, "astrodict_ce").Result()
 	if err1 != nil && err1 != redis.Nil {
 		return nil, err1
 	}

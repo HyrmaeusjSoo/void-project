@@ -1,15 +1,14 @@
 package main
 
 import (
-	"chat/initialize"
 	"chat/internal/model"
-	"chat/internal/repository/db"
+	"chat/internal/repository/driver"
 )
 
 func main() {
-	initialize.InitMySQL()
+	driver.InitMySQL()
 
-	err := db.MySQL.AutoMigrate(&model.User{})
+	err := driver.MySQL.AutoMigrate(&model.User{})
 	if err != nil {
 		panic(err)
 	}

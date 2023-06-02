@@ -8,9 +8,10 @@ import (
 )
 
 func main() {
-	initialize.InitMySQL()
-    initialize.InitRedis()
+	// 初始化数据库连接
+	initialize.InitRepository()
 
+	// 启动Gin，绑定路由
 	r := gin.Default()
 	router.SetApiRouter(r)
 	err := r.Run(":5555")

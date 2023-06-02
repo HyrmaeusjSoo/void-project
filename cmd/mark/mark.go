@@ -6,27 +6,37 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
 func main() {
-	fmt.Println("Which one?  [a]=set comment  [d]=delete comment:")
+	fmt.Println("Which one?  [g]=Generate Readme  [c]=Insert omment")
 	var input string
 	fmt.Scanln(&input)
 	input = strings.ToLower(input)
-	if input != "a" && input != "d" {
+	if input == "g" {
+		GenReadme()
+	} else if input == "c" {
+		fmt.Println("Which one?  [a]=insert comment  [d]=delete comment")
+		fmt.Scanln(&input)
+		input = strings.ToLower(input)
+		if input != "a" && input != "d" {
+			fmt.Println("nothing!")
+			return
+		}
+		InsertComment(pkg.IfElse(input == "d", false, true))
+	} else {
 		fmt.Println("nothing!")
 		return
 	}
-	SetComment(pkg.IfElse(input == "d", false, true))
 }
 
-func SetComment(isSet bool) {
-	_, currentFile, _, _ := runtime.Caller(0)
+// 插入文件头注释
+func InsertComment(isSet bool) {
+	rootpath := pkg.GetRootPath()
 
 	// 读注释文件
-	cMark, err := os.Open(filepath.Dir(currentFile) + "/c.mark")
+	cMark, err := os.Open(rootpath + "/cmd/mark/c.mark")
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +45,7 @@ func SetComment(isSet bool) {
 	if err != nil {
 		panic(err)
 	}
-	htmlMark, err := os.Open(filepath.Dir(currentFile) + "/html.mark")
+	htmlMark, err := os.Open(rootpath + "/cmd/mark/html.mark")
 	if err != nil {
 		panic(err)
 	}
@@ -49,7 +59,10 @@ func SetComment(isSet bool) {
 	}
 
 	// 遍历路径
-	err = filepath.Walk(filepath.Join(currentFile, "../../../"), func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(rootpath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 		if filepath.Ext(path) == ".go" || filepath.Ext(path) == ".js" {
 			writeFile(path, normal, isSet)
 		} else if filepath.Ext(path) == ".html" || filepath.Ext(path) == ".htm" {
@@ -94,4 +107,43 @@ func writeFile(path string, mark []byte, isSet bool) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+// 生成README 目录结构
+func GenReadme() {
+	dirTree := ""
+	err := filepath.Walk(pkg.GetRootPath(), func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() && !strings.Contains(path, ".git") && !strings.Contains(path, ".vscode") {
+			depth := strings.Count(path, string(os.PathSeparator)) - strings.Count(pkg.GetRootPath(), string(os.PathSeparator))
+			if depth == 0 {
+				dirTree += info.Name() + "\r\n"
+			} else {
+				dirTree += strings.Repeat("    │", depth-1) + "    ├── " + info.Name() + "\r\n"
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	readme := append([]byte("# Void_Project\r\n"), []byte(dirTree)...)
+	file, err := os.OpenFile(pkg.GetRootPath()+"/README.md", os.O_RDWR, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	err = file.Truncate(0)
+	if err != nil {
+		panic(err)
+	}
+	_, err = file.WriteAt(readme, 0)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(dirTree)
 }
