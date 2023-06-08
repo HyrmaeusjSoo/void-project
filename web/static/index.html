@@ -4,14 +4,14 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>JavaScript:;</title>
+    <title>index</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" href="./css/json.css">
     <link rel="stylesheet" href="./css/main.css">
     <script src="./js/rium.js"></script>
     <script src="./js/main.js"></script>
     <script>
-        const host = 'http://127.0.0.1:5555/v1/';
+        const host = 'http://127.0.0.1:5555/api/v1/';
 
         const login = (account, password) => {
             request(`${host}user/login`, 'POST', {account: account, password: password}).then(r => {
@@ -22,10 +22,10 @@
                 ), true) || (r.message && alert(r.message), true) || alert('登录失败');
             });
         }
-        localStorage.getItem('token') && Date.now() < localStorage.getItem('expireTime') || login(...prompt().split(','));
+        // localStorage.getItem('token') && Date.now() < localStorage.getItem('expireTime') || login(...prompt().split(','));
     </script>
     <script>
-        request(`${host}astro/milky way`).then(r => document.body.append(renderJson(r)));
+        // request(`${host}astro/milky way`).then(r => document.body.append(renderJson(r)));
     </script>
 </head>
 
@@ -33,6 +33,46 @@
     <input type="button" id="loginBtn" value="login">
     <script>
         loginBtn.onclick = _ => login(...prompt().split(','));
+    </script>
+
+    <div>
+        <input type="text" id="message">
+        <button onclick="sendmsg()">发送</button>
+        <button onclick="closeMessage()">停止</button>
+    </div>
+    <div id="messages"></div>
+    <script>
+        let conn = new WebSocket('ws://127.0.0.1:5555/api/v1/message/send?userId='+localStorage.getItem('userId')+'&token='+localStorage.getItem('token'));
+        conn.onopen = e => {
+            console.log('[open] Connection established');
+            conn.send("ping");
+        };
+        conn.onclose = e => {
+            if (e.wasClean) {
+                console.log(`[close] Connection closed cleanly, :${e}`);
+            } else {
+                console.log('[close] Connection died');
+            }
+        };
+        conn.onerror = e => {
+            console.log(`[error] ${e.message}`);
+        };
+
+        function sendmsg() {
+            conn.send(JSON.stringify({TargetId:2, Content:document.getElementById("message").value}),);
+            let messageElem = document.createElement('div');
+            messageElem.textContent = document.getElementById("message").value;
+            document.getElementById('messages').prepend(messageElem);
+            return false;
+        }
+        conn.onmessage = e => {
+            let messageElem = document.createElement('div');
+            messageElem.textContent = e.resMsg;
+            document.getElementById('messages').prepend(messageElem);
+        }
+        function closeMessage(){
+            conn.close(1000, "关闭");
+        }
     </script>
 </body>
 

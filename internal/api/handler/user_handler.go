@@ -1,11 +1,8 @@
 package handler
 
 import (
-	"fmt"
-	"math/rand"
 	"net/http"
 	"strconv"
-	"time"
 
 	"chat/internal/api/response"
 	"chat/internal/model"
@@ -22,36 +19,30 @@ var userService = &service.UserService{}
 
 // 注册
 func (*User) Register(c *gin.Context) {
-	account := c.Request.FormValue("account")
-	password := c.Request.FormValue("password")
-	repassword := c.Request.FormValue("identity")
-	name := c.Request.FormValue("name")
-	if account == "" || password == "" || repassword == "" {
+	user := model.User{}
+	err := c.ShouldBind(&user)
+	if err != nil {
+		response.Fail(c, http.StatusOK, "参数有误！")
+	}
+	if user.Account == "" || user.Password == "" || user.Identity == "" {
 		response.Fail(c, http.StatusOK, "账号或密码不能为空！")
 		return
 	}
-	if password != repassword {
+	if user.Password != user.Identity {
 		response.Fail(c, http.StatusOK, "两次密码不一致！")
 		return
 	}
 
-	if existsAccount := userService.ExistsAccount(account); existsAccount {
+	if existsAccount := userService.ExistsAccount(user.Account); existsAccount {
 		response.Fail(c, http.StatusOK, "用户已存在！")
 		return
 	}
 
-	salt := fmt.Sprintf("%d", rand.Int31())
-	t := time.Now()
-	user := model.User{
-		Account:       account,
-		Password:      md5.SaltPassword(password, salt),
-		Salt:          salt,
-		Name:          name,
-		LoginTime:     &t,
-		LoginOutTime:  &t,
-		HeartBeatTime: &t,
+	err = userService.Register(&user)
+	if err != nil {
+		response.Fail(c, http.StatusOK, "保存失败"+err.Error())
+		return
 	}
-	userService.Register(&user)
 	response.Success(c, user)
 }
 
@@ -113,7 +104,7 @@ func (*User) Login(c *gin.Context) {
 func (*User) Fetch(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 	user, err := userService.Fetch(uint(id))
@@ -124,8 +115,53 @@ func (*User) Fetch(c *gin.Context) {
 	response.Success(c, user)
 }
 
+// 获取列表
+func (*User) List(c *gin.Context) {
+	users, err := userService.List()
+	if err != nil {
+		response.Fail(c, http.StatusOK, err.Error())
+		return
+	}
+	response.Success(c, users)
+}
+
 // 更新
 func (*User) Update(c *gin.Context) {
-	c.Request.FormValue("")
-	response.Success(c, nil)
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Fail(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	user := &model.User{}
+	err = c.ShouldBind(user)
+	if err != nil {
+		response.Fail(c, http.StatusBadRequest, "参数有误！")
+		return
+	}
+	user.ID = uint(id)
+
+	err = userService.Update(user)
+	if err != nil {
+		response.Fail(c, http.StatusOK, err.Error())
+		return
+	}
+
+	response.Success(c, user)
+}
+
+// 删除
+func (*User) Delete(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		response.Fail(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	err = userService.Delete(uint(id))
+	if err != nil {
+		response.Fail(c, http.StatusOK, err.Error())
+		return
+	}
+	response.Success(c, "删除成功")
 }

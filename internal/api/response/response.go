@@ -14,6 +14,10 @@ type JsonResponse struct {
 	// HttpCode int    // http状态码
 }
 
+func NewJsonResponseError(code int, message string) JsonResponse {
+	return JsonResponse{code, message, nil}
+}
+
 // 返回成功
 func Success(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, JsonResponse{
@@ -29,4 +33,9 @@ func Fail(c *gin.Context, code int, msg string) {
 		Code:    code,
 		Message: msg,
 	})
+}
+
+// 返回已定义错误
+func FailError(c *gin.Context, jr JsonResponse) {
+	c.JSON(jr.Code/100000, jr)
 }

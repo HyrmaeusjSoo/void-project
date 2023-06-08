@@ -1,6 +1,8 @@
 package main
 
-import "chat/pkg/logger"
+import (
+	"chat/pkg/logger"
+)
 
 func main() {
 	logger.Log("log")

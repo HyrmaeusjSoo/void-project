@@ -1,14 +1,3 @@
-/*
-┌───────────────────────────────────────────────────────────────────────────────────────────┐
-│ Sū Shēngxǜ's from past to present VOID CHAOS False Philosophy code.
-├───────────────────────────────────────────────────────────────────────────────────────────┤
-│ Elysium, in the Blue Sky. ファンタジーアドベンチャー。 泡泡枪、七彩
-├───────────────────────────────────────────────────────────────────────────────────────────┤
-│ 银河系 Requests.                                                                   2023
-├───────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                       —————— Hylea Soo
-└───────────────────────────────────────────────────────────────────────────────────────────┘
-*/
 package main
 
 import (
@@ -74,9 +63,9 @@ func InsertComment(isSet bool) {
 		if err != nil {
 			return err
 		}
-		if filepath.Ext(path) == ".go" || filepath.Ext(path) == ".js" {
+		if ext := filepath.Ext(path); ext == ".go" || ext == ".js" {
 			writeFile(path, normal, isSet)
-		} else if filepath.Ext(path) == ".html" || filepath.Ext(path) == ".htm" {
+		} else if ext == ".html" || ext == ".htm" || ext == ".tmpl" {
 			writeFile(path, html, isSet)
 		}
 		return nil
