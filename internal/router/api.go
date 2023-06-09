@@ -33,14 +33,14 @@ func SetApiRouter(gin *gin.Engine) {
 		ad.GET("/:name", astroDictApi.Fetch)
 	}
 
-	rel := v1.Group("relation").Use(middleware.JWTAuth())
+	/* rel := v1.Group("relation").Use(middleware.JWTAuth())
 	{
 		rel.GET("/:id", nil)
 		rel.GET("", nil)
 		rel.POST("", nil)
 		rel.PUT("/:id", nil)
 		rel.DELETE("/:id", nil)
-	}
+	} */
 
 	msg := v1.Group("message").Use(middleware.JWTAuth())
 	{

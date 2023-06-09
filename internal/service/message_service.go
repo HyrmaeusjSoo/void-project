@@ -3,14 +3,15 @@ package service
 import (
 	"chat/internal/model"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"sync"
 
 	"nhooyr.io/websocket"
+	"nhooyr.io/websocket/wsjson"
 )
 
 type MessageService struct{}
@@ -18,10 +19,10 @@ type MessageService struct{}
 type Node struct {
 	Conn     *websocket.Conn
 	Addr     string
-	MsgQueue chan []byte //真消息队列
+	MsgQueue chan *model.Message //真消息队列
 }
 
-var clientMap = make(map[uint]*Node, 0)
+var clientMap = make(map[uint]*Node, 10)
 var rwLocker sync.RWMutex //线程安全读写锁
 
 func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
@@ -39,54 +40,64 @@ func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return errors.New("升级连接到websocket失败" + err.Error())
 	}
-	// defer conn.Close(websocket.StatusInternalError, "websocket已关闭")
+	fmt.Println("开启----------------------")
 
 	node := &Node{
 		Conn:     conn,
 		Addr:     r.RemoteAddr,
-		MsgQueue: make(chan []byte, 512),
+		MsgQueue: make(chan *model.Message, 32),
 	}
 	rwLocker.Lock()
 	clientMap[userId] = node
 	rwLocker.Unlock()
 
-	go sendProc(node, r.Context())
-	go recProc(node, r.Context())
+	go send(r.Context(), node)
+	err = receive(r.Context(), node)
 
-	return nil
+	fmt.Println("关闭=====================")
+	if err != nil {
+		conn.Close(websocket.StatusInternalError, "接收信息错误"+err.Error())
+	}
+	conn.Close(websocket.StatusNormalClosure, "websocket已关闭")
+
+	return err
 }
 
-func sendProc(node *Node, ctx context.Context) {
-	for {
-		fmt.Println("send------------")
+func send(ctx context.Context, node *Node) {
+	/* for {
 		select {
 		case data := <-node.MsgQueue:
-			err := node.Conn.Write(ctx, websocket.MessageText, data)
+			// err := node.Conn.Write(ctx, websocket.MessageText, data)
+			err := wsjson.Write(ctx, node.Conn, data)
 			if err != nil {
 				return
 			}
 		}
+	} */
+	for msg := range node.MsgQueue {
+		err := wsjson.Write(ctx, node.Conn, msg)
+		if err != nil {
+			return
+		}
 	}
 }
 
-func recProc(node *Node, ctx context.Context) {
-	fmt.Println("rec--------------")
+func receive(ctx context.Context, node *Node) error {
 	for {
-		// err := wsjson.Read(ctx, node.Conn, &msg)
-		_, data, err := node.Conn.Read(ctx)
-		if err != nil {
-			return
-		}
 		msg := model.Message{}
-		err = json.Unmarshal(data, &msg)
+		err := wsjson.Read(ctx, node.Conn, &msg)
 		if err != nil {
-			return
+			if errors.As(err, &websocket.CloseError{}) {
+				return nil
+			} else if errors.Is(err, io.EOF) {
+				return nil
+			}
+			return err
 		}
-		fmt.Println("target:", msg.TargetId)
 		tarNode, ok := clientMap[msg.TargetId]
 		if !ok {
-			return
+			return errors.New("对方已离开")
 		}
-		tarNode.MsgQueue <- data
+		tarNode.MsgQueue <- &msg
 	}
 }

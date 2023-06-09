@@ -3,6 +3,7 @@ package handler
 import (
 	"chat/internal/service"
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -15,11 +16,11 @@ type Message struct{}
 var msgService service.MessageService
 
 func (*Message) SendUserMsg(c *gin.Context) {
-	/* err := msgService.Chat(c.Writer, c.Request)
+	err := msgService.Chat(c.Writer, c.Request)
 	if err != nil {
 		fmt.Println(err.Error())
-	} */
-	chat(c.Writer, c.Request)
+	}
+	// chat(c.Writer, c.Request)
 }
 
 func chat(w http.ResponseWriter, r *http.Request) {

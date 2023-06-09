@@ -4,7 +4,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>index</title>
+    <title>chat2222</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" href="./css/json.css">
     <link rel="stylesheet" href="./css/main.css">
@@ -42,31 +42,24 @@
     </div>
     <div id="messages"></div>
     <script>
-        let conn = new WebSocket('ws://127.0.0.1:5555/api/v1/message/send?userId='+localStorage.getItem('userId')+'&token='+localStorage.getItem('token'));
+        let conn = new WebSocket('ws://127.0.0.1:5555/api/v1/message/send?userId=2&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlzcyI6IjIiLCJzdWIiOiJjaGF0IiwiZXhwIjoxNjg2MzEwNDMwLCJuYmYiOjE2ODYzMDMyMzAsImlhdCI6MTY4NjMwMzIzMH0.II5rNAVo93cJJzIjBydAWbQN_WrjUTkjeri7_Qnew38');
         conn.onopen = e => {
-            console.log('ws:开启连接');
+            console.log('[open] Connection established');
             // conn.send("ping");
         };
         conn.onclose = e => {
             if (e.wasClean) {
-                console.log(`ws:连接关闭, ${e}`);
+                console.log(`[close] Connection closed cleanly, :${e}`);
             } else {
-                console.log('ws:连接断开');
+                console.log('[close] Connection died');
             }
         };
         conn.onerror = e => {
-            console.log(`ws:错误, ${e.message}`);
+            console.log(`[error] ${e.message}`);
         };
 
         function sendmsg() {
-            let date = new Date();
-            conn.send(JSON.stringify({
-                from_id: parseInt(localStorage.getItem('userId')),
-                target_id: 2, 
-                type: 1,
-                content: document.getElementById("message").value,
-                send_time: `${Date.now()}`
-            }));
+            conn.send(JSON.stringify({target_id:1, content:document.getElementById("message").value}),);
             let messageElem = document.createElement('div');
             messageElem.textContent = document.getElementById("message").value;
             document.getElementById('messages').prepend(messageElem);
@@ -74,7 +67,7 @@
         }
         conn.onmessage = e => {
             let messageElem = document.createElement('div');
-            messageElem.textContent = e.resMsg;
+            messageElem.textContent = e.content;
             document.getElementById('messages').prepend(messageElem);
         }
         function closeMessage(){
