@@ -12,6 +12,7 @@
 <body>
     <div class="chat_commento">
         <div class="chat_top">
+            <a href="./index.html">&nbsp;&lt;&nbsp;</a>
             目标
         </div>
         <div class="line"></div>
@@ -52,7 +53,7 @@
     </div>
     <script>
         // 成功发送
-        var send_message = document.getElementById("chat_middle_item");
+        /* var send_message = document.getElementById("chat_middle_item");
         var sendBtn = document.getElementById("sendBtn");
         // 发送内容
         var message = document.getElementById("chat_context_item");
@@ -68,7 +69,7 @@
                 </div>`;
             send_message.append(right);
             message.value = "";
-        });
+        }); */
     </script>
     <script>
         let send_message = document.getElementById("chat_middle_item");
@@ -92,7 +93,6 @@
 
         var sendBtn = document.getElementById("sendBtn");
         // 发送内容
-        var message = document.getElementById("chat_context_item");
         sendBtn.addEventListener("click", _ => {
             var date = new Date();
             var time = date.getHours()+':'+date.getMinutes();
@@ -104,16 +104,24 @@
                     <div class="chat_right_content clearfix">${message.value}</div>
                 </div>`;
             send_message.append(right);
-            message.value = "";
             conn.send(JSON.stringify({
-                from_id: localStorage.getItem('userId'),
+                from_id: parseInt(localStorage.getItem('userId')),
                 target_id: 2, 
                 type: 1,
                 content: message.value,
                 send_time: date
             }));
+            message.value = "";
         });
         conn.onmessage = e => {
+            var left = document.createElement("div");
+            left.setAttribute("class","chat_left clearfix");
+            left.innerHTML = `<div class="chat_left_item_1">${e.from_id}</div>
+                <div class="chat_left_item_2">
+                    <div class="chat_time">${e.send_time}</div>
+                    <div class="chat_left_content">${e.content}</div>
+                </div>`;
+            send_message.append(left);
         }
         function closeMessage(){
             conn.close(1000, "关闭");

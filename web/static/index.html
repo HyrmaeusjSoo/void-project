@@ -31,55 +31,9 @@
 
 <body class="body">
     <input type="button" id="loginBtn" value="login">
+    <a href="./chat.html">chat</a>
     <script>
         loginBtn.onclick = _ => login(...prompt().split(','));
-    </script>
-
-    <div>
-        <input type="text" id="message">
-        <button onclick="sendmsg()">发送</button>
-        <button onclick="closeMessage()">停止</button>
-    </div>
-    <div id="messages"></div>
-    <script>
-        let conn = new WebSocket('ws://127.0.0.1:5555/api/v1/message/send?userId='+localStorage.getItem('userId')+'&token='+localStorage.getItem('token'));
-        conn.onopen = e => {
-            console.log('ws:开启连接');
-            // conn.send("ping");
-        };
-        conn.onclose = e => {
-            if (e.wasClean) {
-                console.log(`ws:连接关闭, ${e}`);
-            } else {
-                console.log('ws:连接断开');
-            }
-        };
-        conn.onerror = e => {
-            console.log(`ws:错误, ${e.message}`);
-        };
-
-        function sendmsg() {
-            let date = new Date();
-            conn.send(JSON.stringify({
-                from_id: parseInt(localStorage.getItem('userId')),
-                target_id: 2, 
-                type: 1,
-                content: document.getElementById("message").value,
-                send_time: `${Date.now()}`
-            }));
-            let messageElem = document.createElement('div');
-            messageElem.textContent = document.getElementById("message").value;
-            document.getElementById('messages').prepend(messageElem);
-            return false;
-        }
-        conn.onmessage = e => {
-            let messageElem = document.createElement('div');
-            messageElem.textContent = e.resMsg;
-            document.getElementById('messages').prepend(messageElem);
-        }
-        function closeMessage(){
-            conn.close(1000, "关闭");
-        }
     </script>
 </body>
 
