@@ -1,18 +1,27 @@
+<!-- ┌───────────────────────────────────────────────────────────────────────────────────────┐ -->
+<!-- │ Sū Shēngxǜ's from past to present VOID CHAOS False Philosophy code.                     -->
+<!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
+<!-- │ Elysium, in the Blue Sky. ファンタジーアドベンチャー。 泡泡枪、七彩、⚛️                        -->
+<!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
+<!-- │ 银河系🌌 Requests.                                                             2023      -->
+<!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
+<!-- │                                                                   —————— Hylea Soo      -->
+<!-- └───────────────────────────────────────────────────────────────────────────────────────┘ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/main.css">
-    <script src="./js/rium.js"></script>
-    <script src="./js/main.js"></script>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/js/rium.js"></script>
+    <script src="/static/js/main.js"></script>
     <title>chat</title>
 </head>
 <body>
     <div class="chat_commento">
         <div class="chat_top">
-            <a href="./index.html">&nbsp;&lt;&nbsp;</a>
+            <a href="/web/v1">&nbsp;&lt;&nbsp;</a>
             目标
         </div>
         <div class="line"></div>
@@ -75,7 +84,7 @@
         let send_message = document.getElementById("chat_middle_item");
         let message = document.getElementById("chat_context_item");
 
-        let conn = new WebSocket('ws://127.0.0.1:5555/api/v1/message/send?userId='+localStorage.getItem('userId')+'&token='+localStorage.getItem('token'));
+        let conn = new WebSocket(`ws://${window.location.host}/api/v1/message/send?userId=${localStorage.getItem('userId')}&token=${localStorage.getItem('token')}`);
         conn.onopen = e => {
             console.log('ws:开启连接');
             // conn.send("ping");

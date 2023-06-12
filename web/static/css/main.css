@@ -1,5 +1,4 @@
 
-/** 聊天页面样式 **/
 *{
     padding: 0;
     margin: 0;
@@ -20,7 +19,6 @@
     line-height: 0;
     visibility: hidden;
 }
-/* top */
 .chat_top{
     width: 100%;
     height: 50px;
@@ -33,8 +31,6 @@
     font-weight: 550;
     border-width: 0px;
 }
-/* middle */
-/* 左边 */
 .chat_middle{
     width: 450px;
     height: 455px;
@@ -78,7 +74,6 @@
     border-radius: 10px;
     border-top-left-radius: 0px;
 }
-/* 右边 */
 .chat_right{
     width: 100%;
     height: 120px;
@@ -116,7 +111,6 @@
     background-color: #4F7cff;
     color: white;
 }
-/* foot */
 .chat_foot{
     width: 450px;
     height: 130px;

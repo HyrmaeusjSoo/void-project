@@ -22,6 +22,7 @@ VOID_Project
     │    │    ├── request
     │    ├── router
     │    ├── service
+    │    ├── view
     ├── pkg
     │    ├── jwt
     │    ├── logger
