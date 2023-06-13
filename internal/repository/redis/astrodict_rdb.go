@@ -10,28 +10,36 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type AstroDict struct{}
+type AstroDict struct {
+	db  *redis.Client
+	ctx context.Context
+}
 
-var ctx = context.Background()
+func NewAstroDict() *AstroDict {
+	return &AstroDict{
+		db:  driver.Redis,
+		ctx: context.Background(),
+	}
+}
 
-func (*AstroDict) Save(astrodict model.AstroDict) error {
+func (ad *AstroDict) Save(astrodict model.AstroDict) error {
 	val, err := json.Marshal(astrodict)
 	if err != nil {
 		return err
 	}
-	err = driver.Redis.Set(ctx, "astrodict_ce", string(val), 2*time.Hour).Err()
+	err = ad.db.Set(ad.ctx, "astrodict_ce", string(val), 2*time.Hour).Err()
 	return err
 }
 
-func (*AstroDict) Fetch() (ad *model.AstroDict, err error) {
-	val, err1 := driver.Redis.Get(ctx, "astrodict_ce").Result()
+func (ad *AstroDict) Fetch() (astro *model.AstroDict, err error) {
+	val, err1 := ad.db.Get(ad.ctx, "astrodict_ce").Result()
 	if err1 != nil && err1 != redis.Nil {
 		return nil, err1
 	}
 
 	if val != "" {
-		ad = &model.AstroDict{}
-		err = json.Unmarshal([]byte(val), ad)
+		astro = &model.AstroDict{}
+		err = json.Unmarshal([]byte(val), astro)
 	}
 	return
 }

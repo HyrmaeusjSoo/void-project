@@ -13,12 +13,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type User struct{}
+type User struct {
+	service *service.UserService
+}
 
-var userService = &service.UserService{}
+func NewUser() *User {
+	return &User{service: service.NewUserService()}
+}
 
 // 注册
-func (*User) Register(c *gin.Context) {
+func (u *User) Register(c *gin.Context) {
 	user := model.User{}
 	err := c.ShouldBind(&user)
 	if err != nil {
@@ -33,12 +37,12 @@ func (*User) Register(c *gin.Context) {
 		return
 	}
 
-	if existsAccount := userService.ExistsAccount(user.Account); existsAccount {
+	if existsAccount := u.service.ExistsAccount(user.Account); existsAccount {
 		response.Fail(c, http.StatusOK, "用户已存在！")
 		return
 	}
 
-	err = userService.Register(&user)
+	err = u.service.Register(&user)
 	if err != nil {
 		response.Fail(c, http.StatusOK, "保存失败"+err.Error())
 		return
@@ -47,7 +51,7 @@ func (*User) Register(c *gin.Context) {
 }
 
 // 登录
-func (*User) Login(c *gin.Context) {
+func (u *User) Login(c *gin.Context) {
 	var param struct {
 		Account  string
 		Password string
@@ -60,7 +64,7 @@ func (*User) Login(c *gin.Context) {
 		response.Fail(c, http.StatusForbidden, "账号和密码不能为空！")
 		return
 	}
-	data, err := userService.GetByAccount(param.Account)
+	data, err := u.service.GetByAccount(param.Account)
 	if err != nil {
 		response.Fail(c, http.StatusOK, "登录失败:"+err.Error())
 		return
@@ -76,7 +80,7 @@ func (*User) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := userService.GetByAccountPassword(param.Account, data.Password)
+	user, err := u.service.GetByAccountPassword(param.Account, data.Password)
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
@@ -101,13 +105,13 @@ func (*User) Login(c *gin.Context) {
 }
 
 // 获取
-func (*User) Fetch(c *gin.Context) {
+func (u *User) Fetch(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	user, err := userService.Fetch(uint(id))
+	user, err := u.service.Fetch(uint(id))
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
@@ -116,8 +120,8 @@ func (*User) Fetch(c *gin.Context) {
 }
 
 // 获取列表
-func (*User) List(c *gin.Context) {
-	users, err := userService.List()
+func (u *User) List(c *gin.Context) {
+	users, err := u.service.List()
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
@@ -126,7 +130,7 @@ func (*User) List(c *gin.Context) {
 }
 
 // 更新
-func (*User) Update(c *gin.Context) {
+func (u *User) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
@@ -141,7 +145,7 @@ func (*User) Update(c *gin.Context) {
 	}
 	user.ID = uint(id)
 
-	err = userService.Update(user)
+	err = u.service.Update(user)
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
@@ -151,14 +155,14 @@ func (*User) Update(c *gin.Context) {
 }
 
 // 删除
-func (*User) Delete(c *gin.Context) {
+func (u *User) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.Fail(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	err = userService.Delete(uint(id))
+	err = u.service.Delete(uint(id))
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return

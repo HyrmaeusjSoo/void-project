@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	userApi      handler.User
-	astroDictApi handler.AstroDict
-	messageApi   handler.Message
-)
-
 func SetApiRouter(gin *gin.Engine) {
+	var (
+		userApi      = handler.NewUser()
+		astroDictApi = handler.NewAstroDict()
+		messageApi   = handler.NewMessage()
+	)
+
 	gin.Use(middleware.Cors())
 	v1 := gin.Group("api/v1")
 	// v1.Use(middleware.Cors())
@@ -26,6 +26,7 @@ func SetApiRouter(gin *gin.Engine) {
 		u.GET("", middleware.JWTAuth(), userApi.List)
 		u.PUT("/:id", middleware.JWTAuth(), userApi.Update)
 		u.DELETE("/:id", middleware.JWTAuth(), userApi.Delete)
+		u.GET("online/:selfid", middleware.JWTAuth(), messageApi.OnLine)
 	}
 
 	ad := v1.Group("astro").Use(middleware.JWTAuth())

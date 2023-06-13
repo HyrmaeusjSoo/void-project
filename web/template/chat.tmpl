@@ -21,12 +21,12 @@
 <body>
     <div class="chat_commento">
         <div class="chat_top">
-            <a href="/web/v1">&nbsp;&lt;&nbsp;</a>
+            <a href="/web">&nbsp;&lt;&nbsp;</a>
             目标
         </div>
         <div class="line"></div>
         <div class="chat_middle" id="chat_middle_item">
-            <div class="chat_left clearfix">
+            <!--<div class="chat_left clearfix">
                 <div class="chat_left_item_1 ">aa</div>
                 <div class="chat_left_item_2">
                     <div class="chat_time">18:57</div>
@@ -43,16 +43,7 @@
                         aaaaaaaadddddddd
                     </div>
                 </div>
-            </div>
-            <div class="chat_left clearfix">
-                <div class="chat_left_item_1 ">aa</div>
-                <div class="chat_left_item_2">
-                    <div class="chat_time">18:57</div>
-                    <div class="chat_left_content">
-                        xxxxxcccccccccczzzzz
-                    </div>
-                </div>
-            </div>
+            </div> -->
         </div>
         <div class="line"></div>
         <div class="chat_foot">
@@ -60,26 +51,6 @@
             <div class="chat_commit" id="sendBtn">发送</div>
         </div>
     </div>
-    <script>
-        // 成功发送
-        /* var send_message = document.getElementById("chat_middle_item");
-        var sendBtn = document.getElementById("sendBtn");
-        // 发送内容
-        var message = document.getElementById("chat_context_item");
-        sendBtn.addEventListener("click", _ => {
-            var date = new Date();
-            var time = date.getHours()+':'+date.getMinutes();
-            var right = document.createElement("div");
-            right.setAttribute("class","chat_right");
-            right.innerHTML = `<div class="chat_right_item_1 clearfix">bb</div>
-                <div class="chat_right_item_2">
-                    <div class="chat_right_time clearfix">${time}</div>
-                    <div class="chat_right_content clearfix">${message.value}</div>
-                </div>`;
-            send_message.append(right);
-            message.value = "";
-        }); */
-    </script>
     <script>
         let send_message = document.getElementById("chat_middle_item");
         let message = document.getElementById("chat_context_item");
@@ -100,12 +71,12 @@
             console.log(`ws:错误, ${e.message}`);
         };
 
-        var sendBtn = document.getElementById("sendBtn");
+        let sendBtn = document.getElementById("sendBtn");
         // 发送内容
         sendBtn.addEventListener("click", _ => {
-            var date = new Date();
-            var time = date.getHours()+':'+date.getMinutes();
-            var right = document.createElement("div");
+            let date = new Date();
+            let time = date.getHours()+':'+date.getMinutes();
+            let right = document.createElement("div");
             right.setAttribute("class","chat_right");
             right.innerHTML = `<div class="chat_right_item_1 clearfix">bb</div>
                 <div class="chat_right_item_2">
@@ -115,7 +86,7 @@
             send_message.append(right);
             conn.send(JSON.stringify({
                 from_id: parseInt(localStorage.getItem('userId')),
-                target_id: 2, 
+                target_id: 1, 
                 type: 1,
                 content: message.value,
                 send_time: date
@@ -123,7 +94,8 @@
             message.value = "";
         });
         conn.onmessage = e => {
-            var left = document.createElement("div");
+            e = JSON.parse(e.data);
+            let left = document.createElement("div");
             left.setAttribute("class","chat_left clearfix");
             left.innerHTML = `<div class="chat_left_item_1">${e.from_id}</div>
                 <div class="chat_left_item_2">

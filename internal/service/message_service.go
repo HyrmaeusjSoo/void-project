@@ -2,6 +2,7 @@ package service
 
 import (
 	"chat/internal/model"
+	"chat/internal/repository/mysql"
 	"context"
 	"errors"
 	"fmt"
@@ -14,7 +15,13 @@ import (
 	"nhooyr.io/websocket/wsjson"
 )
 
-type MessageService struct{}
+type MessageService struct {
+	db *mysql.UserRepository
+}
+
+func NewMessageService() *MessageService {
+	return &MessageService{db: mysql.NewUserRepository()}
+}
 
 type Node struct {
 	Conn     *websocket.Conn
@@ -25,6 +32,22 @@ type Node struct {
 var clientMap = make(map[uint]*Node, 10)
 var rwLocker sync.RWMutex //线程安全读写锁
 
+// 在线用户
+func (m *MessageService) OnLine(selfid uint) ([]*model.User, error) {
+	ids := make([]uint, 0, len(clientMap))
+	for k := range clientMap {
+		if k == selfid {
+			continue
+		}
+		ids = append(ids, k)
+	}
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	return m.db.GetInIds(ids)
+}
+
+// 聊天
 func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	IdStr := r.URL.Query().Get("userId")
 	if IdStr == "" {

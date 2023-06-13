@@ -9,28 +9,32 @@ import (
 	"time"
 )
 
-type UserService struct{}
+type UserService struct {
+	db *mysql.UserRepository
+}
 
-var udb = &mysql.UserRepository{}
+func NewUserService() *UserService {
+	return &UserService{db: mysql.NewUserRepository()}
+}
 
 // 获取账号
-func (*UserService) Fetch(id uint) (*model.User, error) {
-	user, err := udb.GetById(id)
+func (u *UserService) Fetch(id uint) (*model.User, error) {
+	user, err := u.db.GetById(id)
 	user.SecureClear() //清除敏感信息
 	return user, err
 }
 
-func (*UserService) List() ([]*model.User, error) {
-	return udb.GetList()
+func (u *UserService) List() ([]*model.User, error) {
+	return u.db.GetList()
 }
 
 // 账号是否存在
-func (*UserService) ExistsAccount(account string) bool {
-	return udb.ExistsAccount(account)
+func (u *UserService) ExistsAccount(account string) bool {
+	return u.db.ExistsAccount(account)
 }
 
 // 注册用户
-func (*UserService) Register(user *model.User) error {
+func (u *UserService) Register(user *model.User) error {
 	salt := fmt.Sprintf("%d", rand.Int31())
 	t := time.Now()
 	user.Password = md5.SaltPassword(user.Password, salt)
@@ -38,29 +42,29 @@ func (*UserService) Register(user *model.User) error {
 	user.LoginTime = &t
 	user.LoginOutTime = &t
 	user.HeartBeatTime = &t
-	err := udb.Create(user)
+	err := u.db.Create(user)
 	user.SecureClear() //清除敏感信息
 	return err
 }
 
 // 按账号获取账户
-func (*UserService) GetByAccount(account string) (*model.User, error) {
-	return udb.GetByAccount(account)
+func (u *UserService) GetByAccount(account string) (*model.User, error) {
+	return u.db.GetByAccount(account)
 }
 
 // 账号密码获取账户
-func (*UserService) GetByAccountPassword(account, password string) (*model.User, error) {
-	return udb.GetByAccountPassword(account, password)
+func (u *UserService) GetByAccountPassword(account, password string) (*model.User, error) {
+	return u.db.GetByAccountPassword(account, password)
 }
 
 // 修改用户信息
-func (*UserService) Update(user *model.User) error {
-	err := udb.Update(user)
+func (u *UserService) Update(user *model.User) error {
+	err := u.db.Update(user)
 	user.SecureClear()
 	return err
 }
 
 // 删除用户
-func (*UserService) Delete(id uint) error {
-	return udb.Delete(id)
+func (u *UserService) Delete(id uint) error {
+	return u.db.Delete(id)
 }

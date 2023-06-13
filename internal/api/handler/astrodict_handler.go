@@ -8,15 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AstroDict struct{}
+type AstroDict struct {
+	service *service.AstroDictService
+}
 
-var adService = &service.AstroDictService{}
+func NewAstroDict() *AstroDict {
+	return &AstroDict{
+		service: service.NewAstroDictService(),
+	}
+}
 
-func (*AstroDict) Fetch(c *gin.Context) {
-	adRes, err := adService.Fetch(c.Param("name"))
+func (ad *AstroDict) Fetch(c *gin.Context) {
+	astro, err := ad.service.Fetch(c.Param("name"))
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
 	}
-	response.Success(c, adRes)
+	response.Success(c, astro)
 }

@@ -1,52 +1,42 @@
 package handler
 
 import (
+	"chat/internal/api/response"
 	"chat/internal/service"
-	"context"
 	"fmt"
 	"net/http"
-	"time"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"nhooyr.io/websocket"
 )
 
-type Message struct{}
+type Message struct {
+	service *service.MessageService
+}
 
-var msgService service.MessageService
+func NewMessage() *Message {
+	return &Message{service: service.NewMessageService()}
+}
 
-func (*Message) SendUserMsg(c *gin.Context) {
-	err := msgService.Chat(c.Writer, c.Request)
+func (m *Message) SendUserMsg(c *gin.Context) {
+	err := m.service.Chat(c.Writer, c.Request)
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	// chat(c.Writer, c.Request)
 }
 
-func chat(w http.ResponseWriter, r *http.Request) {
-	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
+func (m *Message) OnLine(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("selfid"))
 	if err != nil {
-		panic(err)
-	}
-	defer conn.Close(websocket.StatusInternalError, "websocket已关闭")
-
-	var sr = func(reqCtx context.Context) {
-		ctx, cancel := context.WithTimeout(reqCtx, time.Minute*30)
-		defer cancel()
-		//接收信息
-		typ, data, err := conn.Read(ctx)
-		if err != nil {
-			panic(err)
-		}
-		//返回信息
-		str := string(data) + ", resMsg:回复"
-		if err := conn.Write(ctx, typ, []byte(str)); err != nil {
-			panic(err)
-		}
+		response.Fail(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
-	for {
-		sr(r.Context())
+	users, err := m.service.OnLine(uint(id))
+	if err != nil {
+		response.Fail(c, http.StatusOK, err.Error())
+		return
 	}
+	response.Success(c, users)
 
 }

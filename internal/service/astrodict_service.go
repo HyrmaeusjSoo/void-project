@@ -7,21 +7,25 @@ import (
 	"strings"
 )
 
-type AstroDictService struct{}
+type AstroDictService struct {
+	db *redis.AstroDict
+}
 
-var rdb = &redis.AstroDict{}
+func NewAstroDictService() *AstroDictService {
+	return &AstroDictService{db: redis.NewAstroDict()}
+}
 
-func (*AstroDictService) Fetch(name string) (res *model.AstroDict, err error) {
-	ad, err := rdb.Fetch()
+func (ad *AstroDictService) Fetch(name string) (res *model.AstroDict, err error) {
+	astro, err := ad.db.Fetch()
 	if err != nil {
 		return
 	}
-	if ad == nil || len(ad.AstroDict) == 0 {
-		ad, err = request.New("ce").GetAstroDict()
+	if astro == nil || len(astro.AstroDict) == 0 {
+		astro, err = request.NewAD("ce").GetAstroDict()
 		if err != nil {
 			return
 		}
-		err = rdb.Save(*ad)
+		err = ad.db.Save(*astro)
 		if err != nil {
 			return
 		}
@@ -29,7 +33,7 @@ func (*AstroDictService) Fetch(name string) (res *model.AstroDict, err error) {
 
 	name = strings.ToLower(name)
 	res = &model.AstroDict{}
-	for _, v := range ad.AstroDict {
+	for _, v := range astro.AstroDict {
 		c := strings.ToLower(v.C)
 		e := strings.ToLower(v.E)
 		if strings.Contains(c, name) || strings.Contains(e, name) {

@@ -11,7 +11,7 @@ type AD struct {
 	Type string
 }
 
-func New(typ string) *AD {
+func NewAD(typ string) *AD {
 	typ = pkg.IfElse(typ == "", "ce", typ)
 	return &AD{typ}
 }

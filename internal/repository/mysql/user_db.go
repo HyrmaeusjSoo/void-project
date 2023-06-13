@@ -4,40 +4,48 @@ import (
 	"chat/internal/model"
 	"chat/internal/repository/driver"
 	"errors"
+
+	"gorm.io/gorm"
 )
 
-type UserRepository struct{}
+type UserRepository struct {
+	db *gorm.DB
+}
+
+func NewUserRepository() *UserRepository {
+	return &UserRepository{db: driver.MySQL}
+}
 
 // 账户列表
-func (*UserRepository) GetList() ([]*model.User, error) {
+func (u *UserRepository) GetList() ([]*model.User, error) {
 	var list []*model.User
-	driver.MySQL.Select("account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list)
-	/* if tx := driver.MySQL.Find(&list); tx.RowsAffected == 0 {
+	u.db.Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list)
+	/* if tx := u.db.Find(&list); tx.RowsAffected == 0 {
 		return nil, errors.New("获取用户列表失败")
 	} */
 	return list, nil
 }
 
 // 查询账户
-func (*UserRepository) GetById(id uint) (*model.User, error) {
+func (u *UserRepository) GetById(id uint) (*model.User, error) {
 	user := &model.User{}
-	if tx := driver.MySQL.First(user, id); tx.RowsAffected <= 0 {
+	if tx := u.db.First(user, id); tx.RowsAffected <= 0 {
 		return nil, errors.New("未找到用户！")
 	}
 	return user, nil
 }
 
 // 账号是否存在
-func (*UserRepository) ExistsAccount(account string) bool {
+func (u *UserRepository) ExistsAccount(account string) bool {
 	var count int64
-	driver.MySQL.Model(model.User{}).Where("account = ?", account).Count(&count)
+	u.db.Model(model.User{}).Where("account = ?", account).Count(&count)
 	return count >= 1
 }
 
 // 按账号查询账户
-func (*UserRepository) GetByAccount(account string) (*model.User, error) {
+func (u *UserRepository) GetByAccount(account string) (*model.User, error) {
 	user := &model.User{}
-	tx := driver.MySQL.Where("account = ?", account).First(user)
+	tx := u.db.Where("account = ?", account).First(user)
 	if tx.RowsAffected == 0 {
 		return nil, errors.New("未找到用户")
 	}
@@ -45,18 +53,25 @@ func (*UserRepository) GetByAccount(account string) (*model.User, error) {
 }
 
 // 账号密码查询账户
-func (*UserRepository) GetByAccountPassword(account, password string) (*model.User, error) {
+func (u *UserRepository) GetByAccountPassword(account, password string) (*model.User, error) {
 	user := &model.User{}
-	tx := driver.MySQL.Where("account = ? AND password = ?", account, password).First(user)
+	tx := u.db.Where("account = ? AND password = ?", account, password).First(user)
 	if tx.RowsAffected == 0 {
 		return nil, errors.New("未找到用户")
 	}
 	return user, nil
 }
 
+// 账户列表in ids
+func (u *UserRepository) GetInIds(ids []uint) ([]*model.User, error) {
+	var list []*model.User
+	u.db.Where("id IN ?", ids).Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list)
+	return list, nil
+}
+
 // 新增用户
-func (*UserRepository) Create(user *model.User) error {
-	tx := driver.MySQL.Create(user)
+func (u *UserRepository) Create(user *model.User) error {
+	tx := u.db.Create(user)
 	if tx.RowsAffected == 0 {
 		return errors.New("新增用户失败")
 	}
@@ -64,8 +79,8 @@ func (*UserRepository) Create(user *model.User) error {
 }
 
 // 更新账户
-func (*UserRepository) Update(user *model.User) error {
-	tx := driver.MySQL.Model(user).Updates(model.User{
+func (u *UserRepository) Update(user *model.User) error {
+	tx := u.db.Model(user).Updates(model.User{
 		Name:   user.Name,
 		Avatar: user.Avatar,
 		Gender: user.Gender,
@@ -79,8 +94,8 @@ func (*UserRepository) Update(user *model.User) error {
 }
 
 // 删除账户
-func (*UserRepository) Delete(id uint) error {
-	if tx := driver.MySQL.Delete(&model.User{}, id); tx.RowsAffected == 0 {
+func (u *UserRepository) Delete(id uint) error {
+	if tx := u.db.Delete(&model.User{}, id); tx.RowsAffected == 0 {
 		return errors.New("删除用户失败")
 	}
 	return nil
