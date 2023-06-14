@@ -12,8 +12,7 @@ type AD struct {
 }
 
 func NewAD(typ string) *AD {
-	typ = pkg.IfElse(typ == "", "ce", typ)
-	return &AD{typ}
+	return &AD{pkg.IfElse(typ == "", "ce", typ)}
 }
 
 func (ad *AD) GetAstroDict() (astrodict *model.AstroDict, err error) {

@@ -12,7 +12,7 @@ type AstroDictService struct {
 }
 
 func NewAstroDictService() *AstroDictService {
-	return &AstroDictService{db: redis.NewAstroDict()}
+	return &AstroDictService{redis.NewAstroDict()}
 }
 
 func (ad *AstroDictService) Fetch(name string) (res *model.AstroDict, err error) {

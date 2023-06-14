@@ -20,7 +20,7 @@ type MessageService struct {
 }
 
 func NewMessageService() *MessageService {
-	return &MessageService{db: mysql.NewUserRepository()}
+	return &MessageService{mysql.NewUserRepository()}
 }
 
 type Node struct {

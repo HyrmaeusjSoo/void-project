@@ -13,9 +13,7 @@ type AstroDict struct {
 }
 
 func NewAstroDict() *AstroDict {
-	return &AstroDict{
-		service: service.NewAstroDictService(),
-	}
+	return &AstroDict{service.NewAstroDictService()}
 }
 
 func (ad *AstroDict) Fetch(c *gin.Context) {

@@ -15,7 +15,7 @@ type Message struct {
 }
 
 func NewMessage() *Message {
-	return &Message{service: service.NewMessageService()}
+	return &Message{service.NewMessageService()}
 }
 
 func (m *Message) SendUserMsg(c *gin.Context) {
