@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"chat/internal/api/response"
-	"chat/internal/service"
 	"fmt"
 	"net/http"
 	"strconv"
+	"void-project/internal/api/response"
+	"void-project/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

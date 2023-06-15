@@ -1,10 +1,10 @@
 package service
 
 import (
-	"chat/internal/model"
-	"chat/internal/repository/redis"
-	"chat/internal/repository/request"
 	"strings"
+	"void-project/internal/model"
+	"void-project/internal/repository/redis"
+	"void-project/internal/repository/request"
 )
 
 type AstroDictService struct {

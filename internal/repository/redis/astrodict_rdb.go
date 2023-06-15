@@ -1,11 +1,11 @@
 package redis
 
 import (
-	"chat/internal/model"
-	"chat/internal/repository/driver"
 	"context"
 	"encoding/json"
 	"time"
+	"void-project/internal/model"
+	"void-project/internal/repository/driver"
 
 	"github.com/redis/go-redis/v9"
 )

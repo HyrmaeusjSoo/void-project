@@ -1,11 +1,11 @@
 package logger
 
 import (
-	"chat/pkg"
 	"io"
 	"log"
 	"os"
 	"time"
+	"void-project/pkg"
 )
 
 func Log(info string) {

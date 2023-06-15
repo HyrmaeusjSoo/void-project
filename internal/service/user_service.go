@@ -1,12 +1,12 @@
 package service
 
 import (
-	"chat/internal/model"
-	"chat/internal/repository/mysql"
-	"chat/pkg/md5"
 	"fmt"
 	"math/rand"
 	"time"
+	"void-project/internal/model"
+	"void-project/internal/repository/mysql"
+	"void-project/pkg/md5"
 )
 
 type UserService struct {

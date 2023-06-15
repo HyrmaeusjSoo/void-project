@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"chat/internal/api/response"
-	"chat/internal/service"
 	"net/http"
+	"void-project/internal/api/response"
+	"void-project/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

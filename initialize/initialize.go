@@ -1,7 +1,7 @@
 package initialize
 
 import (
-	"chat/internal/repository/driver"
+	"void-project/internal/repository/driver"
 )
 
 func InitRepository() {

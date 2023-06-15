@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"chat/internal/api/response"
-	"chat/internal/model"
-	"chat/internal/service"
-	"chat/pkg/jwt"
-	"chat/pkg/md5"
+	"void-project/internal/api/response"
+	"void-project/internal/model"
+	"void-project/internal/service"
+	"void-project/pkg/jwt"
+	"void-project/pkg/md5"
 
 	"github.com/gin-gonic/gin"
 )

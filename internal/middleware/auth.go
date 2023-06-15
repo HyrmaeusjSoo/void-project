@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"chat/pkg/jwt"
 	"net/http"
 	"strconv"
 	"time"
+	"void-project/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 )

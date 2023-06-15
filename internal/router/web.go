@@ -1,9 +1,9 @@
 package router
 
 import (
-	"chat/internal/middleware"
-	"chat/internal/view"
-	"chat/pkg"
+	"void-project/internal/middleware"
+	"void-project/internal/view"
+	"void-project/pkg"
 
 	"github.com/gin-gonic/gin"
 )

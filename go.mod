@@ -1,4 +1,4 @@
-module chat
+module void-project
 
 go 1.20
 

@@ -1,8 +1,6 @@
 package service
 
 import (
-	"chat/internal/model"
-	"chat/internal/repository/mysql"
 	"context"
 	"errors"
 	"fmt"
@@ -10,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 	"sync"
+	"void-project/internal/model"
+	"void-project/internal/repository/mysql"
 
 	"nhooyr.io/websocket"
 	"nhooyr.io/websocket/wsjson"

@@ -1,8 +1,8 @@
 package router
 
 import (
-	"chat/internal/api/handler"
-	"chat/internal/middleware"
+	"void-project/internal/api/handler"
+	"void-project/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )

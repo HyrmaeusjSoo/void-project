@@ -1,10 +1,10 @@
 package request
 
 import (
-	"chat/internal/model"
-	"chat/pkg"
 	"encoding/json"
 	"net/http"
+	"void-project/internal/model"
+	"void-project/pkg"
 )
 
 type AD struct {

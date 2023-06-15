@@ -1,9 +1,9 @@
 package mysql
 
 import (
-	"chat/internal/model"
-	"chat/internal/repository/driver"
 	"errors"
+	"void-project/internal/model"
+	"void-project/internal/repository/driver"
 
 	"gorm.io/gorm"
 )

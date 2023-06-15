@@ -1,12 +1,12 @@
 package main
 
 import (
-	"chat/pkg"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+	"void-project/pkg"
 )
 
 func main() {
@@ -130,7 +130,7 @@ func GenReadme() {
 		panic(err)
 	}
 
-	readme := append([]byte("# Void_Project\r\n```\r\n"), []byte(dirTree+"\r\n```")...)
+	readme := append([]byte("# void-project\r\n```\r\n"), []byte(dirTree+"\r\n```")...)
 	file, err := os.OpenFile(pkg.GetRootPath()+"/README.md", os.O_RDWR, 0644)
 	if err != nil {
 		panic(err)
