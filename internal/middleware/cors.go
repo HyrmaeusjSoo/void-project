@@ -17,7 +17,6 @@ func Cors() gin.HandlerFunc {
 		// c.Set("content-type", "application/json")
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
-			// c.JSON(http.StatusOK, "response OK")
 		}
 
 		c.Next()
