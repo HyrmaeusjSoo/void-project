@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"void-project/internal/api/request"
 	"void-project/internal/api/response"
 	"void-project/internal/model"
 	"void-project/internal/service"
@@ -121,12 +122,17 @@ func (u *User) Fetch(c *gin.Context) {
 
 // 获取列表
 func (u *User) List(c *gin.Context) {
-	users, err := u.service.List()
+	page, size, err := request.PageQuery(c)
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
 	}
-	response.Success(c, users)
+	users, total, err := u.service.List(page, size)
+	if err != nil {
+		response.Fail(c, http.StatusOK, err.Error())
+		return
+	}
+	response.SuccessPage(c, users, total)
 }
 
 // 更新

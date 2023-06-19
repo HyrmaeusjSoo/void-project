@@ -14,6 +14,12 @@ type JsonResponse struct {
 	// HttpCode int    // http状态码
 }
 
+// 分页对象
+type JsonResponsePage struct {
+	List  any `json:"list,omitempty"`
+	Total int `json:"total,omitempty"`
+}
+
 func NewJsonResponseError(code int, message string) JsonResponse {
 	return JsonResponse{code, message, nil}
 }
@@ -24,6 +30,17 @@ func Success(c *gin.Context, data any) {
 		Code:    http.StatusOK,
 		Message: "请求成功",
 		Data:    data,
+	})
+}
+
+func SuccessPage(c *gin.Context, data any, total int) {
+	c.JSON(http.StatusOK, JsonResponse{
+		Code:    http.StatusOK,
+		Message: "请求成功",
+		Data: JsonResponsePage{
+			List:  data,
+			Total: total,
+		},
 	})
 }
 

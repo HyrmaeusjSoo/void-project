@@ -3,6 +3,7 @@ package mysql
 import (
 	"errors"
 	"void-project/internal/model"
+	"void-project/internal/repository"
 	"void-project/internal/repository/driver"
 
 	"gorm.io/gorm"
@@ -17,13 +18,16 @@ func NewUserRepository() *UserRepository {
 }
 
 // 账户列表
-func (u *UserRepository) GetList() ([]*model.User, error) {
-	var list []*model.User
-	u.db.Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list)
-	/* if tx := u.db.Find(&list); tx.RowsAffected == 0 {
-		return nil, errors.New("获取用户列表失败")
-	} */
-	return list, nil
+func (u *UserRepository) GetList(page, size int) ([]model.User, int, error) {
+	var list []model.User
+	total, err := repository.Paginate(
+		u.db.Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info"),
+		&list, page, size)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return list, int(total), nil
 }
 
 // 查询账户
@@ -63,8 +67,8 @@ func (u *UserRepository) GetByAccountPassword(account, password string) (*model.
 }
 
 // 账户列表in ids
-func (u *UserRepository) GetInIds(ids []uint) ([]*model.User, error) {
-	var list []*model.User
+func (u *UserRepository) GetInIds(ids []uint) ([]model.User, error) {
+	var list []model.User
 	u.db.Where("id IN ?", ids).Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list)
 	return list, nil
 }

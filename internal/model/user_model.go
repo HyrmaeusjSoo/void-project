@@ -2,12 +2,10 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type User struct {
-	gorm.Model
+	Model
 	Account       string     `gorm:"unique;type:varchar(50);not null;comment:唯一账号id;default:null" json:"account,omitempty"`
 	Password      string     `gorm:"type:varchar(100);default:null" json:"password,omitempty"`
 	Name          string     `gorm:"type:varchar(100);default:null" json:"name,omitempty"`

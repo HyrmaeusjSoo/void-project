@@ -5,7 +5,7 @@ import (
 )
 
 type Message struct {
-	ID       uint      `gorm:"primarykey"`
+	Model
 	FromId   uint      `gorm:"type:bigint(20);not null" json:"from_id,omitempty"`
 	TargetId uint      `gorm:"type:bigint(20);not null" json:"target_id,omitempty"`
 	Type     int8      `gorm:"type:int(2);default:1;not null" json:"type,omitempty"`

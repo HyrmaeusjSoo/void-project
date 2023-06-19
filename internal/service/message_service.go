@@ -33,7 +33,7 @@ var clientMap = make(map[uint]*Node, 10)
 var rwLocker sync.RWMutex //线程安全读写锁
 
 // 在线用户
-func (m *MessageService) OnLine(selfid uint) ([]*model.User, error) {
+func (m *MessageService) OnLine(selfid uint) ([]model.User, error) {
 	ids := make([]uint, 0, len(clientMap))
 	for k := range clientMap {
 		if k == selfid {

@@ -24,8 +24,8 @@ func (u *UserService) Fetch(id uint) (*model.User, error) {
 	return user, err
 }
 
-func (u *UserService) List() ([]*model.User, error) {
-	return u.db.GetList()
+func (u *UserService) List(page, size int) ([]model.User, int, error) {
+	return u.db.GetList(page, size)
 }
 
 // 账号是否存在
