@@ -121,7 +121,9 @@ go run cmd/main.go
 ## 最后感谢您参与使用！  
 <div>
     <span>🌌⚛️🔮🗡️✡️🏞️🎮</span>
-    <label style="float:right;padding-right:30px;">—————— Hylea Soo<label>
+</div>
+<div align=right>
+    <label>—————— Hylea Soo<label>
 </div>  
 
 
