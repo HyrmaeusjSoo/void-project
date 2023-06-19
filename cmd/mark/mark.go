@@ -131,7 +131,7 @@ func GenReadme() {
 	}
 
 	readme := append([]byte("# void-project\r\n```\r\n"), []byte(dirTree+"\r\n```")...)
-	file, err := os.OpenFile(pkg.GetRootPath()+"/README.md", os.O_RDWR, 0644)
+	file, err := os.OpenFile(pkg.GetRootPath()+"/README_en.md", os.O_RDWR, 0644)
 	if err != nil {
 		panic(err)
 	}
