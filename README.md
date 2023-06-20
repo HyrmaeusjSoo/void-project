@@ -20,9 +20,12 @@ void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架�
 还参考传统mvc分层模式，  
 以及Bob叔叔的[The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)架构。
 
+## Vue前端请求示例
+与之配套的前端Vue简单的请求示例地址：[https://github.com/HyleaSoo/void-nebula](https://github.com/HyleaSoo/void-nebula)
+
 ## 特性
 - 🚀得益于Go语言的性能优化，能够快速处理请求并响应。
-- ⚙️无缝粘合Gin框架写法，自由定义包括：路由、中间件、响应体、模板引擎等等。
+- 🚀无缝粘合Gin框架写法，自由定义包括：路由、中间件、响应体、模板引擎等等，快速实现Web应用。
 - ✅遵循RESTful API风格定义规范。
 - ✅JWT Claims 鉴权/认证
 - ⚙️多数据库连接(MySQL, SQLServer, SQLite...)，跨库查询等。
@@ -53,6 +56,7 @@ void-project
     ├── internal
     │    ├── api
     │    │    ├── handler
+    │    │    ├── request
     │    │    └── response
     │    ├── middleware
     │    ├── model
@@ -91,7 +95,7 @@ void-project
 ```bash
 # 第一步、将Go官方包管理工具(Go Modules)启用
 go env -w GO111MODULE=on 
-# 第二部、设置镜像代理的 GOPROXY 环境变量
+# 第二步、设置镜像代理的 GOPROXY 环境变量
 go env -w GOPROXY=https://goproxy.cn,https://goproxy.io,direct
 ```
 

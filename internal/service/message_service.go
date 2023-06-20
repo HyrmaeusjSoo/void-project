@@ -63,7 +63,7 @@ func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	if err != nil {
 		return errors.New("升级连接到websocket失败" + err.Error())
 	}
-	fmt.Println("开启----------------------")
+	fmt.Println("WebSocket开启", userId, "----------------------")
 
 	node := &Node{
 		Conn:     conn,
@@ -77,7 +77,7 @@ func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	go send(r.Context(), node)
 	err = receive(r.Context(), node)
 
-	fmt.Println("关闭=====================")
+	fmt.Println("WebSocket关闭", userId, "=====================")
 	if err != nil {
 		conn.Close(websocket.StatusInternalError, "接收信息错误"+err.Error())
 	}
@@ -86,6 +86,7 @@ func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
+// 发
 func send(ctx context.Context, node *Node) {
 	/* for {
 		select {
@@ -105,6 +106,7 @@ func send(ctx context.Context, node *Node) {
 	}
 }
 
+// 收
 func receive(ctx context.Context, node *Node) error {
 	for {
 		msg := model.Message{}
@@ -119,7 +121,7 @@ func receive(ctx context.Context, node *Node) error {
 		}
 		tarNode, ok := clientMap[msg.TargetId]
 		if !ok {
-			return errors.New("对方已离开")
+			return errors.New("对方已离开" + strconv.Itoa(int(msg.TargetId)))
 		}
 		tarNode.MsgQueue <- &msg
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	fmt.Println("Which one?  [g]=Generate Readme  [c]=Insert omment")
+	fmt.Println("Which one?  [g]=Generate Readme  [c]=Insert comment")
 	var input string
 	fmt.Scanln(&input)
 	input = strings.ToLower(input)
