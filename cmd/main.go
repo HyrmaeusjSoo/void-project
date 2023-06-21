@@ -24,7 +24,7 @@ func main() {
 	// 初始化数据库连接
 	initialize.InitRepository()
 
-	// 绑定路由等
+	// 绑定路由
 	r := gin.Default()
 	router.SetApiRouter(r) // api router
 	router.SetWebRouter(r) // view router (html templates)

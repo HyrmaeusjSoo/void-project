@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/GO-v1.20-blue"/></a>
+    <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.20-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.0-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.1-blue"/></a>
     <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.0.4-red"/></a>
