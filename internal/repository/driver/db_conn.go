@@ -1,11 +1,11 @@
 package driver
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"time"
+	"void-project/global"
 	"void-project/pkg"
 
 	"github.com/redis/go-redis/v9"
@@ -24,23 +24,11 @@ var (
 
 // 初始化MySQL数据库连接
 func InitMySQL() {
-	//读取配置文件
-	op := struct {
-		User     string
-		Password string
-		Host     string
-		Port     uint16
-		DBName   string
-	}{}
-	file, _ := os.Open(pkg.GetRootPath() + "/config/mysql.json")
-	defer file.Close()
-	if err := json.NewDecoder(file).Decode(&op); err != nil {
-		panic(err)
-	}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)
+	// 读取配置文件
+	op := global.Config.DB.MySQL
 
 	var err error
-	MySQL, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+	MySQL, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)), &gorm.Config{
 		// SQL语句记录
 		Logger: logger.New(
 			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer 日志输出目标，前缀和日志包含的内容
@@ -60,16 +48,7 @@ func InitMySQL() {
 // 初始化SQLite连接
 func InitSQLite() {
 	//读取配置文件
-	op := struct {
-		Path     string
-		User     string
-		Password string
-	}{}
-	file, _ := os.Open(pkg.GetRootPath() + "/config/sqlite.json")
-	defer file.Close()
-	if err2 := json.NewDecoder(file).Decode(&op); err2 != nil {
-		panic(err2)
-	}
+	op := global.Config.DB.SQLite
 
 	var err error
 	SQLite, err = gorm.Open(sqlite.Open(pkg.GetRootPath()+op.Path), &gorm.Config{
@@ -91,11 +70,6 @@ func InitSQLite() {
 
 // 初始化Redis连接
 func InitRedis() {
-	op := redis.Options{}
-	file, _ := os.Open(pkg.GetRootPath() + "/config/redis.json")
-	defer file.Close()
-	if err := json.NewDecoder(file).Decode(&op); err != nil {
-		panic(err)
-	}
+	op := global.Config.Cache.Redis
 	Redis = redis.NewClient(&op)
 }

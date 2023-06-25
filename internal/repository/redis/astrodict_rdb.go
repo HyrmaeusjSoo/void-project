@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"time"
+	"void-project/global"
 	"void-project/internal/model"
 	"void-project/internal/repository/driver"
 
@@ -27,7 +28,7 @@ func (ad *AstroDict) Save(astrodict model.AstroDict) error {
 	if err != nil {
 		return err
 	}
-	err = ad.db.Set(ad.ctx, "astrodict_ce", string(val), 2*time.Hour).Err()
+	err = ad.db.Set(ad.ctx, "astrodict_ce", string(val), global.Config.System.AstroDictCacheExpire*time.Hour).Err()
 	return err
 }
 

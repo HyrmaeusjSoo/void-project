@@ -3,6 +3,7 @@ package request
 import (
 	"errors"
 	"strconv"
+	"void-project/global"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,7 +24,7 @@ func PageQuery(c *gin.Context) (page, size int, err error) {
 	}
 	sizeStr := c.Query("size")
 	if sizeStr == "" {
-		size = 15
+		size = global.Config.System.PageSize
 		return
 	}
 	size, err = strconv.Atoi(sizeStr)

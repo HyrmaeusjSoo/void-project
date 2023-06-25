@@ -16,7 +16,7 @@ func NewAD(typ string) *AD {
 }
 
 func (ad *AD) GetAstroDict() (astrodict *model.AstroDict, err error) {
-	resp, err := http.Get("https://gitee.com/HyleaSoo/void-project/raw/master/asset/json/astrodict_191103" + ad.Type + ".json")
+	resp, err := http.Get("https://hyleasoo.github.io/CHAOS_Project/ding/astrodict_191103/astrodict_191103" + ad.Type + ".json")
 	if err != nil {
 		return
 	}

@@ -4,11 +4,10 @@ import (
 	"errors"
 	"strconv"
 	"time"
+	"void-project/global"
 
 	"github.com/golang-jwt/jwt/v5"
 )
-
-var jwtSecret = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]{}\\|;:'\",.<>/?")
 
 type Claims struct {
 	UserID uint `json:"userId"`
@@ -19,7 +18,7 @@ func GenerateToken(userId uint) (string, error) {
 	claims := Claims{
 		UserID: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 2)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * global.Config.System.AuthTokenExpire)),
 			Issuer:    strconv.Itoa(int(userId)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			Subject:   "chat",
@@ -28,12 +27,12 @@ func GenerateToken(userId uint) (string, error) {
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return t.SignedString(jwtSecret)
+	return t.SignedString([]byte(global.Config.System.AuthJwtSecret))
 }
 
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (any, error) {
-		return jwtSecret, nil
+		return []byte(global.Config.System.AuthJwtSecret), nil
 	})
 	if err != nil {
 		return nil, err

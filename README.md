@@ -9,7 +9,7 @@
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.0-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.1-blue"/></a>
     <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.0.4-red"/></a>
-    <a href="https://github.com/nhooyr.io/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.7-green"/></a>
+    <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.7-green"/></a>
     <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5-green"/></a>
 </div>
 
@@ -46,12 +46,14 @@ void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架�
 ```
 void-project
     ├── asset
-    │    └── db
+    │    ├── db
+    │    └── json
     ├── cmd
     │    ├── install
     │    ├── mark
     │    └── shiyan
     ├── config
+    ├── global
     ├── initialize
     ├── internal
     │    ├── api

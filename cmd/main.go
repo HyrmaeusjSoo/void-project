@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"void-project/global"
 	"void-project/initialize"
 	"void-project/internal/router"
 
@@ -20,6 +21,8 @@ func main() {
     │                                                                       —————— Hylea Soo
     └───────────────────────────────────────────────────────────────────────────────────────────┘
     `)
+	// 初始化配置
+	global.InitConfig()
 
 	// 初始化数据库连接
 	initialize.InitRepository()

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"void-project/global"
 	"void-project/pkg"
 
 	"gorm.io/gorm"
@@ -9,7 +10,7 @@ import (
 // 分页查询
 func Paginate(db *gorm.DB, list any, page, size int) (total int64, err error) {
 	page = pkg.IfElse(page < 1, 1, page)
-	size = pkg.IfElse(size < 1, 15, size)
+	size = pkg.IfElse(size < 1, global.Config.System.PageSize, size)
 
 	err = nil
 	total = 0
