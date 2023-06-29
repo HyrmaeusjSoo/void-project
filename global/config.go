@@ -32,19 +32,19 @@ type cacheConfig struct {
 }
 
 type systemConfig struct {
-	AuthTokenExpire      time.Duration `json:"auth_token_expire"`
 	AuthJwtSecret        string        `json:"auth_jwt_secret"`
+	AuthTokenExpire      time.Duration `json:"auth_token_expire"`
 	AstroDictCacheExpire time.Duration `json:"astro_dict_cache_expire"`
 	PageSize             int           `json:"pagesize"`
 }
 
-type globalConfig struct {
+type config struct {
 	DB     databaseConfig
 	Cache  cacheConfig
 	System systemConfig
 }
 
-var Config = &globalConfig{}
+var Config = &config{}
 
 func InitConfig() {
 	root := pkg.GetRootPath() + "/config/"
