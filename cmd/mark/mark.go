@@ -126,8 +126,8 @@ func writeFile(path string, mark []byte, isSet bool) {
 // 生成README 目录结构
 func GenReadme() {
 	levels = make([]bool, 72)
-	// tree := GenDirectoryTree2()
 	tree := GenDirectoryTree("", rootpath, 0)
+	// tree := GenDirectoryTree2()
 
 	readme := append([]byte("# void-project\r\n```\r\nvoid-project\r\n"), []byte(tree+"\r\n```")...)
 	file, err := os.OpenFile(rootpath+"/README_en.md", os.O_RDWR, 0644)
@@ -153,25 +153,30 @@ func GenDirectoryTree(tree, dir string, lv int) string {
 	if err != nil {
 		panic(err)
 	}
-	for index, entry := range entries {
-		isLast := index == len(entries)-1
-		levels[lv] = !isLast
+	directory := make([]string, 0, 72)
+	for _, entry := range entries {
 		current := filepath.Join(dir, entry.Name())
-		if entry.IsDir() && !strings.Contains(current, ".git") && !strings.Contains(current, ".vscode") {
-			depth := strings.Count(current, string(os.PathSeparator)) - strings.Count(rootpath, string(os.PathSeparator))
-			if depth == 0 {
-				tree += entry.Name()
-			} else {
-				for i := 0; i < lv; i++ {
-					tree += pkg.IfElse(levels[i], elegansLine, elegansSpace)
-				}
-				tree += pkg.IfElse(isLast || entry.Name() == "md5", elegansLast, elegansMiddle) + entry.Name()
+		if !entry.IsDir() || strings.Contains(current, ".git") || strings.Contains(current, ".vscode") {
+			continue
+		}
+		directory = append(directory, entry.Name())
+	}
+	for i, v := range directory {
+		current := filepath.Join(dir, v)
+		isLast := i == len(directory)-1
+		levels[lv] = !isLast
+		depth := strings.Count(current, string(os.PathSeparator)) - strings.Count(rootpath, string(os.PathSeparator))
+		if depth == 0 {
+			tree += v
+		} else {
+			for j := 0; j < lv; j++ {
+				tree += pkg.IfElse(levels[j], elegansLine, elegansSpace)
 			}
-			tree += "\r\n"
+			tree += pkg.IfElse(isLast, elegansLast, elegansMiddle) + v
 		}
-		if entry.IsDir() {
-			tree = GenDirectoryTree(tree, current, lv+1)
-		}
+		tree += "\r\n"
+
+		tree = GenDirectoryTree(tree, current, lv+1)
 	}
 	return tree
 }
