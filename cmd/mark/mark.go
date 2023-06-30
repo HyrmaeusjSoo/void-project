@@ -97,7 +97,7 @@ func writeFile(path string, mark []byte, isSet bool) {
 	}
 	defer file.Close()
 
-	// 读旧内容
+	// 读内容
 	content, err := io.ReadAll(file)
 	if err != nil {
 		panic(err)
@@ -126,15 +126,27 @@ func writeFile(path string, mark []byte, isSet bool) {
 // 生成README 目录结构
 func GenReadme() {
 	levels = make([]bool, 72)
-	tree := GenDirectoryTree("", rootpath, 0)
+	tree := GenDirectoryTree(rootpath, 0)
 	// tree := GenDirectoryTree2()
+	readme := []byte(tree)
 
-	readme := append([]byte("# void-project\r\n```\r\nvoid-project\r\n"), []byte(tree+"\r\n```")...)
-	file, err := os.OpenFile(rootpath+"/README_en.md", os.O_RDWR, 0644)
+	file, err := os.OpenFile(rootpath+"/README.md", os.O_RDWR, 0644)
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
+
+	content, err := io.ReadAll(file)
+	if err != nil {
+		panic(err)
+	}
+	if pos := pkg.FindSliceInSlice(content, []byte("\r\n\r\n## 目录结构\r\n```\r\nvoid-project\r\n")); pos > 0 {
+		readme = append(content[:pos+1:pos+1], readme...)
+	}
+	if pos := pkg.FindSliceInSlice(content, []byte("\r\n\r\n```\r\n\r\n## 安装和使用\r\n```\r\n")); pos > 0 {
+		readme = append(readme, content[pos-33:]...)
+	}
+
 	err = file.Truncate(0)
 	if err != nil {
 		panic(err)
@@ -147,7 +159,7 @@ func GenReadme() {
 	fmt.Println(tree)
 }
 
-func GenDirectoryTree(tree, dir string, lv int) string {
+func GenDirectoryTree(dir string, lv int) string {
 	levels[lv] = true
 	entries, err := os.ReadDir(dir)
 	if err != nil {
@@ -161,24 +173,23 @@ func GenDirectoryTree(tree, dir string, lv int) string {
 		}
 		directory = append(directory, entry.Name())
 	}
+	var tree strings.Builder
 	for i, v := range directory {
 		current := filepath.Join(dir, v)
 		isLast := i == len(directory)-1
 		levels[lv] = !isLast
-		depth := strings.Count(current, string(os.PathSeparator)) - strings.Count(rootpath, string(os.PathSeparator))
-		if depth == 0 {
-			tree += v
-		} else {
+		if strings.Count(current, string(os.PathSeparator))-strings.Count(rootpath, string(os.PathSeparator)) > 0 {
 			for j := 0; j < lv; j++ {
-				tree += pkg.IfElse(levels[j], elegansLine, elegansSpace)
+				tree.WriteString(pkg.IfElse(levels[j], elegansLine, elegansSpace))
 			}
-			tree += pkg.IfElse(isLast, elegansLast, elegansMiddle) + v
+			tree.WriteString(pkg.IfElse(isLast, elegansLast, elegansMiddle))
 		}
-		tree += "\r\n"
+		tree.WriteString(v)
+		tree.WriteString("\r\n")
 
-		tree = GenDirectoryTree(tree, current, lv+1)
+		tree.WriteString(GenDirectoryTree(current, lv+1))
 	}
-	return tree
+	return tree.String()
 }
 
 func GenDirectoryTree2() string {
