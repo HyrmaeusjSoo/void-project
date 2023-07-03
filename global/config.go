@@ -46,6 +46,7 @@ type config struct {
 
 var Config = &config{}
 
+// 读取配置文件
 func InitConfig() {
 	root := pkg.GetRootPath() + "/config/"
 

@@ -11,7 +11,7 @@ import (
 
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := ""
+		token, user := "", ""
 		if token, _ = c.Cookie("token"); token != "" {
 		} else if token = c.GetHeader("token"); token != "" {
 		} else if token = c.Query("token"); token != "" {
@@ -23,7 +23,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		user := ""
+
 		if user, _ = c.Cookie("userId"); user != "" {
 		} else if user = c.GetHeader("userId"); user != "" {
 		} else if user = c.Query("userId"); user != "" {

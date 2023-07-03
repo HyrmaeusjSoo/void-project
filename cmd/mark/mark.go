@@ -22,7 +22,7 @@ var (
 )
 
 func main() {
-	fmt.Println("Which one?  [g]=Generate README_EN  [c]=Insert comment")
+	fmt.Println("Which one?  [g]=Generate README  [c]=Insert comment")
 	var input string
 	fmt.Scanln(&input)
 	input = strings.ToLower(input)

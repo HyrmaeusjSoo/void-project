@@ -2,11 +2,10 @@ package driver
 
 import (
 	"fmt"
-	"log"
-	"os"
 	"time"
 	"void-project/global"
 	"void-project/pkg"
+	log "void-project/pkg/logger"
 
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
@@ -29,9 +28,9 @@ func InitMySQL() {
 
 	var err error
 	MySQL, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)), &gorm.Config{
-		// SQL语句记录
+		// SQL语句记录日志
 		Logger: logger.New(
-			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer 日志输出目标，前缀和日志包含的内容
+			log.NewSQLLogger(),
 			logger.Config{
 				SlowThreshold:             time.Second, // 慢SQL阈值
 				LogLevel:                  logger.Info, // 日志级别
@@ -54,7 +53,7 @@ func InitSQLite() {
 	SQLite, err = gorm.Open(sqlite.Open(pkg.GetRootPath()+op.Path), &gorm.Config{
 		// SQL语句记录
 		Logger: logger.New(
-			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer 日志输出目标，前缀和日志包含的内容
+			log.NewSQLLogger(),
 			logger.Config{
 				SlowThreshold:             time.Second, // 慢SQL阈值
 				LogLevel:                  logger.Info, // 日志级别

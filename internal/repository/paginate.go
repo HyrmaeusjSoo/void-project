@@ -12,9 +12,6 @@ func Paginate(db *gorm.DB, list any, page, size int) (total int64, err error) {
 	page = pkg.IfElse(page < 1, 1, page)
 	size = pkg.IfElse(size < 1, global.Config.System.PageSize, size)
 
-	err = nil
-	total = 0
-
 	err = db.Model(list).Count(&total).Error
 	if err != nil {
 		return

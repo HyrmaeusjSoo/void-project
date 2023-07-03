@@ -34,8 +34,7 @@ func (ad *AstroDictService) Fetch(name string) (res *model.AstroDict, err error)
 	name = strings.ToLower(name)
 	res = &model.AstroDict{}
 	for _, v := range astro.AstroDict {
-		c := strings.ToLower(v.C)
-		e := strings.ToLower(v.E)
+		c, e := strings.ToLower(v.C), strings.ToLower(v.E)
 		if strings.Contains(c, name) || strings.Contains(e, name) {
 			res.AstroDict = append(res.AstroDict, v)
 		}

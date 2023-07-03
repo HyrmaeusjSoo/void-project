@@ -29,8 +29,10 @@ type Node struct {
 	MsgQueue chan *model.Message //真消息队列
 }
 
-var clientMap = make(map[uint]*Node, 10)
-var rwLocker sync.RWMutex //线程安全读写锁
+var (
+	clientMap = make(map[uint]*Node, 10)
+	rwLocker  sync.RWMutex //线程安全读写锁
+)
 
 // 在线用户
 func (m *MessageService) OnLine(selfid uint) ([]model.User, error) {

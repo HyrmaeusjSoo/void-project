@@ -35,8 +35,7 @@ func (u *UserService) ExistsAccount(account string) bool {
 
 // 注册用户
 func (u *UserService) Register(user *model.User) error {
-	salt := fmt.Sprintf("%d", rand.Int31())
-	t := time.Now()
+	salt, t := fmt.Sprintf("%d", rand.Int31()), time.Now()
 	user.Password = md5.SaltPassword(user.Password, salt)
 	user.Salt = salt
 	user.LoginTime = &t
