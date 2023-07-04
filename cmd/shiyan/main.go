@@ -1,11 +1,7 @@
 package main
 
-import (
-	"void-project/pkg/logger"
-)
-
 func main() {
-	logger.LogDebug("aaaaaaaaaaaaaaaaa")
+	// logger.LogDebug("aaaaaaaaaaaaaaaaa")
 	// logger.LogInfo("bbbbbbbbbbbbbbbbbbbb")
 	// logger.LogWarn("cccccccccccccccccccc")
 	// logger.LogError("ddddddddddddddddd")

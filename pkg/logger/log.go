@@ -8,7 +8,7 @@ import (
 	"void-project/pkg"
 )
 
-func Log(lv Level, msg string) (err error) {
+func OpenLogFile(lv Level) (file *os.File, err error) {
 	path := pkg.GetRootPath() + "/runtime/log/" + lv.Name() + "/"
 	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
@@ -20,7 +20,11 @@ func Log(lv Level, msg string) (err error) {
 		return
 	}
 
-	file, err := os.OpenFile(path+time.Now().Format(time.DateOnly)+".txt", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	return os.OpenFile(path+time.Now().Format(time.DateOnly)+".txt", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+}
+
+func Log(lv Level, msg string) (err error) {
+	file, err := OpenLogFile(lv)
 	if err != nil {
 		return
 	}
@@ -35,23 +39,23 @@ func Log(lv Level, msg string) (err error) {
 }
 
 func LogDebug(msg string) error {
-	return Log(Debug, msg)
+	return Log(DebugLevel, msg)
 }
 
 func LogInfo(msg string) error {
-	return Log(Info, msg)
+	return Log(InfoLevel, msg)
 }
 
 func LogWarn(msg string) error {
-	return Log(Warn, msg)
+	return Log(WarnLevel, msg)
 }
 
 func LogError(msg string) error {
-	return Log(Error, msg)
+	return Log(ErrorLevel, msg)
 }
 
 func LogSQL(msg string) error {
-	return Log(SQL, msg)
+	return Log(SQLLevel, msg)
 }
 
 // 清空日志文件

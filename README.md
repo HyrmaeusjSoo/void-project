@@ -14,7 +14,7 @@
 </div>
 
 ## 介绍
-void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架构，能够快速编写及实现web应用服务。符合Go语言定义的简单性开发原则设计哲学，同时兼顾了可拓展、易维护和规范化，在此中寻找平衡点。
+void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架构，能够快速编写及实现web应用服务。符合Go语言定义的简单性开发原则设计哲学，同时兼顾了可拓展、易维护和规范化，在此间寻找平衡点。
 
 分别参考了[golang-standards/project-layout](https://github.com/golang-standards/project-layout)社区约定俗成的标准布局，  
 还参考传统mvc分层模式，  
@@ -31,6 +31,7 @@ void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架�
 - ⚙️多数据库连接(MySQL, SQLServer, SQLite...)，跨库查询等。
 - ⚙️支持Redis的应用。
 - ⚙️WebSocket接收/发送消息。
+- 📃使用简单的自定义日志。实现控制台输出和写入文件，简单的日志分级，日志文件分层分日期方式记录。当然，同时也可以引入第三方日志库。
 - 🔢遵循Go语言设计哲学：简单性，轻松编写前后分层的代码，可以将时间多放在业务逻辑的处理上，从而避免把时间浪费在底层基础和调整框架上。
 - 🔢层次到模块间的代码规范化。
 
@@ -122,6 +123,33 @@ go run .
 
 # 方式2： 直接在根目录启动
 go run cmd/main.go
+
+# OK!
+```
+
+##### 特别提示
+生产环境中应该简单直观最好，因此建议在生产环境设置Gin模式为‘发布模式’，并且在Gin和GORM的日志配置选项中禁用色彩打印。
+```Go
+// 1.设置Gin启动模式为发布模式
+//    在cmd/main.go文件里，main方法内。Server的模式设置为ReleaseMode。
+gin.SetMode(gin.ReleaseMode)
+
+// 2.禁用Gin的彩色日志
+//    在initialize/initialize.go文件里，InitServerLog方法内。
+//    Gin日志中的‘强制控制台色彩’删掉或注释。
+gin.ForceConsoleColor() // 删掉或注释或改为 gin.DisableConsoleColor()
+
+// 3.禁用GORM日志的彩色打印
+//    internal/repository/driver/db_conn.go文件里。
+//    所有初始化连接方法内logger.Config中设置项为Colorful:true全部改为false
+Logger: logger.New(
+    log.NewSQLLogger(),
+    logger.Config{
+        ...
+        Colorful: true,  // 将所有此设置项改为false
+    },
+),
+
 ```  
 
 ## 最后感谢您参与使用！  

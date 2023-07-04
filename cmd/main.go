@@ -25,8 +25,17 @@ func main() {
 	// 初始化数据库连接
 	initialize.InitRepository()
 
-	// 绑定路由
+	// 初始化Server日志
+	logClose := initialize.InitServerLog()
+	defer logClose()
+
+	// Server模式 debug/release
+	// gin.SetMode(gin.ReleaseMode)
+
+	// Gin引擎实例
 	r := gin.Default()
+
+	// 绑定路由
 	router.SetApiRouter(r) // api router
 	router.SetWebRouter(r) // view router (html templates)
 

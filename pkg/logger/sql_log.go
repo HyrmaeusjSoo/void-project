@@ -4,8 +4,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"time"
-	"void-project/pkg"
 )
 
 type SQLLogger struct {
@@ -13,22 +11,11 @@ type SQLLogger struct {
 }
 
 func NewSQLLogger() *SQLLogger {
-	return &SQLLogger{SQL}
+	return &SQLLogger{SQLLevel}
 }
 
 func (l SQLLogger) Printf(format string, msg ...any) {
-	path := pkg.GetRootPath() + "/runtime/log/" + l.lv.Name() + "/"
-	_, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		err = os.MkdirAll(path, os.ModePerm)
-		if err != nil {
-			return
-		}
-	} else if err != nil {
-		return
-	}
-
-	file, err := os.OpenFile(path+time.Now().Format(time.DateOnly)+".txt", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	file, err := OpenLogFile(l.lv)
 	if err != nil {
 		return
 	}
