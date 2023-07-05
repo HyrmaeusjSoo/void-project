@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"void-project/initialize"
 	"void-project/internal/router"
 
@@ -20,6 +21,7 @@ func main() {
     │                                                                       —————— Hylea Soo
     └───────────────────────────────────────────────────────────────────────────────────────────┘
     `)
+
 	// 初始化配置
 	initialize.InitConfig()
 	// 初始化数据库连接
@@ -42,6 +44,6 @@ func main() {
 	// 启动监听服务
 	err := r.Run(":5555")
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 }

@@ -95,7 +95,7 @@ void-project
 ##### （1）无法访问Google系列网站
 由于国内原因没法执行go get命令直接从google网站下载安装包管理库，推荐使用[goproxy.io](https://goproxy.io/zh/)或者[goproxy.cn](https://goproxy.cn/)设置免费的镜像代理。
 操作方法：
-```bash
+```Shell
 # 第一步、将Go官方包管理工具(Go Modules)启用
 go env -w GO111MODULE=on 
 # 第二步、设置镜像代理的 GOPROXY 环境变量
@@ -104,7 +104,7 @@ go env -w GOPROXY=https://goproxy.cn,https://goproxy.io,direct
 
 ##### （2）获取项目代码
 下载项目代码和所需依赖库
-```bash
+```Shell
 # 克隆项目
 git clone https://github.com/HyleaSoo/void-project.git
 # 进入项目根目录
@@ -116,7 +116,7 @@ go mod tidy
 
 ##### （3）运行示例项目
 从根目录直接启动或是进入到cmd文件夹运行go run
-```bash
+```Shell
 # 方式1： 进入cmd文件夹，运行go run
 cd cmd
 go run .
@@ -129,7 +129,7 @@ go run cmd/main.go
 
 ##### 特别提示
 生产环境中应该简单直观最好，因此建议在生产环境设置Gin模式为‘发布模式’，并且在Gin和GORM的日志配置选项中禁用色彩打印。
-```Go
+```GO
 // 1.设置Gin启动模式为发布模式
 //    在cmd/main.go文件里，main方法内。Server的模式设置为ReleaseMode。
 gin.SetMode(gin.ReleaseMode)
