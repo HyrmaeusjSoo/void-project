@@ -21,7 +21,7 @@ func GenerateToken(userId uint) (string, error) {
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * global.Config.System.AuthTokenExpire)),
 			Issuer:    strconv.Itoa(int(userId)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Subject:   "chat",
+			Subject:   "void-project",
 			NotBefore: jwt.NewNumericDate(time.Now()),
 		},
 	}

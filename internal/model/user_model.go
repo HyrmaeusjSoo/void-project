@@ -6,7 +6,7 @@ import (
 
 type User struct {
 	Model
-	Account       string     `gorm:"unique;type:varchar(50);not null;comment:唯一账号id;default:null" json:"account,omitempty"`
+	Account       string     `gorm:"unique;type:varchar(50);not null;comment:唯一账号id" json:"account,omitempty"`
 	Password      string     `gorm:"type:varchar(100);default:null" json:"password,omitempty"`
 	Name          string     `gorm:"type:varchar(100);default:null" json:"name,omitempty"`
 	Avatar        string     `gorm:"type:varchar(500);default:null" json:"avatar,omitempty"`

@@ -66,6 +66,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		c.Set("userId", userId)
 
 		c.Next()
 	}

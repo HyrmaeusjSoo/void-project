@@ -28,6 +28,7 @@ func InitMySQL() {
 
 	var err error
 	MySQL, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
 		// SQL语句记录日志
 		Logger: logger.New(
 			log.NewSQLLogger(),
