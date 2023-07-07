@@ -52,6 +52,7 @@ void-project
     ├── cmd
     │    ├── install
     │    ├── mark
+    │    ├── server
     │    └── shiyan
     ├── config
     ├── global
