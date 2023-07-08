@@ -1,14 +1,15 @@
 package handler
 
 import (
-	"net/http"
 	"strconv"
 
 	"void-project/internal/api/request"
 	"void-project/internal/api/response"
+	"void-project/internal/api/response/apierr"
 	"void-project/internal/model"
 	"void-project/internal/service"
 	"void-project/pkg/jwt"
+	"void-project/pkg/logger"
 	"void-project/pkg/md5"
 
 	"github.com/gin-gonic/gin"
@@ -27,25 +28,27 @@ func (u *User) Register(c *gin.Context) {
 	user := model.User{}
 	err := c.ShouldBind(&user)
 	if err != nil {
-		response.Fail(c, http.StatusOK, "参数有误！")
+		response.FailError(c, apierr.InvalidParameter)
+		return
 	}
 	if user.Account == "" || user.Password == "" || user.Identity == nil {
-		response.Fail(c, http.StatusOK, "账号或密码不能为空！")
+		response.FailError(c, apierr.MissingAcctPwd)
 		return
 	}
 	if user.Password != *user.Identity {
-		response.Fail(c, http.StatusOK, "两次密码不一致！")
+		response.FailError(c, apierr.PasswordMismatch)
 		return
 	}
 
 	if existsAccount := u.service.ExistsAccount(user.Account); existsAccount {
-		response.Fail(c, http.StatusOK, "用户已存在！")
+		response.FailError(c, apierr.AccountExists)
 		return
 	}
 
 	err = u.service.Register(&user)
 	if err != nil {
-		response.Fail(c, http.StatusOK, "保存失败"+err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.CreateFailed)
 		return
 	}
 	response.Success(c, user)
@@ -58,43 +61,47 @@ func (u *User) Login(c *gin.Context) {
 		Password string
 	}
 	if err := c.ShouldBind(&param); err != nil {
-		response.Fail(c, http.StatusForbidden, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 	if param.Account == "" || param.Password == "" {
-		response.Fail(c, http.StatusForbidden, "账号和密码不能为空！")
+		response.FailError(c, apierr.MissingAccountPassword)
 		return
 	}
 	data, err := u.service.GetByAccount(param.Account)
 	if err != nil {
-		response.Fail(c, http.StatusOK, "登录失败:"+err.Error())
+		response.FailError(c, apierr.InternalServerError)
 		return
 	}
 	if data.Account == "" {
-		response.Fail(c, http.StatusOK, "账号不存在")
+		response.FailError(c, apierr.AccountNotExist)
 		return
 	}
 
 	ok := md5.CheckPassword(param.Password, *data.Salt, data.Password)
 	if !ok {
-		response.Fail(c, http.StatusOK, "密码错误")
+		response.FailError(c, apierr.InvalidPassword)
 		return
 	}
 
 	user, err := u.service.GetByAccountPassword(param.Account, data.Password)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InternalServerError)
 		return
 	}
 
 	token, err := jwt.GenerateToken(user.ID)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InternalServerError)
 		return
 	}
 	claims, err := jwt.ParseToken(token)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InternalServerError)
 		return
 	}
 
@@ -109,12 +116,14 @@ func (u *User) Login(c *gin.Context) {
 func (u *User) Fetch(c *gin.Context) {
 	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		response.Fail(c, http.StatusInternalServerError, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 	user, err := u.service.Fetch(uint(id))
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.FetchFailed)
 		return
 	}
 	response.Success(c, user)
@@ -124,12 +133,14 @@ func (u *User) Fetch(c *gin.Context) {
 func (u *User) List(c *gin.Context) {
 	pager, err := request.PageQuery(c)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 	users, total, err := u.service.List(*pager)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.FetchFailed)
 		return
 	}
 	response.SuccessPage(c, users, total)
@@ -139,21 +150,23 @@ func (u *User) List(c *gin.Context) {
 func (u *User) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		response.Fail(c, http.StatusInternalServerError, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 
 	user := &model.User{}
 	err = c.ShouldBind(user)
 	if err != nil {
-		response.Fail(c, http.StatusBadRequest, "参数有误！")
+		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 	user.ID = uint(id)
 
 	err = u.service.Update(user)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.UpdateFailed)
 		return
 	}
 
@@ -164,14 +177,16 @@ func (u *User) Update(c *gin.Context) {
 func (u *User) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		response.Fail(c, http.StatusInternalServerError, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 
 	err = u.service.Delete(uint(id))
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.DeleteFailed)
 		return
 	}
-	response.Success(c, "删除成功")
+	response.SuccessOk(c)
 }

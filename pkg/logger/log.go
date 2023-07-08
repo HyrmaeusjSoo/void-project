@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -23,7 +24,16 @@ func OpenLogFile(lv Level) (file *os.File, err error) {
 	return os.OpenFile(path+time.Now().Format(time.DateOnly)+".txt", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 }
 
-func Log(lv Level, msg string) (err error) {
+func Log(lv Level, msg any) (err error) {
+	logMsg := ""
+	if err, ok := msg.(error); ok {
+		logMsg = err.Error()
+	} else if err, ok := msg.(string); ok {
+		logMsg = err
+	} else {
+		return errors.New("无效的日志消息体类型")
+	}
+
 	file, err := OpenLogFile(lv)
 	if err != nil {
 		return
@@ -34,27 +44,27 @@ func Log(lv Level, msg string) (err error) {
 	log.SetOutput(multiWriter)
 	log.SetPrefix("[" + lv.Name() + "] ")
 	log.SetFlags(log.LstdFlags) //| log.Lmsgprefix
-	log.Println("-", msg)
+	log.Println("-", logMsg)
 	return
 }
 
-func LogDebug(msg string) error {
+func LogDebug(msg any) error {
 	return Log(DebugLevel, msg)
 }
 
-func LogInfo(msg string) error {
+func LogInfo(msg any) error {
 	return Log(InfoLevel, msg)
 }
 
-func LogWarn(msg string) error {
+func LogWarn(msg any) error {
 	return Log(WarnLevel, msg)
 }
 
-func LogError(msg string) error {
+func LogError(msg any) error {
 	return Log(ErrorLevel, msg)
 }
 
-func LogSQL(msg string) error {
+func LogSQL(msg any) error {
 	return Log(SQLLevel, msg)
 }
 

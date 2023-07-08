@@ -21,10 +21,21 @@ type JsonResponsePage struct {
 }
 
 func NewJsonResponseError(code int, message string) JsonResponse {
-	return JsonResponse{code, message, nil}
+	return JsonResponse{
+		Code:    code,
+		Message: message,
+	}
 }
 
-// 返回成功
+// 返回状态结果
+func SuccessOk(c *gin.Context) {
+	c.JSON(http.StatusOK, JsonResponse{
+		Code:    http.StatusOK,
+		Message: "请求成功",
+	})
+}
+
+// 返回对象结果
 func Success(c *gin.Context, data any) {
 	c.JSON(http.StatusOK, JsonResponse{
 		Code:    http.StatusOK,
@@ -33,6 +44,7 @@ func Success(c *gin.Context, data any) {
 	})
 }
 
+// 返回分页
 func SuccessPage(c *gin.Context, data any, total int) {
 	c.JSON(http.StatusOK, JsonResponse{
 		Code:    http.StatusOK,
@@ -53,6 +65,6 @@ func Fail(c *gin.Context, code int, msg string) {
 }
 
 // 返回已定义错误
-func FailError(c *gin.Context, jr JsonResponse) {
-	c.JSON(jr.Code/100000, jr)
+func FailError(c *gin.Context, err JsonResponse) {
+	c.JSON(err.Code/100000, err)
 }
