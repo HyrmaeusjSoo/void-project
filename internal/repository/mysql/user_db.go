@@ -3,6 +3,7 @@ package mysql
 import (
 	"errors"
 	"void-project/internal/model"
+	"void-project/internal/model/base"
 	"void-project/internal/repository"
 	"void-project/internal/repository/driver"
 
@@ -18,11 +19,11 @@ func NewUserRepository() *UserRepository {
 }
 
 // 账户列表
-func (u *UserRepository) GetList(page, size int) ([]model.User, int, error) {
+func (u *UserRepository) GetList(pager base.Pager) ([]model.User, int, error) {
 	var list []model.User
 	total, err := repository.Paginate(
 		u.db.Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info"),
-		&list, page, size)
+		&list, pager)
 	if err != nil {
 		return nil, 0, err
 	}

@@ -22,7 +22,7 @@ func getRootpathOSExecutable() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return filepath.Join(osexePath, "../../")
+	return filepath.Join(osexePath, "../../../")
 }
 
 func getRootpathSystemCaller() string {

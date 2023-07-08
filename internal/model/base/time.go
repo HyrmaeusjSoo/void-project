@@ -1,4 +1,4 @@
-package model
+package base
 
 import (
 	"database/sql"
@@ -6,16 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"time"
-
-	"gorm.io/gorm"
 )
-
-type Model struct {
-	ID        uint            `gorm:"type:int(11);primaryKey;autoIncrement" json:"id,omitempty"`
-	CreatedAt *Time           `json:"create_at,omitempty"`
-	UpdatedAt *Time           `json:"update_at,omitempty"`
-	DeletedAt *gorm.DeletedAt `gorm:"index" json:"delete_at,omitempty"`
-}
 
 // 格式化好的时间类型
 type Time sql.NullTime

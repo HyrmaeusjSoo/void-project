@@ -29,11 +29,11 @@ func (u *User) Register(c *gin.Context) {
 	if err != nil {
 		response.Fail(c, http.StatusOK, "参数有误！")
 	}
-	if user.Account == "" || user.Password == "" || user.Identity == "" {
+	if user.Account == "" || user.Password == "" || user.Identity == nil {
 		response.Fail(c, http.StatusOK, "账号或密码不能为空！")
 		return
 	}
-	if user.Password != user.Identity {
+	if user.Password != *user.Identity {
 		response.Fail(c, http.StatusOK, "两次密码不一致！")
 		return
 	}
@@ -75,7 +75,7 @@ func (u *User) Login(c *gin.Context) {
 		return
 	}
 
-	ok := md5.CheckPassword(param.Password, data.Salt, data.Password)
+	ok := md5.CheckPassword(param.Password, *data.Salt, data.Password)
 	if !ok {
 		response.Fail(c, http.StatusOK, "密码错误")
 		return
@@ -122,12 +122,12 @@ func (u *User) Fetch(c *gin.Context) {
 
 // 获取列表
 func (u *User) List(c *gin.Context) {
-	page, size, err := request.PageQuery(c)
+	pager, err := request.PageQuery(c)
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return
 	}
-	users, total, err := u.service.List(page, size)
+	users, total, err := u.service.List(*pager)
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return

@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 	"void-project/internal/model"
+	"void-project/internal/model/base"
 	"void-project/internal/repository/mysql"
 	"void-project/pkg/md5"
 )
@@ -24,8 +25,8 @@ func (u *UserService) Fetch(id uint) (*model.User, error) {
 	return user, err
 }
 
-func (u *UserService) List(page, size int) ([]model.User, int, error) {
-	return u.db.GetList(page, size)
+func (u *UserService) List(pager base.Pager) ([]model.User, int, error) {
+	return u.db.GetList(pager)
 }
 
 // 账号是否存在
@@ -35,12 +36,12 @@ func (u *UserService) ExistsAccount(account string) bool {
 
 // 注册用户
 func (u *UserService) Register(user *model.User) error {
-	salt, t := fmt.Sprintf("%d", rand.Int31()), time.Now()
+	salt, t := fmt.Sprintf("%d", rand.Int31()), base.NewTime(time.Time{})
 	user.Password = md5.SaltPassword(user.Password, salt)
-	user.Salt = salt
-	user.LoginTime = &t
-	user.LoginOutTime = &t
-	user.HeartBeatTime = &t
+	user.Salt = &salt
+	user.LoginTime = t
+	user.LoginOutTime = t
+	user.HeartBeatTime = t
 	err := u.db.Create(user)
 	user.SecureClear() //清除敏感信息
 	return err

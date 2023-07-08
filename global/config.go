@@ -2,6 +2,7 @@ package global
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"time"
 	"void-project/pkg"
@@ -48,21 +49,31 @@ var Config = &config{}
 
 // 读取配置文件
 func InitConfig() {
-	root := pkg.GetRootPath() + "/config/"
+	sepr := string(os.PathSeparator)
+	root := fmt.Sprintf("%v%vconfig%v", pkg.GetRootPath(), sepr, sepr)
 
-	dbConfigFile, _ := os.Open(root + "database.json")
+	dbConfigFile, err := os.Open(root + "database.json")
+	if err != nil {
+		panic(err)
+	}
 	defer dbConfigFile.Close()
 	if err := json.NewDecoder(dbConfigFile).Decode(&Config.DB); err != nil {
 		panic(err)
 	}
 
-	cacheConfigFile, _ := os.Open(root + "cache.json")
+	cacheConfigFile, err := os.Open(root + "cache.json")
+	if err != nil {
+		panic(err)
+	}
 	defer cacheConfigFile.Close()
 	if err := json.NewDecoder(cacheConfigFile).Decode(&Config.Cache); err != nil {
 		panic(err)
 	}
 
-	systemConfigFile, _ := os.Open(root + "system.json")
+	systemConfigFile, err := os.Open(root + "system.json")
+	if err != nil {
+		panic(err)
+	}
 	defer systemConfigFile.Close()
 	if err := json.NewDecoder(systemConfigFile).Decode(&Config.System); err != nil {
 		panic(err)
