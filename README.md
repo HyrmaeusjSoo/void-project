@@ -62,8 +62,10 @@ void-project
     │    │    ├── handler
     │    │    ├── request
     │    │    └── response
+    │    │         └── apierr
     │    ├── middleware
     │    ├── model
+    │    │    └── base
     │    ├── repository
     │    │    ├── driver
     │    │    ├── mysql
@@ -155,7 +157,7 @@ Logger: logger.New(
 
 ## 最后感谢您参与使用！  
 <div>
-    <span>🌌⚛️🔮🗡️✡️🏞️🎮</span>
+    <span>银河系 🌌⚛️🧬🧊🔮🗡️✡️🏞️🌈🎮🪞🫧 Requests.</span>
 </div>
 <div align=right>
     <label>—————— Hylea Soo<label>

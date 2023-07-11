@@ -11,20 +11,25 @@ type JsonResponse struct {
 	Code    int    `json:"code"`           // 状态码
 	Message string `json:"message"`        // 消息内容
 	Data    any    `json:"data,omitempty"` // 返回结构数据
-	// HttpCode int    // http状态码
+}
+
+// 实现error接口，return FailError时参数和error通用
+func (jr JsonResponse) Error() string {
+	return jr.Message
+}
+
+// 创建JsonResponse的错误结构体
+func NewJsonResError(code int, message string) JsonResponse {
+	return JsonResponse{
+		Code:    code,
+		Message: message,
+	}
 }
 
 // 分页对象
 type JsonResponsePage struct {
 	List  any `json:"list,omitempty"`
-	Total int `json:"total,omitempty"`
-}
-
-func NewJsonResponseError(code int, message string) JsonResponse {
-	return JsonResponse{
-		Code:    code,
-		Message: message,
-	}
+	Total int `json:"total"`
 }
 
 // 返回状态结果
@@ -64,7 +69,14 @@ func Fail(c *gin.Context, code int, msg string) {
 	})
 }
 
-// 返回已定义错误
-func FailError(c *gin.Context, err JsonResponse) {
-	c.JSON(err.Code/100000, err)
+// 返回定义错误
+func FailError(c *gin.Context, err error) {
+	if jr, ok := err.(JsonResponse); ok {
+		c.JSON(jr.Code/100000, jr)
+	} else {
+		c.JSON(http.StatusOK, JsonResponse{
+			Code:    1,
+			Message: err.Error(),
+		})
+	}
 }
