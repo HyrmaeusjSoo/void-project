@@ -148,10 +148,8 @@ func (u *User) List(c *gin.Context) {
 
 // 更新
 func (u *User) Update(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := request.GetParamIntErr(c, "id")
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 
@@ -175,10 +173,8 @@ func (u *User) Update(c *gin.Context) {
 
 // 删除
 func (u *User) Delete(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := request.GetParamIntErr(c, "id")
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 
