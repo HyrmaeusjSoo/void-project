@@ -48,7 +48,7 @@ func (n *Time) UnmarshalJSON(b []byte) error {
 		n.Valid = false
 		return nil
 	}
-	n.Time, err = time.Parse(time.DateTime, timestr)
+	n.Time, err = time.ParseInLocation(time.DateTime, timestr, time.Local)
 	if err == nil {
 		n.Valid = true
 	}

@@ -12,11 +12,15 @@ import (
 )
 
 func init() {
+	echo()
+}
+
+func echo() {
 	fmt.Println(`
     ┌───────────────────────────────────────────────────────────────────────────────────────────┐
     │                                       void-project
     ├───────────────────────────────────────────────────────────────────────────────────────────┤
-	│ HyleaSoo's void-project is a web application architecture developed in Go.
+    │ HyleaSoo's void-project is a web application architecture developed in Go.
     ├───────────────────────────────────────────────────────────────────────────────────────────┤
     │ Project repository link: https://github.com/HyleaSoo/void-project
     ├───────────────────────────────────────────────────────────────────────────────────────────┤

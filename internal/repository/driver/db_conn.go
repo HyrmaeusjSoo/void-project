@@ -7,9 +7,9 @@ import (
 	"void-project/pkg"
 	log "void-project/pkg/logger"
 
+	"github.com/glebarez/sqlite" //gorm.io/driver/sqlite
 	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
-	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -46,6 +46,7 @@ func InitMySQL() {
 }
 
 // 初始化SQLite连接
+// ！这里sqlite驱动没使用gorm下的，因为它使用了cgo，这样的话交叉编译时候底层依赖库、编译工具链都不一样会导致编译时报错
 func InitSQLite() {
 	//读取配置文件
 	op := global.Config.DB.SQLite

@@ -7,7 +7,7 @@
 <div align=center>
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.20-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.0-blue"/></a>
-    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.1-blue"/></a>
+    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.2-blue"/></a>
     <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.0.4-red"/></a>
     <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.7-green"/></a>
     <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5-green"/></a>
@@ -75,6 +75,7 @@ void-project
     │    ├── service
     │    └── view
     ├── pkg
+    │    ├── convert
     │    ├── jwt
     │    ├── logger
     │    └── md5
@@ -89,7 +90,7 @@ void-project
 
 ```
 
-## 安装和使用
+## 获取和使用
 ```
 - 下载并安装Go
 - Go版本 >= v1.18
@@ -120,14 +121,39 @@ go mod tidy
 ##### （3）运行示例项目
 从根目录直接启动或是进入到cmd文件夹运行go run
 ```Shell
-# 方式1： 进入cmd文件夹，运行go run
-cd cmd
+# 方式1： 进入cmd下的server、install等目录，运行go run
+cd cmd/server
 go run .
 
 # 方式2： 直接在根目录启动
-go run cmd/main.go
+go run cmd/server/main.go
 
 # OK!
+```
+
+## 编译
+go编译有很多参数和方式，最好进入到对应的目录内根据需要添加参数进行编译。下面为编译示例：
+##### 正常编译
+正常编译时，不做其他特殊处理，进入入口目录直接执行go build命令。
+```Shell
+# 1. 进入cmd目录内server、install等目录
+cd cmd/server
+
+# 2. 执行编译命令
+go build -ldflags "-w -s" -trimpath
+```
+##### 交叉编译
+交叉编译首先要使用go命令设置语言环境中对应的目标系统和cpu架构位数等。  
+ ！因为在windows系统cmd和powershell设置语言环境的命令不一样，所以这里统一用go env的设置方式，之后可以随意改回来。  
+ 简短方便的编译命令自行查找吧
+```Shell
+# 1. 设置编译目标信息
+go env -w GOOS=linux    # 设置目标系统
+go env -w GOARCH=amd64  # 设置目标cpu架构及位数
+go env -w CGO_ENABLED=0 # 关闭cgo，某些系统下的cgo都不一样。目前没用到cgo
+
+# 2. 接下来在cmd目录下的某项内执行编译命令，就自动打包成目标系统的可执行文件了
+go build -ldflags "-s -w" -trimpath
 ```
 
 ##### 特别提示
@@ -154,6 +180,10 @@ Logger: logger.New(
 ),
 
 ```  
+
+## 生产使用  
+ 2023年基于此项目架构给某市政府下辖某管理机构开发过一套项目。由于敏感原因这里不贴出具体机构名！  
+
 
 ## 最后感谢您参与使用！  
 <div>

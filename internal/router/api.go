@@ -26,7 +26,7 @@ func SetApiRouter(gin *gin.Engine) {
 		u.GET("", middleware.JWTAuth(), userApi.List)
 		u.PUT("/:id", middleware.JWTAuth(), userApi.Update)
 		u.DELETE("/:id", middleware.JWTAuth(), userApi.Delete)
-		u.GET("online/:selfid", middleware.JWTAuth(), messageApi.OnLine)
+		u.GET("online", middleware.JWTAuth(), messageApi.OnLine)
 	}
 
 	ad := v1.Group("astro").Use(middleware.JWTAuth())

@@ -3,7 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
-	"strconv"
+	"void-project/internal/api/request"
 	"void-project/internal/api/response"
 	"void-project/internal/service"
 
@@ -26,13 +26,9 @@ func (m *Message) SendUserMsg(c *gin.Context) {
 }
 
 func (m *Message) OnLine(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("selfid"))
-	if err != nil {
-		response.Fail(c, http.StatusInternalServerError, err.Error())
-		return
-	}
+	id := request.GetAuthUserId(c)
 
-	users, err := m.service.OnLine(uint(id))
+	users, err := m.service.OnLine(id)
 	if err != nil {
 		response.Fail(c, http.StatusOK, err.Error())
 		return

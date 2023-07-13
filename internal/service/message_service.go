@@ -35,10 +35,10 @@ var (
 )
 
 // 在线用户
-func (m *MessageService) OnLine(selfid uint) ([]model.User, error) {
+func (m *MessageService) OnLine(userId uint) ([]model.User, error) {
 	ids := make([]uint, 0, len(clientMap))
 	for k := range clientMap {
-		if k == selfid {
+		if k == userId {
 			continue
 		}
 		ids = append(ids, k)
