@@ -25,6 +25,7 @@ var (
 func InitMySQL() {
 	// 读取配置文件
 	op := global.Config.DB.MySQL
+	isColorful := pkg.IfElse(global.Config.System.Mode == "release", false, true)
 
 	var err error
 	MySQL, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)), &gorm.Config{
@@ -36,7 +37,7 @@ func InitMySQL() {
 				SlowThreshold:             time.Second, // 慢SQL阈值
 				LogLevel:                  logger.Info, // 日志级别
 				IgnoreRecordNotFoundError: true,        // 忽略‘记录未找到’错误
-				Colorful:                  true,        // 彩色打印
+				Colorful:                  isColorful,  // 彩色打印
 			},
 		),
 	})
@@ -50,6 +51,7 @@ func InitMySQL() {
 func InitSQLite() {
 	//读取配置文件
 	op := global.Config.DB.SQLite
+	isColorful := pkg.IfElse(global.Config.System.Mode == "release", false, true)
 
 	var err error
 	SQLite, err = gorm.Open(sqlite.Open(pkg.GetRootPath()+op.Path), &gorm.Config{
@@ -60,7 +62,7 @@ func InitSQLite() {
 				SlowThreshold:             time.Second, // 慢SQL阈值
 				LogLevel:                  logger.Info, // 日志级别
 				IgnoreRecordNotFoundError: true,        // 忽略‘记录未找到’错误
-				Colorful:                  true,        // 彩色打印
+				Colorful:                  isColorful,  // 彩色打印
 			},
 		),
 	})

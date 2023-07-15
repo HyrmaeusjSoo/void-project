@@ -156,7 +156,9 @@ go env -w CGO_ENABLED=0 # 关闭cgo，某些系统下的cgo都不一样。目前
 go build -ldflags "-s -w" -trimpath
 ```
 
-##### 特别提示
+#### 特别提示
+！！！2023-07-15更新之后不用改写代码了，只要再config/system.json内加入Mode节点为release就是生产环境！！！  
+
 生产环境中应该简单直观最好，因此建议在生产环境设置Gin模式为‘发布模式’，并且在Gin和GORM的日志配置选项中禁用色彩打印。
 ```GO
 // 1.设置Gin启动模式为发布模式

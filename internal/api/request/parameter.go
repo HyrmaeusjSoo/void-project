@@ -2,6 +2,7 @@ package request
 
 import (
 	"strconv"
+	"time"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
 
@@ -42,6 +43,12 @@ func GetQueryIntErr(c *gin.Context, name string) (int, error) {
 		return 0, apierr.InvalidParameter
 	}
 	return res, nil
+}
+
+// 获取Query("name")中的time.Time类型参数值
+func GetQueryTime(c *gin.Context, name string) time.Time {
+	t, _ := time.ParseInLocation(time.DateTime, c.Query(name), time.Local)
+	return t
 }
 
 // 获取Param("name")中的int类型参数值

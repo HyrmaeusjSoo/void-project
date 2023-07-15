@@ -33,6 +33,8 @@ type cacheConfig struct {
 }
 
 type systemConfig struct {
+	Mode                 string        `json:"mode"`
+	ListenAddr           string        `json:"listen_addr"`
 	AuthJwtSecret        string        `json:"auth_jwt_secret"`
 	AuthTokenExpire      time.Duration `json:"auth_token_expire"`
 	AstroDictCacheExpire time.Duration `json:"astro_dict_cache_expire"`

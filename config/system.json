@@ -1,4 +1,6 @@
 {
+    "mode": "devrelease",
+    "listen_addr": ":5555",
     "auth_token_expire": 2,
     "auth_jwt_secret": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]{}\\|;:'\",.<>/?",
     "astro_dict_cache_expire": 2,
