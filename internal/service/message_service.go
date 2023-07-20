@@ -10,17 +10,19 @@ import (
 	"sync"
 	"void-project/internal/model"
 	"void-project/internal/repository/mysql"
+	"void-project/pkg/logger"
 
 	"nhooyr.io/websocket"
 	"nhooyr.io/websocket/wsjson"
 )
 
 type MessageService struct {
-	db *mysql.UserRepository
+	db  *mysql.MessageRepository
+	udb *mysql.UserRepository
 }
 
 func NewMessageService() *MessageService {
-	return &MessageService{mysql.NewUserRepository()}
+	return &MessageService{mysql.NewMessageRepository(), mysql.NewUserRepository()}
 }
 
 type Node struct {
@@ -30,27 +32,12 @@ type Node struct {
 }
 
 var (
-	clientMap = make(map[uint]*Node, 10)
-	rwLocker  sync.RWMutex //线程安全读写锁
+	clientMap = make(map[uint]*Node, 10) //客户端map
+	rwLocker  sync.RWMutex               //线程安全读写锁
 )
 
-// 在线用户
-func (m *MessageService) OnLine(userId uint) ([]model.User, error) {
-	ids := make([]uint, 0, len(clientMap))
-	for k := range clientMap {
-		if k == userId {
-			continue
-		}
-		ids = append(ids, k)
-	}
-	if len(ids) == 0 {
-		return nil, nil
-	}
-	return m.db.GetInIds(ids)
-}
-
 // 聊天
-func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
+func (m *MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	IdStr := r.URL.Query().Get("userId")
 	if IdStr == "" {
 		return errors.New("userId为空")
@@ -76,8 +63,8 @@ func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 	clientMap[userId] = node
 	rwLocker.Unlock()
 
-	go send(r.Context(), node)
-	err = receive(r.Context(), node)
+	go m.send(r.Context(), node)
+	err = m.receive(r.Context(), node)
 
 	fmt.Println("WebSocket关闭", userId, "=====================")
 	if err != nil {
@@ -89,7 +76,7 @@ func (*MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
 }
 
 // 发
-func send(ctx context.Context, node *Node) {
+func (m *MessageService) send(ctx context.Context, node *Node) {
 	/* for {
 		select {
 		case data := <-node.MsgQueue:
@@ -109,7 +96,7 @@ func send(ctx context.Context, node *Node) {
 }
 
 // 收
-func receive(ctx context.Context, node *Node) error {
+func (m *MessageService) receive(ctx context.Context, node *Node) error {
 	for {
 		msg := model.Message{}
 		err := wsjson.Read(ctx, node.Conn, &msg)
@@ -126,5 +113,30 @@ func receive(ctx context.Context, node *Node) error {
 			return errors.New("对方已离开" + strconv.Itoa(int(msg.TargetId)))
 		}
 		tarNode.MsgQueue <- &msg
+
+		err = m.db.Create(&msg)
+		if err != nil {
+			logger.LogError(err)
+		}
 	}
+}
+
+// 在线用户
+func (m *MessageService) OnLine(userId uint) ([]model.User, error) {
+	ids := make([]uint, 0, len(clientMap))
+	for k := range clientMap {
+		if k == userId {
+			continue
+		}
+		ids = append(ids, k)
+	}
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	return m.udb.GetInIds(ids)
+}
+
+// 消息列表
+func (m *MessageService) List() ([]model.Message, error) {
+	return m.db.GetList()
 }

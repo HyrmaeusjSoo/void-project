@@ -45,7 +45,7 @@ func NewSQLLogger() *Logger {
 
 // 实现gorm.Logger接口
 func (l Logger) Printf(format string, msg ...any) {
-	err := l.UseAndCreate()
+	err := l.UseOrCreate()
 	if err != nil {
 		return
 	}
@@ -63,7 +63,7 @@ func NewServerLogger() io.Writer {
 
 // 实现io.Writer接口 给Gin用
 func (l *Logger) Write(p []byte) (n int, err error) {
-	err = l.UseAndCreate()
+	err = l.UseOrCreate()
 	if err != nil {
 		return
 	}
@@ -71,7 +71,7 @@ func (l *Logger) Write(p []byte) (n int, err error) {
 }
 
 // 配置项
-func (l *Logger) UseAndCreate() error {
+func (l *Logger) UseOrCreate() error {
 	name := time.Now().Format(time.DateOnly) + ".log"
 	if !l.valid || filepath.Base(l.file.Name()) != name {
 		if l.file != nil {
@@ -136,7 +136,7 @@ func Log(lv Level, msg any) (err error) {
 	if !ok {
 		l = NewLogger(lv)
 	}
-	err = l.UseAndCreate()
+	err = l.UseOrCreate()
 	if err != nil {
 		return
 	}

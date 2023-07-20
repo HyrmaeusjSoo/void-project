@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"void-project/internal/api/request"
 	"void-project/internal/api/response"
+	"void-project/internal/api/response/apierr"
 	"void-project/internal/service"
 
 	"github.com/gin-gonic/gin"
@@ -34,5 +35,14 @@ func (m *Message) OnLine(c *gin.Context) {
 		return
 	}
 	response.Success(c, users)
+}
 
+// 消息列表
+func (m *Message) List(c *gin.Context) {
+	messages, err := m.service.List()
+	if err != nil {
+		response.FailError(c, apierr.FetchFailed)
+		return
+	}
+	response.Success(c, messages)
 }

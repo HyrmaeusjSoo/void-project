@@ -11,6 +11,7 @@ import (
 func SetWebRouter(gin *gin.Engine) {
 	gin.LoadHTMLGlob(pkg.GetRootPath() + "/web/template/*")
 	gin.Static("static", pkg.GetRootPath()+"/web/static/")
+	gin.Static("upload", pkg.GetRootPath()+"/web/upload/")
 
 	v1 := gin.Group("web/")
 	{

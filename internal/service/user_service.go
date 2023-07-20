@@ -1,13 +1,21 @@
 package service
 
 import (
-	"fmt"
 	"math/rand"
+	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
+	"void-project/internal/api/response/apierr"
 	"void-project/internal/model"
 	"void-project/internal/model/base"
 	"void-project/internal/repository/mysql"
+	"void-project/pkg"
+	"void-project/pkg/bcrypt"
+	"void-project/pkg/logger"
 	"void-project/pkg/md5"
+
+	"github.com/gin-gonic/gin"
 )
 
 type UserService struct {
@@ -36,13 +44,19 @@ func (u *UserService) ExistsAccount(account string) bool {
 
 // 注册用户
 func (u *UserService) Register(user *model.User) error {
-	salt, t := fmt.Sprintf("%d", rand.Int31()), base.NewTime(time.Time{})
-	user.Password = md5.SaltPassword(user.Password, salt)
-	user.Salt = &salt
+	t := base.NewTime(time.Time{})
+	// salt := fmt.Sprintf("%d", rand.Int31())
+	// user.Password = md5.SaltPassword(user.Password, salt)
+	password, err := bcrypt.GeneratePassword(user.Password)
+	if err != nil {
+		return err
+	}
+	user.Password = password
+	// user.Salt = &salt
 	user.LoginTime = t
 	user.LoginOutTime = t
 	user.HeartBeatTime = t
-	err := u.db.Create(user)
+	err = u.db.Create(user)
 	user.SecureClear() //清除敏感信息
 	return err
 }
@@ -67,4 +81,45 @@ func (u *UserService) Update(user *model.User) error {
 // 删除用户
 func (u *UserService) Delete(id uint) error {
 	return u.db.Delete(id)
+}
+
+// 设置头像
+func (u *UserService) UploadAvatar(c *gin.Context, uid uint) error {
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		return apierr.InvalidParameter
+	}
+
+	// 存图片
+	td := time.Now()
+	fileName := md5.GenerateLower(strconv.Itoa(int(td.UnixMilli())) + strconv.Itoa(int(rand.Int31())))
+	path := strings.Builder{}
+	path.WriteString("user/")
+	path.WriteString(strconv.Itoa(td.Year()))
+	path.WriteString("/")
+	path.WriteString(strconv.Itoa(int(td.Month())))
+	path.WriteString("/")
+	path.WriteString(strconv.Itoa(td.Day()))
+	path.WriteString("/")
+	path.WriteString(fileName)
+	path.WriteString(filepath.Ext(file.Filename))
+	err = c.SaveUploadedFile(file, pkg.GetRootPath()+"/web/upload/"+path.String())
+	if err != nil {
+		logger.LogError(err)
+		return apierr.FileUploadFailed
+	}
+
+	// 存数据库
+	user, err := u.db.GetById(uid)
+	if err != nil {
+		return apierr.UpdateFailed
+	}
+	avatar := path.String()
+	user.Avatar = &avatar
+	err = u.db.Update(user)
+	if err != nil {
+		return apierr.UpdateFailed
+	}
+
+	return nil
 }

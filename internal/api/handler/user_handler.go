@@ -1,16 +1,14 @@
 package handler
 
 import (
-	"strconv"
-
 	"void-project/internal/api/request"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
 	"void-project/internal/model"
 	"void-project/internal/service"
+	"void-project/pkg/bcrypt"
 	"void-project/pkg/jwt"
 	"void-project/pkg/logger"
-	"void-project/pkg/md5"
 
 	"github.com/gin-gonic/gin"
 )
@@ -69,23 +67,23 @@ func (u *User) Login(c *gin.Context) {
 		response.FailError(c, apierr.MissingAccountPassword)
 		return
 	}
-	data, err := u.service.GetByAccount(param.Account)
+	eu, err := u.service.GetByAccount(param.Account)
 	if err != nil {
 		response.FailError(c, apierr.InternalServerError)
 		return
 	}
-	if data.Account == "" {
+	if eu.Account == "" {
 		response.FailError(c, apierr.AccountNotExist)
 		return
 	}
 
-	ok := md5.CheckPassword(param.Password, *data.Salt, data.Password)
-	if !ok {
+	// ok := md5.CheckPassword(param.Password, *eu.Salt, eu.Password)
+	if ok := bcrypt.ComparePassword(eu.Password, param.Password); !ok {
 		response.FailError(c, apierr.InvalidPassword)
 		return
 	}
 
-	user, err := u.service.GetByAccountPassword(param.Account, data.Password)
+	user, err := u.service.GetByAccountPassword(param.Account, eu.Password)
 	if err != nil {
 		logger.LogError(err)
 		response.FailError(c, apierr.InternalServerError)
@@ -114,10 +112,8 @@ func (u *User) Login(c *gin.Context) {
 
 // 获取
 func (u *User) Fetch(c *gin.Context) {
-	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	id, err := request.GetParamIntErr(c, "id")
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 	user, err := u.service.Fetch(uint(id))
@@ -182,6 +178,16 @@ func (u *User) Delete(c *gin.Context) {
 	if err != nil {
 		logger.LogError(err)
 		response.FailError(c, apierr.DeleteFailed)
+		return
+	}
+	response.SuccessOk(c)
+}
+
+// 设置头像
+func (u *User) Avatar(c *gin.Context) {
+	err := u.service.UploadAvatar(c, request.GetAuthUserId(c))
+	if err != nil {
+		response.FailError(c, apierr.FileUploadFailed)
 		return
 	}
 	response.SuccessOk(c)

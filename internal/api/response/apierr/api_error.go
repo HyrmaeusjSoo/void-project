@@ -24,6 +24,7 @@ var (
 	SaveFailed               = response.NewJsonResError(500_00_013, "保存失败")               // 保存失败
 	DeleteFailed             = response.NewJsonResError(500_00_014, "删除失败")               // 删除失败
 	FetchFailed              = response.NewJsonResError(500_00_015, "查询失败")               // 查询失败
+	FileUploadFailed         = response.NewJsonResError(500_00_016, "文件上传失败")             // 文件上传失败
 
 	// User
 	MissingAccountPassword = response.NewJsonResError(400_01_001, "缺失账号或密码") // 缺失账号或密码
