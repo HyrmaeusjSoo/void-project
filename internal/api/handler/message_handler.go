@@ -39,10 +39,17 @@ func (m *Message) OnLine(c *gin.Context) {
 
 // 消息列表
 func (m *Message) List(c *gin.Context) {
-	messages, err := m.service.List()
+	pager, err := request.PageQuery(c)
+	if err != nil {
+		response.FailError(c, apierr.InvalidParameter)
+		return
+	}
+	uId := request.GetAuthUserId(c)
+	targetId := request.GetQueryInt(c, "target_id")
+	messages, total, err := m.service.List(uId, uint(targetId), *pager)
 	if err != nil {
 		response.FailError(c, apierr.FetchFailed)
 		return
 	}
-	response.Success(c, messages)
+	response.SuccessPage(c, messages, total)
 }

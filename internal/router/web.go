@@ -13,11 +13,12 @@ func SetWebRouter(gin *gin.Engine) {
 	gin.Static("static", pkg.GetRootPath()+"/web/static/")
 	gin.Static("upload", pkg.GetRootPath()+"/web/upload/")
 
-	v1 := gin.Group("web/")
+	v1 := gin.Group("web")
 	{
 		vr := view.ViewHandler{}
 		v1.GET("", vr.Index)
-		v1.GET("/chat", middleware.JWTAuth(), vr.Chat)
+		v1.GET("index", vr.Index)
+		v1.GET("chat", middleware.JWTAuth(), vr.Chat)
 	}
 
 }

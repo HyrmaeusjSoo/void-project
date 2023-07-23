@@ -15,7 +15,7 @@ const request = async (url, method='GET', data=null, contentType='application/js
     let option = {
         method: method,
         headers: {
-            'userId': localStorage.getItem('userId'),
+            'user_id': localStorage.getItem('user_id'),
             'token': localStorage.getItem('token'),
         },
     }

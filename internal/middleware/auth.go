@@ -25,10 +25,10 @@ func JWTAuth() gin.HandlerFunc {
 			return
 		}
 
-		if user, _ = c.Cookie("userId"); user != "" {
-		} else if user = c.GetHeader("userId"); user != "" {
-		} else if user = c.Query("userId"); user != "" {
-		} else if user = c.PostForm("userId"); user != "" {
+		if user, _ = c.Cookie("user_id"); user != "" {
+		} else if user = c.GetHeader("user_id"); user != "" {
+		} else if user = c.Query("user_id"); user != "" {
+		} else if user = c.PostForm("user_id"); user != "" {
 		} else {
 			response.FailError(c, apierr.Unauthorized)
 			c.Abort()

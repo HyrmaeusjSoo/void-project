@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"sync"
 	"void-project/internal/model"
+	"void-project/internal/model/base"
 	"void-project/internal/repository/mysql"
 	"void-project/pkg/logger"
 
@@ -38,13 +39,13 @@ var (
 
 // 聊天
 func (m *MessageService) Chat(w http.ResponseWriter, r *http.Request) error {
-	IdStr := r.URL.Query().Get("userId")
+	IdStr := r.URL.Query().Get("user_id")
 	if IdStr == "" {
-		return errors.New("userId为空")
+		return errors.New("user_id为空")
 	}
 	id, err := strconv.ParseUint(IdStr, 10, 32)
 	if err != nil {
-		return errors.New("userId类型转换失败" + err.Error())
+		return errors.New("user_id类型转换失败" + err.Error())
 	}
 	userId := uint(id)
 
@@ -137,6 +138,6 @@ func (m *MessageService) OnLine(userId uint) ([]model.User, error) {
 }
 
 // 消息列表
-func (m *MessageService) List() ([]model.Message, error) {
-	return m.db.GetList()
+func (m *MessageService) List(uId, targetId uint, pager base.Pager) ([]model.Message, int, error) {
+	return m.db.GetListClean(uId, targetId, pager)
 }

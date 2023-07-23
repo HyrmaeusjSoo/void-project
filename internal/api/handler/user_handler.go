@@ -104,9 +104,9 @@ func (u *User) Login(c *gin.Context) {
 	}
 
 	response.Success(c, map[string]any{
-		"token":      token,
-		"userId":     user.ID,
-		"expireTime": claims.ExpiresAt.UnixMilli(),
+		"token":       token,
+		"user_id":     user.ID,
+		"expire_time": claims.ExpiresAt.UnixMilli(),
 	})
 }
 

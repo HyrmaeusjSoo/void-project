@@ -140,10 +140,10 @@ func GenReadme() {
 	if err != nil {
 		panic(err)
 	}
-	if pos := pkg.FindSliceInSlice(content, []byte("```\r\n────────────────────────begin────────────────────────\r\nvoid-project\r\n")); pos > 0 {
+	if pos := pkg.FindSliceInSlice(content, []byte("```\r\n───────────────begin───────────────\r\nvoid-project\r\n")); pos > 0 {
 		readme = append(content[:pos+1:pos+1], readme...)
 	}
-	if pos := pkg.FindSliceInSlice(content, []byte("\r\n────────────────────────end────────────────────────\r\n```\r\n")); pos > 0 {
+	if pos := pkg.FindSliceInSlice(content, []byte("\r\n────────────────end────────────────\r\n```\r\n")); pos > 0 {
 		readme = append(readme, content[pos-153:]...)
 	}
 

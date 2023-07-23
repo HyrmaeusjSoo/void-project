@@ -55,7 +55,7 @@
         let send_message = document.getElementById("chat_middle_item");
         let message = document.getElementById("chat_context_item");
 
-        let conn = new WebSocket(`ws://${window.location.host}/api/v1/message/send?userId=${localStorage.getItem('userId')}&token=${localStorage.getItem('token')}`);
+        let conn = new WebSocket(`ws://${window.location.host}/api/v1/message/send?user_id=${localStorage.getItem('user_id')}&token=${localStorage.getItem('token')}`);
         conn.onopen = e => {
             console.log('ws:开启连接');
             // conn.send("ping");
@@ -85,7 +85,7 @@
                 </div>`;
             send_message.append(right);
             conn.send(JSON.stringify({
-                from_id: parseInt(localStorage.getItem('userId')),
+                from_id: parseInt(localStorage.getItem('user_id')),
                 target_id: 2, 
                 type: 1,
                 content: message.value,

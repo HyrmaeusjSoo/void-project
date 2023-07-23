@@ -24,16 +24,16 @@
 
         const login = (account, password) => {
             request(`${host}user/login`, 'POST', {account: account, password: password}).then(r => {
-                (r.data && r.data.userId && r.data.token && r.data.expireTime && (
-                    localStorage.setItem('userId', r.data.userId),
+                (r.data && r.data.user_id && r.data.token && r.data.expire_time && (
+                    localStorage.setItem('user_id', r.data.user_id),
                     localStorage.setItem('token', r.data.token),
-                    localStorage.setItem('expireTime', r.data.expireTime),
-                    document.cookie = 'userId='+r.data.userId,
+                    localStorage.setItem('expire_time', r.data.expire_time),
+                    document.cookie = 'user_id='+r.data.user_id,
                     document.cookie = 'token='+r.data.token
                 ), true) || (r.message && alert(r.message), true) || alert('登录失败');
             });
         }
-        // localStorage.getItem('token') && Date.now() < localStorage.getItem('expireTime') || login(...prompt().split(','));
+        // localStorage.getItem('token') && Date.now() < localStorage.getItem('expire_time') || login(...prompt().split(','));
     </script>
     <script>
         // request(`${host}astro/milky way`).then(r => document.body.append(renderJson(r)));
