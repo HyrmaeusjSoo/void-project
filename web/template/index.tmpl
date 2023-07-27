@@ -5,7 +5,7 @@
 <!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
 <!-- │ 银河系 🌌⚛️🔮🗡️✡️🏞️🎮 Requests.                                               2023      -->
 <!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
-<!-- │                                                                   —————— Hylea Soo      -->
+<!-- │                                                                —————— Hyrmaeusj 苏      -->
 <!-- └───────────────────────────────────────────────────────────────────────────────────────┘ -->
 <!DOCTYPE html>
 <html>
@@ -20,10 +20,8 @@
     <script src="/static/js/rium.js"></script>
     <script src="/static/js/main.js"></script>
     <script>
-        const host = '/api/v1/';
-
         const login = (account, password) => {
-            request(`${host}user/login`, 'POST', {account: account, password: password}).then(r => {
+            request('user/login', 'POST', {account: account, password: password}).then(r => {
                 (r.data && r.data.user_id && r.data.token && r.data.expire_time && (
                     localStorage.setItem('user_id', r.data.user_id),
                     localStorage.setItem('token', r.data.token),
@@ -33,16 +31,13 @@
                 ), true) || (r.message && alert(r.message), true) || alert('登录失败');
             });
         }
-        // localStorage.getItem('token') && Date.now() < localStorage.getItem('expire_time') || login(...prompt().split(','));
-    </script>
-    <script>
-        // request(`${host}astro/milky way`).then(r => document.body.append(renderJson(r)));
     </script>
 </head>
 
 <body class="body">
     <input type="button" id="loginBtn" value="login">
     <a href="/web/chat">chat</a>
+    <a href="/web/api">api</a>
     <script>
         loginBtn.onclick = _ => login(...prompt().split(','));
     </script>

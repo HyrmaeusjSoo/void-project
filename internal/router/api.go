@@ -32,6 +32,8 @@ func SetApiRouter(gin *gin.Engine) {
 	ad := v1.Group("astro").Use(middleware.JWTAuth())
 	{
 		ad.GET("/:name", astroDictApi.Fetch)
+		ad.GET("remote/:name", astroDictApi.FetchRemote)
+		ad.POST("/:lang", astroDictApi.Sync)
 	}
 
 	msg := v1.Group("message").Use(middleware.JWTAuth())

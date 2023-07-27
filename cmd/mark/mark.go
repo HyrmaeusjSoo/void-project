@@ -123,12 +123,12 @@ func writeFile(path string, mark []byte, isSet bool) {
 	}
 }
 
-// 生成README 目录结构
+// 生成README 目录结构、版本号
 func GenReadme() {
 	levels = make([]bool, 72)
 	tree := GenDirectoryTree(rootpath, 0)
 	// tree := GenDirectoryTree2()
-	readme := []byte(tree)
+	structureTree := []byte(tree)
 
 	file, err := os.OpenFile(rootpath+"/README.md", os.O_RDWR, 0644)
 	if err != nil {
@@ -136,16 +136,40 @@ func GenReadme() {
 	}
 	defer file.Close()
 
+	// 原文件内容
 	content, err := io.ReadAll(file)
 	if err != nil {
 		panic(err)
 	}
-	if pos := pkg.FindSliceInSlice(content, []byte("```\r\n───────────────begin───────────────\r\nvoid-project\r\n")); pos > 0 {
-		readme = append(content[:pos+1:pos+1], readme...)
+
+	readme := make([]byte, 0, len(content))
+	lastPoint := 0
+	// 版本号部分
+	if begin := pkg.FindSliceInSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
+		endVersion := []byte(`-brightgreen">`)
+		if end := pkg.FindSliceInSlice(content, endVersion); end > 0 {
+			version, err := os.ReadFile(rootpath + "/version")
+			if err != nil {
+				panic(err)
+			}
+			readme = append(content[:begin+1:begin+1], version...)
+			lastPoint = end - len(endVersion) + 1
+		}
 	}
-	if pos := pkg.FindSliceInSlice(content, []byte("\r\n────────────────end────────────────\r\n```\r\n")); pos > 0 {
-		readme = append(readme, content[pos-153:]...)
+	// 目录结构部分
+	var (
+		beginTree = []byte("```\r\n──────────────────begin──────────────────\r\nvoid-project\r\n")
+		endTree   = []byte("\r\n───────────────────end───────────────────\r\n```\r\n")
+	)
+	if pos := pkg.FindSliceInSlice(content, beginTree); pos > 0 {
+		readme = append(readme, content[lastPoint:pos+1]...)
+		readme = append(readme, structureTree...)
 	}
+	if pos := pkg.FindSliceInSlice(content, endTree); pos > 0 {
+		lastPoint = pos - len(endTree) + 2
+	}
+	// 拼接剩下部分
+	readme = append(readme, content[lastPoint+1:]...)
 
 	err = file.Truncate(0)
 	if err != nil {

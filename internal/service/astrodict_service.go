@@ -1,22 +1,25 @@
 package service
 
 import (
+	"errors"
 	"strings"
 	"void-project/internal/model"
 	"void-project/internal/repository/redis"
 	"void-project/internal/repository/request"
+	"void-project/internal/repository/sqlite"
 )
 
 type AstroDictService struct {
-	db *redis.AstroDict
+	rdb *redis.AstroDict
+	db  *sqlite.AstrodictRepository
 }
 
 func NewAstroDictService() *AstroDictService {
-	return &AstroDictService{redis.NewAstroDict()}
+	return &AstroDictService{redis.NewAstroDict(), sqlite.NewAstrodictRepository()}
 }
 
-func (ad *AstroDictService) Fetch(name string) (res *model.AstroDict, err error) {
-	astro, err := ad.db.Fetch()
+func (ad *AstroDictService) FetchRemote(name string) (res *model.AstroDictJson, err error) {
+	astro, err := ad.rdb.Fetch()
 	if err != nil {
 		return
 	}
@@ -25,14 +28,14 @@ func (ad *AstroDictService) Fetch(name string) (res *model.AstroDict, err error)
 		if err != nil {
 			return
 		}
-		err = ad.db.Save(*astro)
+		err = ad.rdb.Save(*astro)
 		if err != nil {
 			return
 		}
 	}
 
 	name = strings.ToLower(name)
-	res = &model.AstroDict{}
+	res = &model.AstroDictJson{}
 	for _, v := range astro.AstroDict {
 		c, e := strings.ToLower(v.C), strings.ToLower(v.E)
 		if strings.Contains(c, name) || strings.Contains(e, name) {
@@ -40,4 +43,22 @@ func (ad *AstroDictService) Fetch(name string) (res *model.AstroDict, err error)
 		}
 	}
 	return
+}
+
+func (ad *AstroDictService) Fetch(name string) ([]model.Astrodict, error) {
+	return ad.db.GetList(name)
+}
+
+func (ad *AstroDictService) Sync(lang string) error {
+	// 获取
+	sl := make([]*model.Astrodict, 0, 100)
+	astro, err := request.NewAD(lang).GetAstroDict()
+	if err != nil {
+		return errors.New("")
+	}
+	for _, v := range astro.AstroDict {
+		sl = append(sl, &model.Astrodict{v.C, v.E})
+	}
+
+	return ad.db.Create(lang, sl)
 }

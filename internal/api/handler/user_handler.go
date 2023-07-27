@@ -133,7 +133,7 @@ func (u *User) List(c *gin.Context) {
 		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
-	users, total, err := u.service.List(*pager)
+	users, total, err := u.service.List(pager)
 	if err != nil {
 		logger.LogError(err)
 		response.FailError(c, apierr.FetchFailed)

@@ -18,7 +18,9 @@ func SetWebRouter(gin *gin.Engine) {
 		vr := view.ViewHandler{}
 		v1.GET("", vr.Index)
 		v1.GET("index", vr.Index)
-		v1.GET("chat", middleware.JWTAuth(), vr.Chat)
+		v1.Use(middleware.JWTAuth())
+		v1.GET("chat", vr.Chat)
+		v1.GET("api", vr.Api)
 	}
 
 }

@@ -7,8 +7,8 @@
         "dbname": "void-project"
     },
     "sqlite": {
-        "path": "/asset/db/mhgu.db",
-        "user": "root",
-        "password": "1234"
+        "path": "/asset/database/astrodict.db",
+        "user": "",
+        "password": ""
     }
 }

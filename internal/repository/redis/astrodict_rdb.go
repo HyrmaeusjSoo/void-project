@@ -23,7 +23,7 @@ func NewAstroDict() *AstroDict {
 	}
 }
 
-func (ad *AstroDict) Save(astrodict model.AstroDict) error {
+func (ad *AstroDict) Save(astrodict model.AstroDictJson) error {
 	val, err := json.Marshal(astrodict)
 	if err != nil {
 		return err
@@ -32,14 +32,14 @@ func (ad *AstroDict) Save(astrodict model.AstroDict) error {
 	return err
 }
 
-func (ad *AstroDict) Fetch() (astro *model.AstroDict, err error) {
+func (ad *AstroDict) Fetch() (astro *model.AstroDictJson, err error) {
 	val, err1 := ad.db.Get(ad.ctx, "astrodict_ce").Result()
 	if err1 != nil && err1 != redis.Nil {
 		return nil, err1
 	}
 
 	if val != "" {
-		astro = &model.AstroDict{}
+		astro = &model.AstroDictJson{}
 		err = json.Unmarshal([]byte(val), astro)
 	}
 	return

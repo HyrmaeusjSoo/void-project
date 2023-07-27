@@ -7,6 +7,7 @@ import (
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
 	"void-project/internal/service"
+	"void-project/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,17 +40,14 @@ func (m *Message) OnLine(c *gin.Context) {
 
 // 消息列表
 func (m *Message) List(c *gin.Context) {
-	pager, err := request.PageQuery(c)
-	if err != nil {
-		response.FailError(c, apierr.InvalidParameter)
-		return
-	}
+	cursor := request.CursorQuery(c)
 	uId := request.GetAuthUserId(c)
 	targetId := request.GetQueryInt(c, "target_id")
-	messages, total, err := m.service.List(uId, uint(targetId), *pager)
+	messages, next, err := m.service.List(uId, uint(targetId), cursor)
 	if err != nil {
+		logger.LogError(err)
 		response.FailError(c, apierr.FetchFailed)
 		return
 	}
-	response.SuccessPage(c, messages, total)
+	response.SuccessCursor(c, messages, next)
 }

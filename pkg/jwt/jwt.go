@@ -22,7 +22,7 @@ func GenerateToken(userId uint) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		UserID: userId,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "HyleaSoo",
+			Issuer:    "HyrmaeusjSoo",
 			Subject:   "void-project",
 			Audience:  jwt.ClaimStrings{strconv.Itoa(int(userId))},
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * global.Config.System.AuthTokenExpire)),

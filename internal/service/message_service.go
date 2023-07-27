@@ -138,6 +138,6 @@ func (m *MessageService) OnLine(userId uint) ([]model.User, error) {
 }
 
 // 消息列表
-func (m *MessageService) List(uId, targetId uint, pager base.Pager) ([]model.Message, int, error) {
-	return m.db.GetListClean(uId, targetId, pager)
+func (m *MessageService) List(uId, targetId uint, cursor base.Cursor) ([]model.Message, base.Next, error) {
+	return m.db.GetListClean(uId, targetId, cursor)
 }

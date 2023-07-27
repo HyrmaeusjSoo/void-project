@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>API Request Example</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="/static/css/json.css">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/js/rium.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        const router = {
+            'user/fetch': ['user/'+localStorage.getItem('user_id')],
+            'user/list': ['user'+object2UrlQuery({page: 1})],
+            'user/login': ['user/login', 'POST', {account: 'test9', password: '999999'}],
+            'user/register': ['user', 'POST', {
+                account: 'test9',
+                password: '999999',
+                identity: '999999',
+                name: '测试9',
+                avatar: '',
+                gender: 'female',
+                phone: '13100001111',
+                email: '123@123.com'
+            }],
+            'user/update': ['user/'+localStorage.getItem('user_id'), 'POST', {
+                name: '测试9',
+                avatar: '',
+                gender: 'female',
+                phone: '13100009999',
+                email: '999@qq.com'
+            }],
+            'user/delete': ['user/'+localStorage.getItem('user_id'), 'DELETE'],
+            'message/online': ['message/online'],
+            'message/list': ['message'+object2UrlQuery({target_id: 4, next: ""})],
+            'astro/fetch': ['astro/nebula'],
+            'astro/sync': ['astro/ce', 'POST'],
+            'astro/remote': ['astro/remote/nebula'],
+        };
+    </script>
+    <script>
+        function doRequest(route) {
+            request(...router[route]).then(r => document.getElementById('json-area').replaceChildren(renderJson(r)));
+        }
+    </script>
+</head>
+
+<body class="body">
+    <div id="apis">
+        <ol>
+            <li><a onclick="doRequest('user/fetch')">user/fetch</a></li>
+            <li><a onclick="doRequest('user/list')">user/list</a></li>
+            <li><a onclick="doRequest('user/login')">user/login</a></li>
+            <li><a onclick="doRequest('user/register')">user/register</a></li>
+            <li><a onclick="doRequest('user/update')">user/update</a></li>
+            <li><a onclick="doRequest('user/delete')">user/delete</a></li>
+            <li><a onclick="doRequest('message/online')">message/online</a></li>
+            <li><a onclick="doRequest('message/list')">message/list</a></li>
+            <li><a onclick="doRequest('astro/fetch')">astro/fetch</a></li>
+            <li><a onclick="doRequest('astro/sync')">astro/sync</a></li>
+            <li><a onclick="doRequest('astro/remote')">astro/remote</a></li>
+        </ol>
+    </div>
+    <div id="json-area"><pre class="jsonData"></pre></div>
+</body>
+</html>

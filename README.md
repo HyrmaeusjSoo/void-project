@@ -5,10 +5,11 @@
   
 
 <div align=center>
+    <img src="https://img.shields.io/badge/version-1.0.5-brightgreen">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.20-blue"/></a>
-    <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.0-blue"/></a>
+    <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.2-blue"/></a>
-    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.0.4-red"/></a>
+    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.0.5-red"/></a>
     <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.7-green"/></a>
     <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5-green"/></a>
 </div>
@@ -21,7 +22,7 @@ void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架�
 以及Bob叔叔的[The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)架构。
 
 ## Vue前端请求示例
-与之配套的前端Vue简单的请求示例地址：[https://github.com/HyleaSoo/void-nebula](https://github.com/HyleaSoo/void-nebula)
+与之配套的前端Vue简单的请求示例地址：[https://github.com/HyrmaeusjSoo/void-nebula](https://github.com/HyrmaeusjSoo/void-nebula)
 
 ## 特性
 - 🚀得益于Go语言的性能优化，能够快速处理请求并响应。
@@ -45,10 +46,10 @@ void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架�
 
 ## 目录结构
 ```
-───────────────begin───────────────
+──────────────────begin──────────────────
 void-project
     ├── asset
-    │    ├── db
+    │    ├── database
     │    └── json
     ├── cmd
     │    ├── install
@@ -71,7 +72,8 @@ void-project
     │    │    ├── driver
     │    │    ├── mysql
     │    │    ├── redis
-    │    │    └── request
+    │    │    ├── request
+    │    │    └── sqlite
     │    ├── router
     │    ├── service
     │    └── view
@@ -80,7 +82,8 @@ void-project
     │    ├── convert
     │    ├── jwt
     │    ├── logger
-    │    └── md5
+    │    ├── md5
+    │    └── necromancy
     ├── runtime
     │    └── log
     └── web
@@ -91,7 +94,7 @@ void-project
          ├── template
          └── upload
               └── 模块/年/月/日/
-────────────────end────────────────
+───────────────────end───────────────────
 ```
 
 ## 获取和使用
@@ -114,7 +117,7 @@ go env -w GOPROXY=https://goproxy.cn,https://goproxy.io,direct
 下载项目代码和所需依赖库
 ```Shell
 # 克隆项目
-git clone https://github.com/HyleaSoo/void-project.git
+git clone https://github.com/HyrmaeusjSoo/void-project.git
 # 进入项目根目录
 cd void-project
 
@@ -188,6 +191,7 @@ Logger: logger.New(
 ```  
 
 ## 生产使用  
+ *（2023年7月17号基于此架构fork的项目首次上线到生产环境，正式使用version版本号，初版号为1.0.0）
  2023年基于此项目架构给某市政府下辖某管理机构开发过一套项目。由于敏感原因这里不贴出具体机构名！  
 
 
@@ -196,7 +200,7 @@ Logger: logger.New(
     <span>银河系 🌌⚛️🧬🧊🔮🗡️✡️🏞️🌈🎮🪞🫧 Requests.</span>
 </div>
 <div align=right>
-    <label>—————— Hylea Soo<label>
+    <label>—————— Hyrmaeusj 苏<label>
 </div>  
 
 

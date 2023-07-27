@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"errors"
+	"time"
 	"void-project/internal/model"
 	"void-project/internal/model/base"
 	"void-project/internal/repository"
@@ -20,6 +21,7 @@ func NewMessageRepository() *MessageRepository {
 }
 
 // 消息列表
+// gorm.Preload预加载 - 联表查询示例 - 该模式返回层级嵌套的结构体
 func (m *MessageRepository) GetList() ([]model.Message, error) {
 	var list []model.Message
 	if err := m.db.Preload(clause.Associations, omitUserSensitivity).Find(&list).Error; err != nil {
@@ -29,19 +31,24 @@ func (m *MessageRepository) GetList() ([]model.Message, error) {
 }
 
 // 消息列表 - 清理多余信息后
-func (m *MessageRepository) GetListClean(uId, targetId uint, pager base.Pager) ([]model.Message, int, error) {
+// gorm.Joins手动 - 联表查询示例 - 该模式返回普通关联查询结果集，指定字段
+func (m *MessageRepository) GetListClean(uId, targetId uint, cursor base.Cursor) ([]model.Message, base.Next, error) {
 	var list []model.Message
-	total, err := repository.Paginate(m.db.
-		Where("from_id=? AND target_id=?", uId, targetId).
-		Or("from_id=? AND target_id=?", targetId, uId).
+	if cursor.IsEmpty() {
+		cursor.Field = "message.send_time"
+		cursor.CursorID = time.Now()
+		cursor.SortType = "DESC"
+	}
+	next, err := repository.CursorPaginate(m.db.
+		Where("(from_id=? AND target_id=?) OR (from_id=? AND target_id=?)", uId, targetId, targetId, uId).
 		Joins("LEFT JOIN `user` AS f ON f.id=message.from_id").
 		Joins("LEFT JOIN `user` AS t ON t.id=message.target_id").
-		Select("message.*, f.`name` AS from_name, t.`name` AS target_name").
-		Order("send_time DESC"), &list, pager)
+		Select("message.*, f.`name` AS from_name, t.`name` AS target_name"),
+		&list, cursor)
 	if err != nil {
-		return nil, 0, err
+		return nil, next, err
 	}
-	return list, int(total), nil
+	return list, next, nil
 }
 
 // 查询消息
