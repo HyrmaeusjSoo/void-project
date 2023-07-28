@@ -2,6 +2,7 @@ package apierr
 
 import "void-project/internal/api/response"
 
+// 公共Response错误信息， 共通的都放在这里集中管理
 var (
 	BadRequest          = response.NewJsonResError(400_00_000, "请求不合法") // 请求不合法
 	Unauthorized        = response.NewJsonResError(401_00_000, "访问未授权") // 访问未授权

@@ -18,6 +18,7 @@ func NewAstroDictService() *AstroDictService {
 	return &AstroDictService{redis.NewAstroDict(), sqlite.NewAstrodictRepository()}
 }
 
+// 从远程查询 - 短期内缓存到Redis
 func (ad *AstroDictService) FetchRemote(name string) (res *model.AstroDictJson, err error) {
 	astro, err := ad.rdb.Fetch()
 	if err != nil {
@@ -45,10 +46,12 @@ func (ad *AstroDictService) FetchRemote(name string) (res *model.AstroDictJson, 
 	return
 }
 
+// 查询
 func (ad *AstroDictService) Fetch(name string) ([]model.Astrodict, error) {
 	return ad.db.GetList(name)
 }
 
+// 同步到本地库
 func (ad *AstroDictService) Sync(lang string) error {
 	// 获取
 	sl := make([]*model.Astrodict, 0, 100)

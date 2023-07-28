@@ -5,8 +5,8 @@ import (
 	"void-project/global"
 	"void-project/internal/model/base"
 	"void-project/pkg"
-	"void-project/pkg/convert"
 	"void-project/pkg/necromancy"
+	"void-project/pkg/types/primitive"
 
 	"gorm.io/gorm"
 )
@@ -79,7 +79,7 @@ func CursorPaginate[T any](db *gorm.DB, list *[]T, cursor base.Cursor) (next bas
 	}
 	// 以下是反射字段值
 	nameSlc := strings.Split(cursor.Field, ".")
-	val, err := necromancy.Extraction((*list)[len(*list)-1], convert.SnakeToPascal(nameSlc[len(nameSlc)-1]))
+	val, err := necromancy.Extraction((*list)[len(*list)-1], primitive.SnakeToPascal(nameSlc[len(nameSlc)-1]))
 	if err != nil {
 		return
 	}

@@ -8,14 +8,17 @@ import (
 
 type ViewHandler struct{}
 
+// 首页
 func (*ViewHandler) Index(c *gin.Context) {
 	c.HTML(http.StatusOK, "index.tmpl", nil)
 }
 
+// WebSocket聊天示例
 func (*ViewHandler) Chat(c *gin.Context) {
 	c.HTML(http.StatusOK, "chat.tmpl", nil)
 }
 
+// API 请求地址和示例列表
 func (*ViewHandler) Api(c *gin.Context) {
 	c.HTML(http.StatusOK, "api.tmpl", nil)
 }

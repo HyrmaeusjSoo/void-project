@@ -2,6 +2,7 @@ package logger
 
 import "void-project/pkg"
 
+// 日志级别
 type Level uint8
 
 const (

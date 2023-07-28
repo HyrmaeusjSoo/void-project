@@ -11,6 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 鉴权
+// JWT方式
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, user := "", ""

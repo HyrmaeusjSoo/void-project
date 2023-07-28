@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 	"void-project/pkg"
+	"void-project/pkg/types/composite"
 )
 
 const (
@@ -21,6 +22,9 @@ var (
 	rootpath = pkg.GetRootPath()
 )
 
+// 添加标记
+// g => 生成和替换README文档中目录树部分、version版本号部分。
+// g => 往源代码里添加头部标记注释。注释内容读取的是同目录c.mark和html.mark插入到对应的Go，JS，HTML代码文件头部。
 func main() {
 	fmt.Println("Which one?  [g]=Generate README  [c]=Insert comment")
 	var input string
@@ -90,6 +94,7 @@ func InsertComment(isSet bool) (total, modified int) {
 	return
 }
 
+// 写入文件
 func writeFile(path string, mark []byte, isSet bool) {
 	file, err := os.OpenFile(path, os.O_RDWR, 0644)
 	if err != nil {
@@ -103,8 +108,8 @@ func writeFile(path string, mark []byte, isSet bool) {
 		panic(err)
 	}
 	// 删旧注释
-	if pkg.CompareSlice(content[:6], mark[:6]) {
-		if pos := pkg.FindSliceInSlice(content, mark[len(mark)-8:]); pos > 0 {
+	if composite.CompareSlice(content[:6], mark[:6]) {
+		if pos := composite.FindSliceInSlice(content, mark[len(mark)-8:]); pos > 0 {
 			content = content[pos+1:]
 		}
 	}
@@ -145,9 +150,9 @@ func GenReadme() {
 	readme := make([]byte, 0, len(content))
 	lastPoint := 0
 	// 版本号部分
-	if begin := pkg.FindSliceInSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
+	if begin := composite.FindSliceInSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
 		endVersion := []byte(`-brightgreen">`)
-		if end := pkg.FindSliceInSlice(content, endVersion); end > 0 {
+		if end := composite.FindSliceInSlice(content, endVersion); end > 0 {
 			version, err := os.ReadFile(rootpath + "/version")
 			if err != nil {
 				panic(err)
@@ -161,11 +166,11 @@ func GenReadme() {
 		beginTree = []byte("```\r\n──────────────────begin──────────────────\r\nvoid-project\r\n")
 		endTree   = []byte("\r\n───────────────────end───────────────────\r\n```\r\n")
 	)
-	if pos := pkg.FindSliceInSlice(content, beginTree); pos > 0 {
+	if pos := composite.FindSliceInSlice(content, beginTree); pos > 0 {
 		readme = append(readme, content[lastPoint:pos+1]...)
 		readme = append(readme, structureTree...)
 	}
-	if pos := pkg.FindSliceInSlice(content, endTree); pos > 0 {
+	if pos := composite.FindSliceInSlice(content, endTree); pos > 0 {
 		lastPoint = pos - len(endTree) + 2
 	}
 	// 拼接剩下部分
@@ -183,6 +188,7 @@ func GenReadme() {
 	fmt.Println(tree)
 }
 
+// 读取项目文件夹，生成目录树
 func GenDirectoryTree(dir string, lv int) string {
 	levels[lv] = true
 	entries, err := os.ReadDir(dir)

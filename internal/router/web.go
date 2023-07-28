@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// View路由，传统后端驱动的SSR方式
 func SetWebRouter(gin *gin.Engine) {
 	gin.LoadHTMLGlob(pkg.GetRootPath() + "/web/template/*")
 	gin.Static("static", pkg.GetRootPath()+"/web/static/")

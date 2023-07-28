@@ -39,6 +39,7 @@ func NewLogger(lv Level) *Logger {
 }
 
 // 实例化SQLLogger
+// 目前给GORM用
 func NewSQLLogger() *Logger {
 	return NewLogger(SQLLevel)
 }
@@ -53,6 +54,7 @@ func (l Logger) Printf(format string, msg ...any) {
 }
 
 // 实例化ServerLogger
+// 目前给Gin用
 func NewServerLogger() io.Writer {
 	l := NewLogger(ServerLevel)
 	if Mode == "release" {
@@ -70,7 +72,7 @@ func (l *Logger) Write(p []byte) (n int, err error) {
 	return l.file.Write(p)
 }
 
-// 配置项
+// 使用和创建
 func (l *Logger) UseOrCreate() error {
 	name := time.Now().Format(time.DateOnly) + ".log"
 	if !l.valid || filepath.Base(l.file.Name()) != name {

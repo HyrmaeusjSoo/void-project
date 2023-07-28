@@ -18,6 +18,7 @@ func NewAstroDict() *AstroDict {
 	return &AstroDict{service.NewAstroDictService()}
 }
 
+// 从远程查询
 func (ad *AstroDict) FetchRemote(c *gin.Context) {
 	astro, err := ad.service.FetchRemote(c.Param("name"))
 	if err != nil {
@@ -27,6 +28,7 @@ func (ad *AstroDict) FetchRemote(c *gin.Context) {
 	response.Success(c, astro)
 }
 
+// 查询
 func (ad *AstroDict) Fetch(c *gin.Context) {
 	astro, err := ad.service.Fetch(c.Param("name"))
 	if err != nil {
@@ -36,6 +38,7 @@ func (ad *AstroDict) Fetch(c *gin.Context) {
 	response.Success(c, astro)
 }
 
+// 同步到本地
 func (ad *AstroDict) Sync(c *gin.Context) {
 	lang := c.Param("lang")
 	if lang != "ce" && lang != "ec" {

@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// 获取根目录
 func GetRootPath() string {
 	dir := getRootpathOSExecutable()
 	tmpEnv, _ := filepath.EvalSymlinks(os.TempDir())

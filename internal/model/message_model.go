@@ -4,6 +4,7 @@ import (
 	"void-project/internal/model/base"
 )
 
+// 消息
 type Message struct {
 	base.Model
 	FromId     uint      `gorm:"type:bigint(20);not null" json:"from_id"`

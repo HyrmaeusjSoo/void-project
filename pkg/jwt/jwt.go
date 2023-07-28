@@ -18,6 +18,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+// 生成标准Claims模式的Token
 func GenerateToken(userId uint) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, Claims{
 		UserID: userId,
@@ -33,6 +34,7 @@ func GenerateToken(userId uint) (string, error) {
 	return t.SignedString([]byte(global.Config.System.AuthJwtSecret))
 }
 
+// 转换Token为标准Claims
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (any, error) {
 		return []byte(global.Config.System.AuthJwtSecret), nil

@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.5-brightgreen">
+    <img src="https://img.shields.io/badge/version-1.0.6-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.20-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.2-blue"/></a>
@@ -15,25 +15,26 @@
 </div>
 
 ## 介绍
-void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架构，能够快速编写及实现web应用服务。符合Go语言定义的简单性开发原则设计哲学，同时兼顾了可拓展、易维护和规范化，在此间寻找平衡点。
+void-project 是基于Gin + GORM + go-redis等构建的Web应用集成后端架构，能够快速编写及实现Web应用服务。符合Go语言定义的简单性原则设计哲学进行开发，同时兼顾了可拓展、易维护和规范化，在此间寻找平衡点。
 
 分别参考了[golang-standards/project-layout](https://github.com/golang-standards/project-layout)社区约定俗成的标准布局，  
 还参考传统mvc分层模式，  
 以及Bob叔叔的[The Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)架构。
 
 ## Vue前端请求示例
+后端的示例已经尽量把Go和几个框架的特性都用起来。  
 与之配套的前端Vue简单的请求示例地址：[https://github.com/HyrmaeusjSoo/void-nebula](https://github.com/HyrmaeusjSoo/void-nebula)
 
 ## 特性
 - 🚀得益于Go语言的性能优化，能够快速处理请求并响应。
 - 🚀无缝粘合Gin框架写法，自由定义包括：路由、中间件、响应体、模板引擎等等，快速实现Web应用。
 - ✅遵循RESTful API风格定义规范。
-- ✅JWT Claims 鉴权/认证
-- ⚙️多数据库连接(MySQL, SQLServer, SQLite...)，跨库查询等。
+- ✅标准JWT Claims 鉴权/认证。
+- ⚙️多数据库连接(MySQL, SQLServer, SQLite...)，跨库查询、分页、自定义Scope等快捷操作。
 - ⚙️支持Redis的应用。
 - ⚙️WebSocket接收/发送消息。
 - 📃使用简单的自定义日志。实现控制台输出和写入文件，简单的日志分级，日志文件分层分日期方式记录。当然，同时也可以引入第三方日志库。
-- 🔢遵循Go语言设计哲学：简单性，轻松编写前后分层的代码，可以将时间多放在业务逻辑的处理上，从而避免把时间浪费在底层基础和调整框架上。
+- 🔢遵循Go语言设计哲学：简单性原则，轻松编写前后分层的代码，可以将时间多放在业务逻辑的处理上，从而避免把时间浪费在底层基础和调整框架上。
 - 🔢层次到模块间的代码规范化。
 
 ## TODO:
@@ -41,7 +42,6 @@ void-project 是基于Gin + GORM + go-redis等构建的web应用集成后端架�
 - 接收请求和处理时的并发优化。
 - 接下来准备引入OpenAPI(Swagger)接口文档解释库。由于目前api文件的生成库都是以注释方式生成的api定义文件，他这个注释加起来又麻烦占代码区域又大，滚动好几屏全是文档注释。所以我想等加入自动依赖注入后，按参数和返回方式生成，对于复杂结构体可以去容器里查找和分析。
 - 一键数据库初始化/迁移。目前的数据库表生成比较麻烦，还需要到./cmd/install目录下手动编写映射结构体的迁移操作。
-- 更多对Redis缓存的利用。
 - 在已完成一部分的基础上继续封装日志库，或引入Zap、logrus(第三方库有一点点的臃肿，我们需要的实际上有日志分级，信息格式化输出和写入文件就够了)。
 
 ## 目录结构
@@ -83,7 +83,10 @@ void-project
     │    ├── jwt
     │    ├── logger
     │    ├── md5
-    │    └── necromancy
+    │    ├── necromancy
+    │    └── types
+    │         ├── composite
+    │         └── primitive
     ├── runtime
     │    └── log
     └── web
@@ -147,7 +150,7 @@ go编译有很多参数和方式，最好进入到对应的目录内根据需要
 cd cmd/server
 
 # 2. 执行编译命令
-go build -ldflags "-w -s" -trimpath
+go build -ldflags "-s -w" -trimpath
 ```
 ##### 交叉编译
 交叉编译首先要使用go命令设置语言环境中对应的目标系统和cpu架构位数等。  
@@ -191,7 +194,7 @@ Logger: logger.New(
 ```  
 
 ## 生产使用  
- *（2023年7月17号基于此架构fork的项目首次上线到生产环境，正式使用version版本号，初版号为1.0.0）
+ *（2023年7月17号基于此架构fork的项目首次上线到生产环境，正式使用version版本号，初版号为1.0.0）  
  2023年基于此项目架构给某市政府下辖某管理机构开发过一套项目。由于敏感原因这里不贴出具体机构名！  
 
 

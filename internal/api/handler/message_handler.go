@@ -20,6 +20,7 @@ func NewMessage() *Message {
 	return &Message{service.NewMessageService()}
 }
 
+// 发送消息
 func (m *Message) SendUserMsg(c *gin.Context) {
 	err := m.service.Chat(c.Writer, c.Request)
 	if err != nil {
@@ -27,6 +28,7 @@ func (m *Message) SendUserMsg(c *gin.Context) {
 	}
 }
 
+// 查询在线用户
 func (m *Message) OnLine(c *gin.Context) {
 	id := request.GetAuthUserId(c)
 

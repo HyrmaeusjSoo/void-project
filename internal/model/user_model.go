@@ -2,6 +2,7 @@ package model
 
 import "void-project/internal/model/base"
 
+// 用户
 type User struct {
 	base.Model
 	Account       string     `gorm:"unique;type:varchar(50);not null;comment:唯一账号id" json:"account,omitempty"`
@@ -26,6 +27,7 @@ func (u *User) TableName() string {
 	return "user"
 }
 
+// 敏感信息字段清除
 func (u *User) SecureClear() {
 	u.Password = ""
 	u.Identity = nil

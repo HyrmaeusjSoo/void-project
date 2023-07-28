@@ -110,7 +110,7 @@ func (u *User) Login(c *gin.Context) {
 	})
 }
 
-// 获取
+// 查询用户
 func (u *User) Fetch(c *gin.Context) {
 	id, err := request.GetParamIntErr(c, "id")
 	if err != nil {
@@ -125,7 +125,7 @@ func (u *User) Fetch(c *gin.Context) {
 	response.Success(c, user)
 }
 
-// 获取列表
+// 用户列表
 func (u *User) List(c *gin.Context) {
 	pager, err := request.PageQuery(c)
 	if err != nil {

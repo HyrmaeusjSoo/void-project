@@ -14,6 +14,7 @@ func init() {
 	echo()
 }
 
+// 输出标记
 func echo() {
 	mark := base.NewMark()
 	for _, v := range mark {
@@ -21,12 +22,12 @@ func echo() {
 	}
 }
 
-// 初始化日志
+// 初始化自定义日志
 func InitLogger() {
 	logger.InitLogger(global.Config.System.Mode)
 }
 
-// 初始化配置文件
+// 初始化配置信息
 func InitConfig() {
 	global.InitConfig()
 }

@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// 格式化好的时间类型
+// 自定义时间类型
 type Time sql.NullTime
 
 func NewTime(t time.Time) *Time {

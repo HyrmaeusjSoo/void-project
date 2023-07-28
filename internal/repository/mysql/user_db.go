@@ -34,10 +34,11 @@ func (u *UserRepository) GetList(pager base.Pager) ([]model.User, int, error) {
 // 查询账户
 func (u *UserRepository) GetById(id uint) (*model.User, error) {
 	user := &model.User{}
-	if tx := u.db.First(user, id); tx.RowsAffected <= 0 {
-		return nil, errors.New("未找到用户！")
+	err := u.db.First(user, id).Error
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		err = nil
 	}
-	return user, nil
+	return user, err
 }
 
 // 账号是否存在

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RESTful风格的API路由
 func SetApiRouter(gin *gin.Engine) {
 	var (
 		userApi      = handler.NewUser()
@@ -18,6 +19,7 @@ func SetApiRouter(gin *gin.Engine) {
 	v1 := gin.Group("api/v1")
 	// v1.Use(middleware.Cors())
 
+	// 用户系列
 	u := v1.Group("user")
 	{
 		u.POST("", userApi.Register)
@@ -29,6 +31,7 @@ func SetApiRouter(gin *gin.Engine) {
 		u.POST("avatar", middleware.JWTAuth(), userApi.Avatar)
 	}
 
+	// 天文学词典系列
 	ad := v1.Group("astro").Use(middleware.JWTAuth())
 	{
 		ad.GET("/:name", astroDictApi.Fetch)
@@ -36,6 +39,7 @@ func SetApiRouter(gin *gin.Engine) {
 		ad.POST("/:lang", astroDictApi.Sync)
 	}
 
+	// 聊天系列
 	msg := v1.Group("message").Use(middleware.JWTAuth())
 	{
 		msg.GET("/send", messageApi.SendUserMsg)

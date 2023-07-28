@@ -7,6 +7,7 @@ import (
 	"void-project/internal/repository/driver"
 )
 
+// 迁移数据库结构、数据
 func main() {
 	defer func() {
 		fmt.Println("")

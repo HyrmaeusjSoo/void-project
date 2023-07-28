@@ -1,6 +1,21 @@
-package convert
+package primitive
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
+
+// string转int，不能转换也返回0
+func StringToInt(str string) int {
+	v, _ := strconv.Atoi(str)
+	return v
+}
+
+// string转float64，不能转换也返回0
+func StringToFloat64(str string) float64 {
+	v, _ := strconv.ParseFloat(str, 64)
+	return v
+}
 
 // 蛇形字符串转Pascal字符串
 func SnakeToPascal(snake string) string {

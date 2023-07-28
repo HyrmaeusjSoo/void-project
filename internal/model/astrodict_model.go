@@ -1,22 +1,25 @@
 package model
 
-type AstroDictJson struct {
-	AstroDict []struct {
-		C string `json:"C"`
-		E string `json:"E"`
-	} `json:"AstroDict"`
-}
-
-type Astrodict struct {
-	C string ``
-	E string ``
-}
+type (
+	// 天文学词典Json
+	AstroDictJson struct {
+		AstroDict []struct {
+			C string `json:"C"`
+			E string `json:"E"`
+		} `json:"AstroDict"`
+	}
+	// 天文学词典
+	Astrodict struct {
+		C string `` // 中文
+		E string `` // 英文
+	}
+	// 天文学词典，英-中
+	AstrodictEC Astrodict
+)
 
 func (*Astrodict) TableName() string {
 	return "Astrodict_CE"
 }
-
-type AstrodictEC Astrodict
 
 func (*AstrodictEC) TableName() string {
 	return "Astrodict_EC"

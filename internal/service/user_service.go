@@ -29,7 +29,9 @@ func NewUserService() *UserService {
 // 获取账号
 func (u *UserService) Fetch(id uint) (*model.User, error) {
 	user, err := u.db.GetById(id)
-	user.SecureClear() //清除敏感信息
+	if err == nil && user != nil {
+		user.SecureClear() //清除敏感信息
+	}
 	return user, err
 }
 
