@@ -10,16 +10,16 @@ func CompareSlice[T comparable](s1, s2 []T) bool {
 	return true
 }
 
-// 在长切片中查找短切片
-func FindSliceInSlice[T comparable](long, short []T) int {
+// 在切片中查找短切片
+func SearchSubSlice[T comparable](haystack, needle []T) int {
 	si := 0
-	for k, v := range long {
-		if v == short[si] {
+	for k, v := range haystack {
+		if v == needle[si] {
 			si++
 		} else {
 			si = 0
 		}
-		if si == len(short) {
+		if si == len(needle) {
 			return k
 		}
 	}

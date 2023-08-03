@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.6-05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.7-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.20-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.2-blue"/></a>
@@ -23,7 +23,7 @@ void-project 是基于Gin + GORM + go-redis等构建的Web应用集成后端架�
 
 ## Vue前端请求示例
 后端的示例已经尽量把Go和几个框架的特性都用起来。  
-与之配套的前端Vue简单的请求示例地址：[https://github.com/HyrmaeusjSoo/void-nebula](https://github.com/HyrmaeusjSoo/void-nebula)
+与之配套的前端Vue简单的请求示例地址：[void-nebula](https://github.com/HyrmaeusjSoo/void-nebula)
 
 ## 特性
 - 🚀得益于Go语言的性能优化，能够快速处理请求并响应。

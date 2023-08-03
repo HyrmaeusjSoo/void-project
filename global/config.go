@@ -57,7 +57,7 @@ var Config = struct {
 	}
 }{}
 
-// 读取配置文件
+// 初始化配置
 func InitConfig() {
 	sepr := string(os.PathSeparator)
 	root := fmt.Sprintf("%v%vconfig%v", pkg.GetRootPath(), sepr, sepr)

@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"fmt"
-	"net/http"
 	"void-project/internal/api/request"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
@@ -24,7 +22,7 @@ func NewMessage() *Message {
 func (m *Message) SendUserMsg(c *gin.Context) {
 	err := m.service.Chat(c.Writer, c.Request)
 	if err != nil {
-		fmt.Println(err.Error())
+		logger.LogError(err)
 	}
 }
 
@@ -34,7 +32,8 @@ func (m *Message) OnLine(c *gin.Context) {
 
 	users, err := m.service.OnLine(id)
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		logger.LogError(err)
+		response.FailError(c, apierr.FetchFailed, err.Error())
 		return
 	}
 	response.Success(c, users)
@@ -48,7 +47,7 @@ func (m *Message) List(c *gin.Context) {
 	messages, next, err := m.service.List(uId, uint(targetId), cursor)
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.FetchFailed)
+		response.FailError(c, apierr.FetchFailed, err.Error())
 		return
 	}
 	response.SuccessCursor(c, messages, next)

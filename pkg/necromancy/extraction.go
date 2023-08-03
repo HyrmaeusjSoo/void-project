@@ -13,17 +13,27 @@ import (
 )
 
 // 萃取 在interface中对应struct的字段值
-func Extraction(entity any, field string) (val any, err error) {
+func Extraction(entity any, name string) (val any, err error) {
 	chaos := reflect.ValueOf(entity)
+	if chaos.Kind() != reflect.Struct {
+		return nil, errors.New("reflect:元素非结构体")
+	}
+	field := chaos.FieldByName(name)
+	if field.IsValid() {
+		val = field.Interface()
+	} else {
+		err = errors.New("reflect:元素非结构体")
+	}
+
 	if chaos.Kind() == reflect.Struct {
-		field := chaos.FieldByName(field)
+		field := chaos.FieldByName(name)
 		if field.IsValid() {
 			val = field.Interface()
 		} else {
-			err = errors.New("未找到指定的cursor字段")
+			err = errors.New("reflect:未找到指定的字段")
 		}
 	} else {
-		err = errors.New("list元素非结构体")
+		err = errors.New("reflect:元素非结构体")
 	}
 	return
 }

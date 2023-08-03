@@ -117,7 +117,7 @@ func openLogFile(lv Level) (file *os.File, err error) {
 // 记录日志
 func Log(lv Level, msg any) (err error) {
 	if lv == 0 {
-		return errors.New("无效的日志Level")
+		return errors.New("logger:无效的日志Level")
 	}
 	logMsg := ""
 	if err, ok := msg.(error); ok {
@@ -125,7 +125,7 @@ func Log(lv Level, msg any) (err error) {
 	} else if err, ok := msg.(string); ok {
 		logMsg = err
 	} else {
-		return errors.New("无效的日志消息体类型")
+		return errors.New("logger:无效的日志消息体类型")
 	}
 
 	/* file, err := openLogFile(lv)

@@ -109,7 +109,7 @@ func writeFile(path string, mark []byte, isSet bool) {
 	}
 	// 删旧注释
 	if composite.CompareSlice(content[:6], mark[:6]) {
-		if pos := composite.FindSliceInSlice(content, mark[len(mark)-8:]); pos > 0 {
+		if pos := composite.SearchSubSlice(content, mark[len(mark)-8:]); pos > 0 {
 			content = content[pos+1:]
 		}
 	}
@@ -150,9 +150,9 @@ func GenReadme() {
 	readme := make([]byte, 0, len(content))
 	lastPoint := 0
 	// 版本号部分
-	if begin := composite.FindSliceInSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
+	if begin := composite.SearchSubSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
 		endVersion := []byte(`-brightgreen">`)
-		if end := composite.FindSliceInSlice(content, endVersion); end > 0 {
+		if end := composite.SearchSubSlice(content, endVersion); end > 0 {
 			version, err := os.ReadFile(rootpath + "/version")
 			if err != nil {
 				panic(err)
@@ -166,11 +166,11 @@ func GenReadme() {
 		beginTree = []byte("```\r\n──────────────────begin──────────────────\r\nvoid-project\r\n")
 		endTree   = []byte("\r\n───────────────────end───────────────────\r\n```\r\n")
 	)
-	if pos := composite.FindSliceInSlice(content, beginTree); pos > 0 {
+	if pos := composite.SearchSubSlice(content, beginTree); pos > 0 {
 		readme = append(readme, content[lastPoint:pos+1]...)
 		readme = append(readme, structureTree...)
 	}
-	if pos := composite.FindSliceInSlice(content, endTree); pos > 0 {
+	if pos := composite.SearchSubSlice(content, endTree); pos > 0 {
 		lastPoint = pos - len(endTree) + 2
 	}
 	// 拼接剩下部分
