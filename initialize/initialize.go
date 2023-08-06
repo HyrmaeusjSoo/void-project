@@ -22,14 +22,14 @@ func echo() {
 	}
 }
 
-// 初始化自定义日志
-func InitLogger() {
-	logger.InitLogger(global.Config.System.Mode)
-}
-
 // 初始化配置信息
 func InitConfig() {
 	global.InitConfig()
+}
+
+// 初始化自定义日志
+func InitLogger() {
+	logger.InitLogger(global.Config.System.Mode)
 }
 
 // 初始化数据库连接

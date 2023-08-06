@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"void-project/global"
 	"void-project/initialize"
 	"void-project/internal/router"
+	"void-project/pkg/logger"
 )
 
 // Web服务主程序
@@ -14,7 +16,7 @@ import (
 // 如果放在服务器上做成守护进程的话，要把fmt.Scanln类似的卡住控制台的代码都去掉。开发阶段可以留着看服务启动的最后报错信息。
 func main() {
 	defer func() {
-		fmt.Println("")
+		logger.LogServer("服务已停止")
 		fmt.Println("按[回车]键退出...")
 		fmt.Scanln()
 	}()
@@ -32,9 +34,14 @@ func main() {
 	router.SetApiRouter(r) // api router
 	router.SetWebRouter(r) // view router (html templates)
 
+	// 性能分析
+	go func() {
+		logger.LogServer(http.ListenAndServe(":5000", nil))
+	}()
+
 	// 启动监听服务
 	err := r.Run(global.Config.System.ListenAddr)
 	if err != nil {
-		log.Fatal(err)
+		logger.LogError("服务启动失败或意外关闭：" + err.Error())
 	}
 }

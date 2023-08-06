@@ -38,7 +38,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 		userId, err := strconv.Atoi(user)
 		if err != nil {
-			response.FailError(c, apierr.AuthInvalidUserId)
+			response.FailError(c, apierr.AuthInvalidUserId, err)
 			c.Abort()
 			return
 		}
@@ -48,7 +48,7 @@ func JWTAuth() gin.HandlerFunc {
 			if errors.Is(err, jwt.ErrTokenExpired) {
 				response.FailError(c, apierr.AuthExpired)
 			} else {
-				response.FailError(c, apierr.AuthInvalidToken)
+				response.FailError(c, apierr.AuthInvalidToken, err)
 			}
 			c.Abort()
 			return

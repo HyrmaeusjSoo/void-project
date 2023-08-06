@@ -26,7 +26,8 @@ func (u *User) Register(c *gin.Context) {
 	user := model.User{}
 	err := c.ShouldBind(&user)
 	if err != nil {
-		response.FailError(c, apierr.InvalidParameter)
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter, err)
 		return
 	}
 	if user.Account == "" || user.Password == "" || user.Identity == nil {
@@ -45,8 +46,7 @@ func (u *User) Register(c *gin.Context) {
 
 	err = u.service.Register(&user)
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.CreateFailed)
+		response.FailError(c, apierr.RegisterFailed, err)
 		return
 	}
 	response.Success(c, user)
@@ -60,7 +60,7 @@ func (u *User) Login(c *gin.Context) {
 	}
 	if err := c.ShouldBind(&param); err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.InvalidParameter)
+		response.FailError(c, apierr.InvalidParameter, err)
 		return
 	}
 	if param.Account == "" || param.Password == "" {
@@ -69,10 +69,10 @@ func (u *User) Login(c *gin.Context) {
 	}
 	eu, err := u.service.GetByAccount(param.Account)
 	if err != nil {
-		response.FailError(c, apierr.InternalServerError)
+		response.FailError(c, apierr.LoginFailed, err)
 		return
 	}
-	if eu.Account == "" {
+	if eu == nil || eu.Account == "" {
 		response.FailError(c, apierr.AccountNotExist)
 		return
 	}
@@ -86,20 +86,20 @@ func (u *User) Login(c *gin.Context) {
 	user, err := u.service.GetByAccountPassword(param.Account, eu.Password)
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.InternalServerError)
+		response.FailError(c, apierr.LoginFailed, err)
 		return
 	}
 
 	token, err := jwt.GenerateToken(user.ID)
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.InternalServerError)
+		response.FailError(c, apierr.InternalServerError, err)
 		return
 	}
 	claims, err := jwt.ParseToken(token)
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.InternalServerError)
+		response.FailError(c, apierr.InternalServerError, err)
 		return
 	}
 
@@ -118,8 +118,7 @@ func (u *User) Fetch(c *gin.Context) {
 	}
 	user, err := u.service.Fetch(uint(id))
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.FetchFailed)
+		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
 	response.Success(c, user)
@@ -129,14 +128,12 @@ func (u *User) Fetch(c *gin.Context) {
 func (u *User) List(c *gin.Context) {
 	pager, err := request.PageQuery(c)
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.InvalidParameter)
 		return
 	}
 	users, total, err := u.service.List(pager)
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.FetchFailed)
+		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
 	response.SuccessPage(c, users, total)
@@ -152,7 +149,7 @@ func (u *User) Update(c *gin.Context) {
 	user := &model.User{}
 	err = c.ShouldBind(user)
 	if err != nil {
-		response.FailError(c, apierr.InvalidParameter)
+		response.FailError(c, apierr.InvalidParameter, err)
 		return
 	}
 	user.ID = uint(id)
@@ -160,7 +157,7 @@ func (u *User) Update(c *gin.Context) {
 	err = u.service.Update(user)
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.UpdateFailed)
+		response.FailError(c, apierr.UpdateFailed, err)
 		return
 	}
 
@@ -177,7 +174,7 @@ func (u *User) Delete(c *gin.Context) {
 	err = u.service.Delete(uint(id))
 	if err != nil {
 		logger.LogError(err)
-		response.FailError(c, apierr.DeleteFailed)
+		response.FailError(c, apierr.DeleteFailed, err)
 		return
 	}
 	response.SuccessOk(c)
@@ -187,7 +184,7 @@ func (u *User) Delete(c *gin.Context) {
 func (u *User) Avatar(c *gin.Context) {
 	err := u.service.UploadAvatar(c, request.GetAuthUserId(c))
 	if err != nil {
-		response.FailError(c, apierr.FileUploadFailed)
+		response.FailError(c, apierr.FileUploadFailed, err)
 		return
 	}
 	response.SuccessOk(c)

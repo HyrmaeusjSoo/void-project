@@ -32,8 +32,7 @@ func (m *Message) OnLine(c *gin.Context) {
 
 	users, err := m.service.OnLine(id)
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.FetchFailed, err.Error())
+		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
 	response.Success(c, users)
@@ -46,8 +45,7 @@ func (m *Message) List(c *gin.Context) {
 	targetId := request.GetQueryInt(c, "target_id")
 	messages, next, err := m.service.List(uId, uint(targetId), cursor)
 	if err != nil {
-		logger.LogError(err)
-		response.FailError(c, apierr.FetchFailed, err.Error())
+		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
 	response.SuccessCursor(c, messages, next)

@@ -153,7 +153,7 @@ func GenReadme() {
 	if begin := composite.SearchSubSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
 		endVersion := []byte(`-brightgreen">`)
 		if end := composite.SearchSubSlice(content, endVersion); end > 0 {
-			version, err := os.ReadFile(rootpath + "/version")
+			version, err := os.ReadFile(rootpath + "/VERSION")
 			if err != nil {
 				panic(err)
 			}

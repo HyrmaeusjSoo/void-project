@@ -34,13 +34,15 @@ func GetQueryInt(c *gin.Context, name string) int {
 // 获取Query("name")中的int类型参数值 包含错误信息
 func GetQueryIntErr(c *gin.Context, name string) (int, error) {
 	if c.Query(name) == "" {
-		response.FailError(c, apierr.MissingRequiredParameter, name)
-		return 0, apierr.MissingRequiredParameter
+		err := apierr.MissingRequiredParameter.Wrap(name)
+		response.FailError(c, err)
+		return 0, err
 	}
 	res, err := strconv.Atoi(c.Query(name))
 	if err != nil {
-		response.FailError(c, apierr.InvalidParameter, name)
-		return 0, apierr.InvalidParameter
+		err = apierr.InvalidParameter.Wrap(name, err)
+		response.FailError(c, err)
+		return 0, err
 	}
 	return res, nil
 }
@@ -60,13 +62,15 @@ func GetParamInt(c *gin.Context, name string) int {
 // 获取Param("name")中的int类型参数值 包含错误信息
 func GetParamIntErr(c *gin.Context, name string) (int, error) {
 	if c.Param(name) == "" {
-		response.FailError(c, apierr.MissingRequiredParameter, name)
-		return 0, apierr.MissingRequiredParameter
+		err := apierr.MissingRequiredParameter.Wrap(name)
+		response.FailError(c, err)
+		return 0, err
 	}
 	res, err := strconv.Atoi(c.Param(name))
 	if err != nil {
-		response.FailError(c, apierr.InvalidParameter, name)
-		return 0, apierr.InvalidParameter
+		err = apierr.InvalidParameter.Wrap(name, err)
+		response.FailError(c, err)
+		return 0, err
 	}
 	return res, nil
 }

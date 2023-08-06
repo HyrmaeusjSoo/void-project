@@ -35,33 +35,30 @@ func (u *UserRepository) GetList(pager base.Pager) ([]model.User, int, error) {
 func (u *UserRepository) GetById(id uint) (*model.User, error) {
 	user := &model.User{}
 	err := u.db.First(user, id).Error
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
-		err = nil
-	}
 	return user, err
 }
 
 // 账号是否存在
 func (u *UserRepository) ExistsAccount(account string) bool {
 	var count int64
-	u.db.Model(model.User{}).Where("account = ?", account).Count(&count)
+	u.db.Model(model.User{}).Unscoped().Where("account = ?", account).Count(&count)
 	return count >= 1
 }
 
 // 按账号查询账户
 func (u *UserRepository) GetByAccount(account string) (*model.User, error) {
 	user := &model.User{}
-	tx := u.db.Where("account = ?", account).First(user)
-	if tx.RowsAffected == 0 {
-		return nil, errors.New("未找到用户")
-	}
-	return user, nil
+	err := u.db.Where("account = ?", account).First(user).Error
+	return user, err
 }
 
 // 账号密码查询账户
 func (u *UserRepository) GetByAccountPassword(account, password string) (*model.User, error) {
 	user := &model.User{}
 	tx := u.db.Where("account = ? AND password = ?", account, password).First(user)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
 	if tx.RowsAffected == 0 {
 		return nil, errors.New("未找到用户")
 	}
@@ -71,7 +68,10 @@ func (u *UserRepository) GetByAccountPassword(account, password string) (*model.
 // 账户列表in ids
 func (u *UserRepository) GetInIds(ids []uint) ([]model.User, error) {
 	var list []model.User
-	u.db.Where("id IN ?", ids).Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list)
+	err := u.db.Where("id IN ?", ids).Select("id", "account", "name", "avatar", "gender", "phone", "email", "is_login_out", "device_info").Find(&list).Error
+	if err != nil {
+		return list, err
+	}
 	return list, nil
 }
 
@@ -79,6 +79,9 @@ func (u *UserRepository) GetInIds(ids []uint) ([]model.User, error) {
 func (u *UserRepository) Create(user *model.User) error {
 	tx := u.db.Create(user)
 	if tx.RowsAffected == 0 {
+		if tx.Error != nil {
+			return tx.Error
+		}
 		return errors.New("新增用户失败")
 	}
 	return nil
@@ -93,8 +96,11 @@ func (u *UserRepository) Update(user *model.User) error {
 		Phone:  user.Phone,
 		Email:  user.Email,
 	})
+	if tx.Error != nil {
+		return tx.Error
+	}
 	if tx.RowsAffected == 0 {
-		return errors.New("更新用户失败")
+		return errors.New("更新0条记录")
 	}
 	return nil
 }
@@ -102,7 +108,10 @@ func (u *UserRepository) Update(user *model.User) error {
 // 删除账户
 func (u *UserRepository) Delete(id uint) error {
 	if tx := u.db.Delete(&model.User{}, id); tx.RowsAffected == 0 {
-		return errors.New("删除用户失败")
+		if tx.Error != nil {
+			return tx.Error
+		}
+		return errors.New("删除失败")
 	}
 	return nil
 }

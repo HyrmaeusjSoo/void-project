@@ -1,12 +1,12 @@
 package service
 
 import (
+	"errors"
 	"math/rand"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
-	"void-project/internal/api/response/apierr"
 	"void-project/internal/model"
 	"void-project/internal/model/base"
 	"void-project/internal/repository/mysql"
@@ -16,6 +16,7 @@ import (
 	"void-project/pkg/md5"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 type UserService struct {
@@ -26,15 +27,22 @@ func NewUserService() *UserService {
 	return &UserService{db: mysql.NewUserRepository()}
 }
 
-// 获取账号
+// 获取用户
 func (u *UserService) Fetch(id uint) (*model.User, error) {
 	user, err := u.db.GetById(id)
-	if err == nil && user != nil {
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("用户不存在")
+		}
+		return nil, err
+	}
+	if user != nil {
 		user.SecureClear() //清除敏感信息
 	}
 	return user, err
 }
 
+// 获取用户列表
 func (u *UserService) List(pager base.Pager) ([]model.User, int, error) {
 	return u.db.GetList(pager)
 }
@@ -59,8 +67,11 @@ func (u *UserService) Register(user *model.User) error {
 	user.LoginOutTime = t
 	user.HeartBeatTime = t
 	err = u.db.Create(user)
+	if err != nil {
+		return err
+	}
 	user.SecureClear() //清除敏感信息
-	return err
+	return nil
 }
 
 // 按账号获取账户
@@ -89,7 +100,7 @@ func (u *UserService) Delete(id uint) error {
 func (u *UserService) UploadAvatar(c *gin.Context, uid uint) error {
 	file, err := c.FormFile("avatar")
 	if err != nil {
-		return apierr.InvalidParameter
+		return err
 	}
 
 	// 存图片
@@ -108,19 +119,19 @@ func (u *UserService) UploadAvatar(c *gin.Context, uid uint) error {
 	err = c.SaveUploadedFile(file, pkg.GetRootPath()+"/web/upload/"+path.String())
 	if err != nil {
 		logger.LogError(err)
-		return apierr.FileUploadFailed
+		return err
 	}
 
 	// 存数据库
 	user, err := u.db.GetById(uid)
 	if err != nil {
-		return apierr.UpdateFailed
+		return err
 	}
 	avatar := path.String()
 	user.Avatar = &avatar
 	err = u.db.Update(user)
 	if err != nil {
-		return apierr.UpdateFailed
+		return err
 	}
 
 	return nil

@@ -1,9 +1,10 @@
 package request
 
 import (
-	"errors"
 	"strconv"
 	"void-project/global"
+	"void-project/internal/api/response"
+	"void-project/internal/api/response/apierr"
 	"void-project/internal/model/base"
 	"void-project/pkg/logger"
 
@@ -17,14 +18,18 @@ func PageQuery(c *gin.Context) (pager base.Pager, err error) {
 		pager.Page, err = strconv.Atoi(page)
 		if err != nil {
 			logger.LogError("[request-paginate-PageQuery] page参数无效：" + err.Error())
-			return pager, errors.New("page参数无效：" + err.Error())
+			err = apierr.InvalidPaginateParameter.Wrap("page参数无效", err)
+			response.FailError(c, err)
+			return pager, err
 		}
 	}
 	if size := c.Query("size"); size != "" {
 		pager.Size, err = strconv.Atoi(size)
 		if err != nil {
 			logger.LogError("[request-paginate-PageQuery] size参数无效：" + err.Error())
-			return pager, errors.New("size参数无效：" + err.Error())
+			err = apierr.InvalidPaginateParameter.Wrap("size参数无效", err)
+			response.FailError(c, err)
+			return pager, err
 		}
 	}
 	return

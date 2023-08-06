@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"net/http"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
 	"void-project/internal/service"
@@ -22,7 +21,7 @@ func NewAstroDict() *AstroDict {
 func (ad *AstroDict) FetchRemote(c *gin.Context) {
 	astro, err := ad.service.FetchRemote(c.Param("name"))
 	if err != nil {
-		response.Fail(c, http.StatusOK, err.Error())
+		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
 	response.Success(c, astro)
@@ -32,7 +31,7 @@ func (ad *AstroDict) FetchRemote(c *gin.Context) {
 func (ad *AstroDict) Fetch(c *gin.Context) {
 	astro, err := ad.service.Fetch(c.Param("name"))
 	if err != nil {
-		response.FailError(c, apierr.FetchFailed)
+		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
 	response.Success(c, astro)
@@ -48,7 +47,7 @@ func (ad *AstroDict) Sync(c *gin.Context) {
 	err := ad.service.Sync(lang)
 	if err != nil {
 		logger.LogInfo(err)
-		response.FailError(c, apierr.SaveFailed)
+		response.FailError(c, apierr.SaveFailed, err)
 		return
 	}
 	response.SuccessOk(c)
