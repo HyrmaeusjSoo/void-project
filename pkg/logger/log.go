@@ -99,8 +99,8 @@ func (l *Logger) UseOrCreate() error {
 
 // 打开日志文件
 func openLogFile(lv Level) (file *os.File, err error) {
-	sepr := string(os.PathSeparator)
-	path := fmt.Sprintf("%v%vruntime%vlog%v%v%v", pkg.GetRootPath(), sepr, sepr, sepr, lv.Name(), sepr)
+	sep := string(os.PathSeparator)
+	path := fmt.Sprintf("%v%vruntime%vlog%v%v%v", pkg.GetRootPath(), sep, sep, sep, lv.Name(), sep)
 	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
 		err = os.MkdirAll(path, os.ModePerm)
@@ -178,10 +178,10 @@ func LogServer(msg any) error {
 
 // 清空日志文件
 func ClearLog(lv Level) error {
-	sepr := string(os.PathSeparator)
-	path := fmt.Sprintf("%v%vruntime%vlog%v", pkg.GetRootPath(), sepr, sepr, sepr)
+	sep := string(os.PathSeparator)
+	path := fmt.Sprintf("%v%vruntime%vlog%v", pkg.GetRootPath(), sep, sep, sep)
 	if lv != 0 {
-		path += lv.Name() + sepr
+		path += lv.Name() + sep
 	}
 	return os.RemoveAll(path)
 }

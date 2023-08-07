@@ -5,6 +5,7 @@ import (
 	"time"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
+	"void-project/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
@@ -40,7 +41,8 @@ func GetQueryIntErr(c *gin.Context, name string) (int, error) {
 	}
 	res, err := strconv.Atoi(c.Query(name))
 	if err != nil {
-		err = apierr.InvalidParameter.Wrap(name, err)
+		logger.LogError(err)
+		err = apierr.InvalidParameter.Wrap(name)
 		response.FailError(c, err)
 		return 0, err
 	}
@@ -68,7 +70,8 @@ func GetParamIntErr(c *gin.Context, name string) (int, error) {
 	}
 	res, err := strconv.Atoi(c.Param(name))
 	if err != nil {
-		err = apierr.InvalidParameter.Wrap(name, err)
+		logger.LogError(err)
+		err = apierr.InvalidParameter.Wrap(name)
 		response.FailError(c, err)
 		return 0, err
 	}

@@ -59,8 +59,8 @@ var Config = struct {
 
 // 初始化配置
 func InitConfig() {
-	sepr := string(os.PathSeparator)
-	root := fmt.Sprintf("%v%vconfig%v", pkg.GetRootPath(), sepr, sepr)
+	sep := string(os.PathSeparator)
+	root := fmt.Sprintf("%v%vconfig%v", pkg.GetRootPath(), sep, sep)
 
 	dbConfigFile, err := os.Open(root + "database.json")
 	if err != nil {
