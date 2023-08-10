@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	_ "net/http/pprof"
+	"runtime/debug"
 	"void-project/global"
 	"void-project/initialize"
 	"void-project/internal/router"
@@ -16,6 +17,10 @@ import (
 // 如果放在服务器上做成守护进程的话，要把fmt.Scanln类似的卡住控制台的代码都去掉。开发阶段可以留着看服务启动的最后报错信息。
 func main() {
 	defer func() {
+		if err := recover(); err != nil {
+			logger.LogServer(err)
+			logger.LogServer(string(debug.Stack()))
+		}
 		logger.LogServer("服务已停止")
 		fmt.Println("按[回车]键退出...")
 		fmt.Scanln()

@@ -151,7 +151,7 @@ func GenReadme() {
 	lastPoint := 0
 	// 版本号部分
 	if begin := composite.SearchSubSlice(content, []byte(`<img src="https://img.shields.io/badge/version-`)); begin > 0 {
-		endVersion := []byte(`-brightgreen">`)
+		endVersion := []byte(`-05e5a5">`)
 		if end := composite.SearchSubSlice(content, endVersion); end > 0 {
 			version, err := os.ReadFile(rootpath + "/VERSION")
 			if err != nil {

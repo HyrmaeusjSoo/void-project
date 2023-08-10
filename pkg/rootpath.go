@@ -35,3 +35,14 @@ func runtimeCaller() string {
 	}
 	return filepath.Join(current, "../../")
 }
+
+// 根目录下的相对路径
+//
+//	传入绝对路径（全路径），返回与根目录的相对路径
+func SubPath(dir string) string {
+	relPath, err := filepath.Rel(GetRootPath(), dir)
+	if err != nil {
+		return dir
+	}
+	return relPath
+}

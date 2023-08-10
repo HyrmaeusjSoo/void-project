@@ -17,7 +17,7 @@ func PageQuery(c *gin.Context) (pager base.Pager, err error) {
 	if page := c.Query("page"); page != "" {
 		pager.Page, err = strconv.Atoi(page)
 		if err != nil {
-			logger.LogError("[request-paginate-PageQuery] page参数无效：" + err.Error())
+			logger.LogError("page参数无效：" + err.Error())
 			err = apierr.InvalidPaginateParameter.Wrap("page参数无效")
 			response.FailError(c, err)
 			return pager, err
@@ -26,7 +26,7 @@ func PageQuery(c *gin.Context) (pager base.Pager, err error) {
 	if size := c.Query("size"); size != "" {
 		pager.Size, err = strconv.Atoi(size)
 		if err != nil {
-			logger.LogError("[request-paginate-PageQuery] size参数无效：" + err.Error())
+			logger.LogError("size参数无效：" + err.Error())
 			err = apierr.InvalidPaginateParameter.Wrap("size参数无效")
 			response.FailError(c, err)
 			return pager, err

@@ -7,6 +7,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
+	"strconv"
+	"strings"
 	"time"
 	"void-project/pkg"
 )
@@ -142,7 +145,25 @@ func Log(lv Level, msg any) (err error) {
 	if err != nil {
 		return
 	}
-	log.Println("-", logMsg)
+
+	_, caller1, caline1, _ := runtime.Caller(2)
+	_, caller2, caline2, _ := runtime.Caller(3)
+	msgBuilder := strings.Builder{}
+	msgBuilder.WriteString("[caller] ")
+	// 判断并排除调用链中的gin.Context
+	if !(strings.Contains(caller2, "github.com/gin-gonic/gin") && strings.Contains(caller2, "context.go")) {
+		msgBuilder.WriteString(pkg.SubPath(caller2))
+		msgBuilder.WriteRune(':')
+		msgBuilder.WriteString(strconv.Itoa(caline2))
+		msgBuilder.WriteString(" -> ")
+	}
+	msgBuilder.WriteString(pkg.SubPath(caller1))
+	msgBuilder.WriteRune(':')
+	msgBuilder.WriteString(strconv.Itoa(caline1))
+	msgBuilder.WriteString(" [message] ")
+	msgBuilder.WriteString(logMsg)
+	log.Println(msgBuilder.String())
+	// log.Println("-", logMsg)
 	return
 }
 

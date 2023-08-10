@@ -111,7 +111,7 @@ func (u *UserRepository) Delete(id uint) error {
 		if tx.Error != nil {
 			return tx.Error
 		}
-		return errors.New("删除失败")
+		return errors.New("删除0条记录")
 	}
 	return nil
 }
