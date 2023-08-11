@@ -131,12 +131,6 @@ func Log(lv Level, msg any) (err error) {
 		return errors.New("logger:无效的日志消息体类型")
 	}
 
-	/* file, err := openLogFile(lv)
-	if err != nil {
-		return
-	}
-	defer file.Close() */
-
 	l, ok := logFile[lv]
 	if !ok {
 		l = NewLogger(lv)

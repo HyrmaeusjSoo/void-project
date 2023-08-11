@@ -1,12 +1,12 @@
 package mysql
 
 import (
-	"errors"
 	"time"
 	"void-project/internal/model"
 	"void-project/internal/model/base"
 	"void-project/internal/repository"
 	"void-project/internal/repository/driver"
+	"void-project/internal/repository/mysql/scope"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -24,7 +24,7 @@ func NewMessageRepository() *MessageRepository {
 // gorm.Preload预加载 - 联表查询示例 - 该模式返回层级嵌套的结构体
 func (m *MessageRepository) GetList() ([]model.Message, error) {
 	var list []model.Message
-	if err := m.db.Preload(clause.Associations, omitUserSensitivity).Find(&list).Error; err != nil {
+	if err := m.db.Preload(clause.Associations, scope.OmitUserSensitivity).Find(&list).Error; err != nil {
 		return nil, err
 	}
 	return list, nil
@@ -60,17 +60,10 @@ func (m *MessageRepository) GetById(id uint) *model.Message {
 
 // 新增消息
 func (m *MessageRepository) Create(msg *model.Message) error {
-	tx := m.db.Omit(clause.Associations).Create(msg)
-	if tx.RowsAffected == 0 {
-		return errors.New("新增失败")
-	}
-	return nil
+	return scope.Create(m.db, msg)
 }
 
 // 删除消息
 func (m *MessageRepository) Delete(id uint) error {
-	if tx := m.db.Delete(&model.Message{}, id); tx.RowsAffected == 0 {
-		return errors.New("删除失败")
-	}
-	return nil
+	return scope.Delete(m.db, &model.Message{}, id)
 }

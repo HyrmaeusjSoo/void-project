@@ -6,6 +6,7 @@ import (
 	"void-project/internal/model/base"
 	"void-project/internal/repository"
 	"void-project/internal/repository/driver"
+	"void-project/internal/repository/mysql/scope"
 
 	"gorm.io/gorm"
 )
@@ -77,41 +78,21 @@ func (u *UserRepository) GetInIds(ids []uint) ([]model.User, error) {
 
 // 新增用户
 func (u *UserRepository) Create(user *model.User) error {
-	tx := u.db.Create(user)
-	if tx.RowsAffected == 0 {
-		if tx.Error != nil {
-			return tx.Error
-		}
-		return errors.New("新增用户失败")
-	}
-	return nil
+	return scope.Create(u.db, user)
 }
 
 // 更新账户
 func (u *UserRepository) Update(user *model.User) error {
-	tx := u.db.Model(user).Updates(model.User{
+	return scope.Update(u.db.Model(user), model.User{
 		Name:   user.Name,
 		Avatar: user.Avatar,
 		Gender: user.Gender,
 		Phone:  user.Phone,
 		Email:  user.Email,
 	})
-	if tx.Error != nil {
-		return tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return errors.New("更新0条记录")
-	}
-	return nil
 }
 
 // 删除账户
 func (u *UserRepository) Delete(id uint) error {
-	if tx := u.db.Delete(&model.User{}, id); tx.RowsAffected == 0 {
-		if tx.Error != nil {
-			return tx.Error
-		}
-		return errors.New("删除0条记录")
-	}
-	return nil
+	return scope.Delete(u.db, &model.User{}, id)
 }

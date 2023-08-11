@@ -1,4 +1,3 @@
 
 runtime/log/*
 web/upload/*
-cmd/shiyan/main.go

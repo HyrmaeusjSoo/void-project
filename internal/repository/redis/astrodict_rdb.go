@@ -35,9 +35,9 @@ func (ad *AstroDict) Save(astrodict model.AstroDictJson) error {
 
 // 查询
 func (ad *AstroDict) Fetch() (astro *model.AstroDictJson, err error) {
-	val, err1 := ad.db.Get(ad.ctx, "astrodict_ce").Result()
-	if err1 != nil && err1 != redis.Nil {
-		return nil, err1
+	val, redisErr := ad.db.Get(ad.ctx, "astrodict_ce").Result()
+	if redisErr != nil && redisErr != redis.Nil {
+		return nil, redisErr
 	}
 
 	if val != "" {

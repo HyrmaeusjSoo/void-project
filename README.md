@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.9-05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.10-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.20-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.2-blue"/></a>
@@ -42,7 +42,7 @@ void-project 是基于Gin + GORM + go-redis等构建的Web应用集成后端架�
 - 接收请求和处理时的并发优化。
 - 接下来准备引入OpenAPI(Swagger)接口文档解释库。由于目前api文件的生成库都是以注释方式生成的api定义文件，他这个注释加起来又麻烦占代码区域又大，滚动好几屏全是文档注释。所以我想等加入自动依赖注入后，按参数和返回方式生成，对于复杂结构体可以去容器里查找和分析。
 - 一键数据库初始化/迁移。目前的数据库表生成比较麻烦，还需要到./cmd/install目录下手动编写映射结构体的迁移操作。
-- 在已完成一部分的基础上继续封装日志库，或引入Zap、logrus(第三方库有一点点的臃肿，我们需要的实际上有日志分级，信息格式化输出和写入文件就够了)。
+- 考虑将自定义logger结合到Go1.21.0内置的slog包来封装日志，写入json格式，以便后续读取和分析。
 
 ## 目录结构
 ```
@@ -70,6 +70,7 @@ void-project
     │    ├── repository
     │    │    ├── driver
     │    │    ├── mysql
+    │    │    │    └── scope
     │    │    ├── redis
     │    │    ├── request
     │    │    └── sqlite
@@ -148,7 +149,7 @@ go编译有很多参数和方式，最好进入到对应的目录内根据需要
 cd cmd/server
 
 # 2. 执行编译命令
-go build -ldflags "-s -w" -trimpath
+go build -ldflags "-s -w" -v -trimpath
 ```
 ##### 交叉编译
 交叉编译首先要使用go命令设置语言环境中对应的目标系统和cpu架构位数等。  
@@ -161,7 +162,7 @@ go env -w GOARCH=amd64  # 设置目标cpu架构及位数
 go env -w CGO_ENABLED=0 # 关闭cgo，某些系统下的cgo都不一样。目前没用到cgo
 
 # 2. 接下来在cmd目录下的某项内执行编译命令，就自动打包成目标系统的可执行文件了
-go build -ldflags "-s -w" -trimpath
+go build -ldflags "-s -w" -v -trimpath
 ```
 
 #### 特别提示
