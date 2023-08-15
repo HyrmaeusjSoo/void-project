@@ -1,6 +1,7 @@
 package primitive
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -50,4 +51,41 @@ func PascalToSnake(pascal string) string {
 		}
 	}
 	return string(snake)
+}
+
+// abcdef转换为qwerty
+func ConvertAbcToQwerty(abc string) string {
+	return keyboardLayout(abc, 1)
+}
+
+// qwerty转换为abcdef
+func ConvertQwertyToAbc(qwerty string) string {
+	return keyboardLayout(qwerty, 2)
+}
+
+// qwerty键盘布局
+func keyboardLayout(s string, typ int) string {
+	var (
+		k1, k2 = []rune("QWERTYUIOPASDFGHJKLZXCVBNM"), []rune("qwertyuiopasdfghjklzxcvbnm")
+		r      = make([]rune, 0, len(s))
+	)
+	for _, v := range s {
+		t := v
+		if v >= 65 && v <= 90 {
+			if typ == 1 {
+				t = k1[v-65]
+			} else {
+				t = rune(slices.Index(k1, v) + 65)
+			}
+		} else if v >= 97 && v <= 122 {
+			if typ == 1 {
+				t = k2[v-97]
+			} else {
+				t = rune(slices.Index(k2, v) + 97)
+			}
+		}
+		r = append(r, t)
+	}
+
+	return string(r)
 }
