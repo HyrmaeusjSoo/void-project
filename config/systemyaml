@@ -1,0 +1,6 @@
+mode: release
+listen_addr: :5555
+auth_token_expire: 2
+auth_jwt_secret: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]{}\|;:'",.<>/?
+pagesize: 15
+astro_dict_cache_expire: 2

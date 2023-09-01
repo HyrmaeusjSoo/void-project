@@ -26,7 +26,7 @@ func GenerateToken(userId uint) (string, error) {
 			Issuer:    "HyrmaeusjSoo",
 			Subject:   "void-project",
 			Audience:  jwt.ClaimStrings{strconv.Itoa(int(userId))},
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * global.Config.System.AuthTokenExpire)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(global.Config.System.AuthTokenExpire))),
 			NotBefore: jwt.NewNumericDate(time.Now()),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},

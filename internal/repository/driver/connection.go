@@ -55,6 +55,7 @@ func InitSQLite() {
 
 	var err error
 	SQLite, err = gorm.Open(sqlite.Open(pkg.GetRootPath()+op.Path), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
 		// SQL语句记录
 		Logger: logger.New(
 			log.NewSQLLogger(),
