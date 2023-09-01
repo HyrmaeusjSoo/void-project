@@ -42,7 +42,7 @@ func InitRepository() {
 
 // 初始化Server
 func InitServer() *gin.Engine {
-	if global.Config.System.Mode == "release" {
+	if global.Config.System.Mode == global.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode) //发布模式
 		gin.DisableConsoleColor()    //禁用彩色日志
 	} else {

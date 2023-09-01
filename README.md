@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.13-05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.14-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.3-blue"/></a>
@@ -100,9 +100,10 @@ void-project
 ```
 
 ## 获取和使用
+从1.21.0开始，go.mod中的版本号将作为编译时的最小Go语言版本，这是官方新的约束规则。
 ```
 - 下载并安装Go
-- Go版本 >= v1.18
+- Go版本 >= v1.21.0 *项目中使用了Go的新版本新特性
 - 安装MySQL,Redis等数据库/缓存
 ```
 ##### （1）无法访问Google系列网站
@@ -166,7 +167,7 @@ go build -ldflags "-s -w" -v -trimpath
 ```
 
 #### 特别提示
-！！！2023-07-15更新之后不用改写代码了，只要再config/system.json内加入Mode节点为release就是生产环境！！！  
+！！！2023-07-15更新之后不用改写代码了，只要在config/system.json或者.yaml配置文件内加入mode节点为release就是生产环境！！！  
 
 生产环境中应该简单直观最好，因此建议在生产环境设置Gin模式为‘发布模式’，并且在Gin和GORM的日志配置选项中禁用色彩打印。
 ```GO

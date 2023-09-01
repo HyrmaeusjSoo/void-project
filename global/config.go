@@ -52,11 +52,13 @@ var Config = struct {
 		// 模式：release=发布模式，dev=开发模式。
 		// 主要控制日志只写入文件，禁用日志颜色等; 开发模式更方便查看日志输出，发布模式写入到文件更稳定。
 		Mode                 string `json:"mode" yaml:"mode"`
-		ListenAddr           string `json:"listen_addr" yaml:"listen_addr"`                         // 服务监听的连接地址和端口号，如：127.0.0.1:80
+		ListenAddr           string `json:"listen_addr" yaml:"listen_addr"`                         // 服务监听的连接地址和端口号，如：127.0.0.1:5555
 		AuthJwtSecret        string `json:"auth_jwt_secret" yaml:"auth_jwt_secret"`                 // 鉴权密钥，推荐使用生成的Hash串
 		AuthTokenExpire      int    `json:"auth_token_expire" yaml:"auth_token_expire"`             // 鉴权过期时间
 		PageSize             int    `json:"pagesize" yaml:"pagesize"`                               // 分页大小
 		AstroDictCacheExpire int    `json:"astro_dict_cache_expire" yaml:"astro_dict_cache_expire"` // 忽略
+		PProf                bool   `json:"pprof" yaml:"pprof"`                                     // 是否开启性能分析
+		PProfAddr            string `json:"pprof_addr" yaml:"pprof_addr"`                           // 性能分析链接地址
 	}
 }{}
 

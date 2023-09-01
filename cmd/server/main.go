@@ -39,10 +39,12 @@ func main() {
 	router.SetApiRouter(r) // api router
 	router.SetWebRouter(r) // view router (html templates)
 
-	// 性能分析
-	go func() {
-		logger.LogServer(http.ListenAndServe(":5000", nil))
-	}()
+	// 性能分析 http://address:port/debug/pprof/
+	if global.Config.System.PProf {
+		go func() {
+			logger.LogServer(http.ListenAndServe(global.Config.System.PProfAddr, nil))
+		}()
+	}
 
 	// 启动监听服务
 	err := r.Run(global.Config.System.ListenAddr)

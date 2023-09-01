@@ -25,7 +25,7 @@ var (
 func InitMySQL() {
 	// 读取配置文件
 	op := global.Config.DB.MySQL
-	isColorful := pkg.IfElse(global.Config.System.Mode == "release", false, true)
+	isColorful := pkg.IfElse(global.Config.System.Mode == global.ReleaseMode, false, true)
 
 	var err error
 	MySQL, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)), &gorm.Config{
@@ -51,7 +51,7 @@ func InitMySQL() {
 func InitSQLite() {
 	//读取配置文件
 	op := global.Config.DB.SQLite
-	isColorful := pkg.IfElse(global.Config.System.Mode == "release", false, true)
+	isColorful := pkg.IfElse(global.Config.System.Mode == global.ReleaseMode, false, true)
 
 	var err error
 	SQLite, err = gorm.Open(sqlite.Open(pkg.GetRootPath()+op.Path), &gorm.Config{

@@ -14,6 +14,8 @@ import (
 	"void-project/pkg"
 )
 
+const release = "release"
+
 var (
 	Mode    = "" //模式，release=发布模式、dev=开发模式。发布模式只写入文件，开发模式写入文件同时控制台输出
 	logFile = make(map[Level]*Logger, 10)
@@ -60,7 +62,7 @@ func (l Logger) Printf(format string, msg ...any) {
 // 目前给Gin用
 func NewServerLogger() io.Writer {
 	l := NewLogger(ServerLevel)
-	if Mode == "release" {
+	if Mode == release {
 		return l
 	}
 	return io.MultiWriter(os.Stdout, l)
@@ -90,7 +92,7 @@ func (l *Logger) UseOrCreate() error {
 		l.file = file
 	}
 
-	if Mode != "release" {
+	if Mode != release {
 		log.SetOutput(io.MultiWriter(os.Stdout, l.file))
 	} else {
 		log.SetOutput(l.file)
