@@ -17,13 +17,15 @@ import (
 const release = "release"
 
 var (
-	Mode    = "" //模式，release=发布模式、dev=开发模式。发布模式只写入文件，开发模式写入文件同时控制台输出
+	path    = "" //路径，保存日志文件目标位置
+	mode    = "" //模式，release=发布模式、dev=开发模式。发布模式只写入文件，开发模式写入文件同时控制台输出
 	logFile = make(map[Level]*Logger, 10)
 )
 
 // 初始化日志
-func InitLogger(mode string) {
-	Mode = mode
+func InitLogger(logPath, logMode string) {
+	path = logPath
+	mode = logMode
 }
 
 // 自定义日志结构体
@@ -62,7 +64,7 @@ func (l Logger) Printf(format string, msg ...any) {
 // 目前给Gin用
 func NewServerLogger() io.Writer {
 	l := NewLogger(ServerLevel)
-	if Mode == release {
+	if mode == release {
 		return l
 	}
 	return io.MultiWriter(os.Stdout, l)
@@ -92,7 +94,7 @@ func (l *Logger) UseOrCreate() error {
 		l.file = file
 	}
 
-	if Mode != release {
+	if mode != release {
 		log.SetOutput(io.MultiWriter(os.Stdout, l.file))
 	} else {
 		log.SetOutput(l.file)
@@ -104,19 +106,18 @@ func (l *Logger) UseOrCreate() error {
 
 // 打开日志文件
 func openLogFile(lv Level) (file *os.File, err error) {
-	sep := string(os.PathSeparator)
-	path := fmt.Sprintf("%v%vruntime%vlog%v%v%v", pkg.GetRootPath(), sep, sep, sep, lv.Name(), sep)
-	_, err = os.Stat(path)
-	if os.IsNotExist(err) {
-		err = os.MkdirAll(path, os.ModePerm)
-		if err != nil {
-			return
+	logPath := fmt.Sprintf("%v%v/", path, lv.Name())
+	if _, err = os.Stat(logPath); err != nil {
+		if os.IsNotExist(err) {
+			if err = os.MkdirAll(logPath, os.ModePerm); err != nil {
+				return
+			}
+		} else {
+			return nil, err
 		}
-	} else if err != nil {
-		return
 	}
 
-	return os.OpenFile(path+time.Now().Format(time.DateOnly)+".log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	return os.OpenFile(logPath+time.Now().Format(time.DateOnly)+".log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
 }
 
 // 记录日志
@@ -195,10 +196,9 @@ func LogServer(msg any) error {
 
 // 清空日志文件
 func ClearLog(lv Level) error {
-	sep := string(os.PathSeparator)
-	path := fmt.Sprintf("%v%vruntime%vlog%v", pkg.GetRootPath(), sep, sep, sep)
+	logPath := path
 	if lv != 0 {
-		path += lv.Name() + sep
+		logPath = fmt.Sprintf("%v%v/", path, lv.Name())
 	}
-	return os.RemoveAll(path)
+	return os.RemoveAll(logPath)
 }

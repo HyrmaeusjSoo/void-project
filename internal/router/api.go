@@ -13,6 +13,7 @@ func SetApiRouter(gin *gin.Engine) {
 		userApi      = handler.NewUser()
 		astroDictApi = handler.NewAstroDict()
 		messageApi   = handler.NewMessage()
+		visitorApi   = handler.NewVisitor()
 	)
 
 	gin.Use(middleware.Cors())
@@ -46,4 +47,13 @@ func SetApiRouter(gin *gin.Engine) {
 		msg.GET("/online", messageApi.OnLine)
 		msg.GET("", messageApi.List)
 	}
+
+	// 访客系列
+	v := v1.Group("visitor").Use(middleware.JWTAuth())
+	{
+		v.GET("/ip/:ip", middleware.WriteRequestLog(), visitorApi.IP)
+		v.GET("/log", visitorApi.FetchLog)
+		v.GET("/stat", visitorApi.Stat)
+	}
+
 }

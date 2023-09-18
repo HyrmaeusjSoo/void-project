@@ -6,7 +6,9 @@ import (
 	"void-project/internal/middleware"
 	"void-project/internal/model/base"
 	"void-project/internal/repository/driver"
+	"void-project/pkg"
 	"void-project/pkg/logger"
+	"void-project/pkg/logger/slog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +32,8 @@ func InitConfig() {
 
 // 初始化自定义日志
 func InitLogger() {
-	logger.InitLogger(global.Config.System.Mode)
+	logger.InitLogger(pkg.GetRootPath()+"/runtime/log/", global.Config.System.Mode)
+	slog.InitSLog(pkg.GetRootPath()+"/runtime/slog/", global.Config.System.Mode)
 }
 
 // 初始化数据库连接

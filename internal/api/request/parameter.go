@@ -55,6 +55,12 @@ func GetQueryTime(c *gin.Context, name string) time.Time {
 	return t
 }
 
+// 获取Query("name")中的日期，time.Time类型参数值
+func GetQueryDate(c *gin.Context, name string) time.Time {
+	t, _ := time.ParseInLocation(time.DateOnly, c.Query(name), time.Local)
+	return t
+}
+
 // 获取Param("name")中的int类型参数值
 func GetParamInt(c *gin.Context, name string) int {
 	res, _ := strconv.Atoi(c.Param(name))

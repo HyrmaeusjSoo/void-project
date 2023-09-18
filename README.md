@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.14-05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.16-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.3-blue"/></a>
@@ -81,13 +81,15 @@ void-project
     │    ├── bcrypt
     │    ├── jwt
     │    ├── logger
+    │    │    └── slog
     │    ├── md5
     │    ├── necromancy
     │    └── types
     │         ├── composite
     │         └── primitive
     ├── runtime
-    │    └── log
+    │    ├── log
+    │    └── slog
     └── web
          ├── app
          ├── static
