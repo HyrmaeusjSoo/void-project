@@ -29,7 +29,7 @@ func SetApiRouter(gin *gin.Engine) {
 		u.GET("", middleware.JWTAuth(), userApi.List)
 		u.PUT("/:id", middleware.JWTAuth(), userApi.Update)
 		u.DELETE("/:id", middleware.JWTAuth(), userApi.Delete)
-		u.POST("avatar", middleware.JWTAuth(), userApi.Avatar)
+		u.PUT("avatar", middleware.JWTAuth(), userApi.Avatar)
 	}
 
 	// 天文学词典系列

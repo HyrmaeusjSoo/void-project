@@ -1,7 +1,7 @@
 package global
 
 const (
-	ReleaseMode     = "release"
-	DevelopmentMode = "dev"
-	DebugMode       = "debug"
+	ReleaseMode     = "release" // 发布模式
+	DevelopmentMode = "dev"     // 开发模式
+	DebugMode       = "debug"   // Debug模式
 )

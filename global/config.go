@@ -42,12 +42,6 @@ var Config = struct {
 	}
 
 	// 系统配置
-	//	Mode                 string        // 模式：release=发布模式，dev=开发模式。
-	//	ListenAddr           string        // 服务监听的连接地址和端口号，如：127.0.0.1:80
-	//	AuthJwtSecret        string        // 鉴权密钥，推荐使用生成的Hash串
-	//	AuthTokenExpire      time.Duration // 鉴权过期时间
-	//	AstroDictCacheExpire time.Duration // 忽略
-	//	PageSize             int           // 分页大小
 	System struct {
 		// 模式：release=发布模式，dev=开发模式。
 		// 主要控制日志只写入文件，禁用日志颜色等; 开发模式更方便查看日志输出，发布模式写入到文件更稳定。
