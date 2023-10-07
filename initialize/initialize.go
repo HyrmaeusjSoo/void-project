@@ -9,6 +9,7 @@ import (
 	"void-project/pkg"
 	"void-project/pkg/logger"
 	"void-project/pkg/logger/slog"
+	"void-project/pkg/translation"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,6 +42,11 @@ func InitRepository() {
 	driver.InitMySQL()
 	driver.InitRedis()
 	driver.InitSQLite()
+}
+
+// 初始化翻译接口配置
+func InitTranslate() {
+	translation.InitVolc(global.Config.System.VolcAccessKey, global.Config.System.VolcSecretKey)
 }
 
 // 初始化Server

@@ -10,11 +10,12 @@ import (
 )
 
 type AstroDict struct {
-	service *service.AstroDictService
+	service          *service.AstroDictService
+	translateService *service.TranslateService
 }
 
 func NewAstroDict() *AstroDict {
-	return &AstroDict{service.NewAstroDictService()}
+	return &AstroDict{service.NewAstroDictService(), service.NewTranslateService()}
 }
 
 // 从远程查询
@@ -51,4 +52,14 @@ func (ad *AstroDict) Sync(c *gin.Context) {
 		return
 	}
 	response.SuccessOk(c)
+}
+
+// 测试翻译
+func (ad *AstroDict) Translate(c *gin.Context) {
+	res, err := ad.translateService.Translate(c.Query("text"), c.Query("source"), c.Query("target"))
+	if err != nil {
+		response.FailError(c, apierr.FetchFailed, err)
+		return
+	}
+	response.Success(c, res)
 }

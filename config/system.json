@@ -6,5 +6,7 @@
     "pagesize": 15,
     "astro_dict_cache_expire": 2,
     "pprof": true,
-    "pprof_addr": ":5000"
+    "pprof_addr": ":5000",
+    "volc_access_key": "",
+    "volc_secret_key": ""
 }

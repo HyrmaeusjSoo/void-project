@@ -32,6 +32,8 @@ func main() {
 	initialize.InitLogger()
 	// 初始化数据库连接
 	initialize.InitRepository()
+	// 初始化翻译接口配置
+	initialize.InitTranslate()
 
 	// 初始化Server
 	r := initialize.InitServer()

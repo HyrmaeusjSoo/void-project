@@ -53,6 +53,8 @@ var Config = struct {
 		AstroDictCacheExpire int    `json:"astro_dict_cache_expire" yaml:"astro_dict_cache_expire"` // 忽略
 		PProf                bool   `json:"pprof" yaml:"pprof"`                                     // 是否开启性能分析
 		PProfAddr            string `json:"pprof_addr" yaml:"pprof_addr"`                           // 性能分析链接地址
+		VolcAccessKey        string `json:"volc_access_key" yaml:"volc_access_key"`                 // 火山翻译AccessKey
+		VolcSecretKey        string `json:"volc_secret_key" yaml:"volc_secret_key"`                 // 火山翻译SecretKey
 	}
 }{}
 

@@ -7,6 +7,7 @@ require (
 	github.com/glebarez/sqlite v1.9.0
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/redis/go-redis/v9 v9.1.0
+	github.com/volcengine/volc-sdk-golang v1.0.120
 	golang.org/x/crypto v0.12.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.1
@@ -16,6 +17,7 @@ require (
 
 require (
 	github.com/bytedance/sonic v1.10.0 // indirect
+	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect

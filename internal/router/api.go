@@ -38,6 +38,7 @@ func SetApiRouter(gin *gin.Engine) {
 		ad.GET("/:name", astroDictApi.Fetch)
 		ad.GET("remote/:name", astroDictApi.FetchRemote)
 		ad.POST("/:lang", astroDictApi.Sync)
+		ad.GET("translate", astroDictApi.Translate)
 	}
 
 	// 聊天系列
