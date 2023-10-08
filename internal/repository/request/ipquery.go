@@ -7,8 +7,8 @@ import (
 )
 
 type IPQuery struct {
-	address string
-	param   string
+	url   string
+	param string
 }
 
 func NewIPQuery() *IPQuery {
@@ -19,7 +19,7 @@ func NewIPQuery() *IPQuery {
 //
 //	也可使用ip2region本地库方式, 地址:github.com/lionsoul2014/ip2region/binding/golang
 func (iq *IPQuery) GetIPInfo(ip string) (info *model.IPQuery, err error) {
-	resp, err := http.Get(iq.address + ip + iq.param)
+	resp, err := http.Get(iq.url + ip + iq.param)
 	if err != nil {
 		return
 	}

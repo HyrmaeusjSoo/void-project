@@ -26,8 +26,9 @@ func (a *AstrodictRepository) GetList(name string) ([]model.Astrodict, error) {
 }
 
 // 批量新增
-// 一次性的同步接口用，而且只是词典，所以清空旧的插入新的
-// lang => 指定语言为ce还是ec，对应到中-英 英-中
+//
+//	一次性的同步接口用，而且只是词典，所以清空旧的插入新的
+//	lang => 指定语言为ce还是ec，对应到中-英 英-中
 func (a *AstrodictRepository) Create(lang string, ad []*model.Astrodict) error {
 	var m any
 	if lang == "ce" {

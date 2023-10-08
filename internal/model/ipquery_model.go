@@ -1,5 +1,6 @@
 package model
 
+// IP查询接口类型
 type IPQuery struct {
 	Status      string  `json:"status"`
 	Country     string  `json:"country"`

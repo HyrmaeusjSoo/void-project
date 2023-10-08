@@ -56,8 +56,19 @@ func (ad *AstroDict) Sync(c *gin.Context) {
 
 // 测试翻译
 func (ad *AstroDict) Translate(c *gin.Context) {
-	res, err := ad.translateService.Translate(c.Query("text"), c.Query("source"), c.Query("target"))
+	text := c.Query("text")
+	if text == "" {
+		response.FailError(c, apierr.MissingRequiredParameter, "text")
+		return
+	}
+	target := c.Query("target")
+	if target == "" {
+		response.FailError(c, apierr.MissingRequiredParameter, "target")
+		return
+	}
+	res, err := ad.translateService.Translate(text, c.Query("source"), target)
 	if err != nil {
+		logger.LogError(err)
 		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}

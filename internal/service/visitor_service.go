@@ -15,14 +15,17 @@ func NewVisitorService() *VisitorService {
 	return &VisitorService{request.NewIPQuery()}
 }
 
+// 查询ip
 func (v *VisitorService) IPQuery(ip string) (*model.IPQuery, error) {
 	return v.iqr.GetIPInfo(ip)
 }
 
+// 读取访问日志
 func (v *VisitorService) ReadLog(beginDate, endDate time.Time) ([]slog.LogFile, error) {
 	return slog.Read(beginDate, endDate)
 }
 
+// 访问统计
 func (v *VisitorService) Stat(beginDate, endDate time.Time) ([]map[string]any, error) {
 	logs, err := slog.Read(beginDate, endDate)
 	if err != nil {

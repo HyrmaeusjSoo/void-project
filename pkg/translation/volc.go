@@ -75,7 +75,8 @@ func Translate(text, source, target string) (t VolcTranslate, err error) {
 		return
 	}
 	if code != 200 {
-		return t, errors.New(string(resp))
+		err = errors.New(string(resp))
+		return
 	}
 
 	err = json.Unmarshal(resp, &t)
