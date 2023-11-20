@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime/debug"
 	"void-project/initialize"
 	"void-project/internal/model"
 	"void-project/internal/repository/driver"
@@ -10,9 +11,13 @@ import (
 // 迁移数据库结构、数据
 func main() {
 	defer func() {
-		fmt.Println("")
-		fmt.Println("按[回车]键退出...")
-		fmt.Scanln()
+		if err := recover(); err != nil {
+			fmt.Println(err)
+			fmt.Println(string(debug.Stack()))
+			fmt.Println("")
+			fmt.Println("按[回车]键退出...")
+			fmt.Scanln()
+		}
 	}()
 
 	initialize.InitConfig()
