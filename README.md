@@ -5,7 +5,7 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.20-05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.21-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.4-blue"/></a>
@@ -200,6 +200,12 @@ Logger: logger.New(
  *（2023年7月17号基于此架构fork的项目首次上线到生产环境，正式使用version版本号，初版号为1.0.0）  
  2023年基于此项目架构给某市政府下辖某委员会开发过一套项目。由于敏感原因这里不贴出具体机构名！  
 
+  
+
+## 特别鸣谢
+### 在此感谢JetBrains对非商业开源项目的支持，从而提供旗下系列优秀IDE的激活许可！Thank You!
+
+  
 
 ## 最后感谢您参与使用！  
 <div>
