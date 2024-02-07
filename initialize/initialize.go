@@ -15,11 +15,11 @@ import (
 )
 
 func init() {
-	echo()
+	echoMark()
 }
 
 // 输出标记
-func echo() {
+func echoMark() {
 	mark := base.NewMark()
 	for _, v := range mark {
 		fmt.Println(v)
