@@ -5,7 +5,8 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.22-05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.23
+-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.4-blue"/></a>
@@ -62,6 +63,7 @@ void-project
     │    ├── database
     │    └── json
     ├── cmd
+    │    ├── client
     │    ├── install
     │    ├── mark
     │    └── server
@@ -88,6 +90,7 @@ void-project
     │    ├── service
     │    └── view
     ├── pkg
+    │    ├── ai
     │    ├── bcrypt
     │    ├── jwt
     │    ├── logger
@@ -100,6 +103,9 @@ void-project
     │         └── primitive
     ├── runtime
     │    ├── log
+    │    │    ├── error
+    │    │    ├── server
+    │    │    └── sql
     │    └── slog
     └── web
          ├── app

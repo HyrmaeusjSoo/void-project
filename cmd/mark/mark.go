@@ -18,8 +18,16 @@ const (
 )
 
 var (
-	levels   []bool
-	rootpath = pkg.GetRootPath()
+	levels      []bool
+	rootpath    = pkg.GetRootPath()
+	osPathSept  = string(os.PathSeparator)
+	excludeDirs = []string{
+		".git",
+		".vscode",
+		"cmd" + osPathSept + "shiyan",
+		"cmd" + osPathSept + "stars",
+		"web" + osPathSept + "upload" + osPathSept,
+	}
 )
 
 // 添加标记
@@ -198,9 +206,10 @@ func GenDirectoryTree(dir string, lv int) string {
 	directory := make([]string, 0, 72)
 	for _, entry := range entries {
 		current := filepath.Join(dir, entry.Name())
-		if !entry.IsDir() || strings.Contains(current, ".git") || strings.Contains(current, ".vscode") {
+		if !entry.IsDir() || isExcludeDir(current) {
 			continue
 		}
+
 		directory = append(directory, entry.Name())
 	}
 	var tree strings.Builder
@@ -208,7 +217,7 @@ func GenDirectoryTree(dir string, lv int) string {
 		current := filepath.Join(dir, v)
 		isLast := i == len(directory)-1
 		levels[lv] = !isLast
-		if strings.Count(current, string(os.PathSeparator))-strings.Count(rootpath, string(os.PathSeparator)) > 0 {
+		if strings.Count(current, osPathSept)-strings.Count(rootpath, osPathSept) > 0 {
 			for j := 0; j < lv; j++ {
 				tree.WriteString(pkg.IfElse(levels[j], elegansLine, elegansSpace))
 			}
@@ -222,6 +231,15 @@ func GenDirectoryTree(dir string, lv int) string {
 	return tree.String()
 }
 
+func isExcludeDir(dirName string) bool {
+	for _, exclude := range excludeDirs {
+		if strings.Contains(dirName, fmt.Sprintf("void-project%v%v", osPathSept, exclude)) {
+			return true
+		}
+	}
+	return false
+}
+
 func GenDirectoryTree2() string {
 	dirTree := ""
 	err := filepath.Walk(rootpath, func(path string, info os.FileInfo, err error) error {
@@ -229,7 +247,7 @@ func GenDirectoryTree2() string {
 			return err
 		}
 		if info.IsDir() && !strings.Contains(path, ".git") && !strings.Contains(path, ".vscode") {
-			depth := strings.Count(path, string(os.PathSeparator)) - strings.Count(rootpath, string(os.PathSeparator))
+			depth := strings.Count(path, osPathSept) - strings.Count(rootpath, osPathSept)
 			if depth == 0 {
 				dirTree += info.Name() + "\r\n"
 			} else {
