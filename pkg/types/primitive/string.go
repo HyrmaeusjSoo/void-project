@@ -22,13 +22,10 @@ func StringToFloat64(str string) float64 {
 func SnakeToPascal(snake string) string {
 	pascal := strings.Split(snake, "_")
 	for k, v := range pascal {
+		if len(v) == 0 {
+			continue
+		}
 		s := []rune(v)
-		if len(s) == 0 {
-			continue
-		}
-		if s[0] >= 65 && s[0] <= 90 {
-			continue
-		}
 		if s[0] >= 97 && s[0] <= 122 {
 			s[0] = s[0] - 32
 		}

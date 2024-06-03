@@ -39,31 +39,36 @@ func (u *UserRepository) GetById(id uint) (*model.User, error) {
 	return user, err
 }
 
-// 账号是否存在
-func (u *UserRepository) ExistsAccount(account string) bool {
-	var count int64
+// 统计账号
+func (u *UserRepository) CountByAccount(account string) (count int64) {
 	u.db.Model(model.User{}).Unscoped().Where("account = ?", account).Count(&count)
-	return count >= 1
+	return count
+}
+
+// 统计账号密码
+func (u *UserRepository) CountByAccountPassword(account, password string) (count int64) {
+	u.db.Model(model.User{}).Unscoped().Where("account = ? AND password = ?", account, password).Count(&count)
+	return count
 }
 
 // 按账号查询账户
 func (u *UserRepository) GetByAccount(account string) (*model.User, error) {
 	user := &model.User{}
 	err := u.db.Where("account = ?", account).First(user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errors.New("未找到用户")
+	}
 	return user, err
 }
 
 // 账号密码查询账户
 func (u *UserRepository) GetByAccountPassword(account, password string) (*model.User, error) {
 	user := &model.User{}
-	tx := u.db.Where("account = ? AND password = ?", account, password).First(user)
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-	if tx.RowsAffected == 0 {
+	err := u.db.Where("account = ? AND password = ?", account, password).First(user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errors.New("未找到用户")
 	}
-	return user, nil
+	return user, err
 }
 
 // 账户列表in ids
@@ -83,13 +88,7 @@ func (u *UserRepository) Create(user *model.User) error {
 
 // 更新账户
 func (u *UserRepository) Update(user *model.User) error {
-	return scope.Update(u.db.Model(user), model.User{
-		Name:   user.Name,
-		Avatar: user.Avatar,
-		Gender: user.Gender,
-		Phone:  user.Phone,
-		Email:  user.Email,
-	})
+	return scope.Update(u.db, user)
 }
 
 // 删除账户

@@ -30,18 +30,22 @@ var (
 	SaveFailed               = response.NewError(400_00_013, "保存失败")                // 保存失败
 	DeleteFailed             = response.NewError(400_00_014, "删除失败")                // 删除失败
 	FetchFailed              = response.NewError(400_00_015, "查询失败")                // 查询失败
-	InvalidPaginateParameter = response.NewError(400_00_016, "无效的分页参数")             //无效的分页参数
+	InvalidPaginateParameter = response.NewError(400_00_016, "无效的分页参数")             // 无效的分页参数
 	FileUploadFailed         = response.NewError(400_00_017, "文件上传失败")              // 文件上传失败
+	RecordNotFound           = response.NewError(400_00_018, "记录未找到")               // 记录未找到
+	DirNotExist              = response.NewError(400_00_019, "目录不存在")               // 目录不存在
+	FileNotExist             = response.NewError(400_00_020, "文件不存在")               // 文件不存在
+	InvalidPath              = response.NewError(400_00_021, "无效的路径")               // 无效的路径
 
 	// User module
 
-	MissingAccountPassword = response.NewError(400_01_001, "缺失账号或密码") // 缺失账号或密码
-	AccountNotExist        = response.NewError(400_01_002, "账号不存在")   // 账号不存在
-	InvalidPassword        = response.NewError(400_01_003, "密码错误")    // 密码错误
-	MissingAcctPwd         = response.NewError(400_01_004, "缺失账号或密码") // 缺失账号或密码
-	PasswordMismatch       = response.NewError(400_01_005, "两次密码不一致") // 两次密码不一致
-	AccountExists          = response.NewError(400_01_006, "该账号已被注册") // 该账号已被注册
-	UserNotExist           = response.NewError(400_01_007, "用户不存在")   // 用户不存在
-	RegisterFailed         = response.NewError(400_01_008, "注册失败")    // 注册失败
-	LoginFailed            = response.NewError(400_01_009, "登录失败")    // 登录失败
+	MissingAcctPwd   = response.NewError(400_01_001, "缺失账号或密码") // 缺失账号或密码
+	AccountNotExist  = response.NewError(400_01_002, "账号不存在")   // 账号不存在
+	InvalidPassword  = response.NewError(400_01_003, "密码错误")    // 密码错误
+	MissingPwd       = response.NewError(400_01_004, "缺失密码")    // 缺失密码
+	PasswordMismatch = response.NewError(400_01_005, "两次密码不一致") // 两次密码不一致
+	AccountExists    = response.NewError(400_01_006, "该账号已被注册") // 该账号已被注册
+	UserNotExist     = response.NewError(400_01_007, "用户不存在")   // 用户不存在
+	RegisterFailed   = response.NewError(400_01_008, "注册失败")    // 注册失败
+	LoginFailed      = response.NewError(400_01_009, "登录失败")    // 登录失败
 )

@@ -2,7 +2,7 @@ package service
 
 import (
 	"errors"
-	"math/rand"
+	"math/rand/v2"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -49,7 +49,7 @@ func (u *UserService) List(pager base.Pager) ([]model.User, int, error) {
 
 // 账号是否存在
 func (u *UserService) ExistsAccount(account string) bool {
-	return u.db.ExistsAccount(account)
+	return u.db.CountByAccount(account) > 0
 }
 
 // 注册用户
@@ -62,6 +62,7 @@ func (u *UserService) Register(user *model.User) error {
 		return err
 	}
 	user.Password = password
+	user.Identity = nil
 	// user.Salt = &salt
 	user.LoginTime = t
 	user.LoginOutTime = t
@@ -86,9 +87,32 @@ func (u *UserService) GetByAccountPassword(account, password string) (*model.Use
 
 // 修改用户信息
 func (u *UserService) Update(user *model.User) error {
-	err := u.db.Update(user)
+	err := u.db.Update(&model.User{
+		Model: base.Model{
+			ID: user.ID,
+		},
+		Name:   user.Name,
+		Avatar: user.Avatar,
+		Gender: user.Gender,
+		Phone:  user.Phone,
+		Email:  user.Email,
+	})
 	user.SecureClear()
 	return err
+}
+
+// 修改账户密码
+func (u *UserService) UpdatePassword(userId uint, password string) error {
+	hashPwd, err := bcrypt.GeneratePassword(password)
+	if err != nil {
+		return err
+	}
+	return u.db.Update(&model.User{
+		Model: base.Model{
+			ID: userId,
+		},
+		Password: hashPwd,
+	})
 }
 
 // 删除用户
@@ -105,7 +129,7 @@ func (u *UserService) UploadAvatar(c *gin.Context, uid uint) error {
 
 	// 存图片
 	td := time.Now()
-	fileName := md5.GenerateLower(strconv.Itoa(int(td.UnixMilli())) + strconv.Itoa(int(rand.Int31())))
+	fileName := md5.GenerateLower(strconv.Itoa(int(td.UnixMilli())) + strconv.Itoa(int(rand.Int())))
 	path := strings.Builder{}
 	path.WriteString("user/")
 	path.WriteString(strconv.Itoa(td.Year()))

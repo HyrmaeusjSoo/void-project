@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"void-project/pkg"
 	"void-project/pkg/types/composite"
@@ -24,8 +25,6 @@ var (
 	excludeDirs = []string{
 		".git",
 		".vscode",
-		"cmd" + osPathSept + "shiyan",
-		"cmd" + osPathSept + "stars",
 		"web" + osPathSept + "upload" + osPathSept,
 	}
 )
@@ -123,7 +122,7 @@ func writeFile(path string, mark []byte, isSet bool) {
 	}
 	// 加新注释
 	if isSet {
-		content = append(mark, content...)
+		content = slices.Concat(mark, content)
 	}
 	// 覆写到文件
 	err = file.Truncate(0)
@@ -138,6 +137,20 @@ func writeFile(path string, mark []byte, isSet bool) {
 
 // 生成README 目录结构、版本号
 func GenReadme() {
+	exclCfg, err := os.ReadFile(rootpath + "/.git/info/exclude")
+	if err != nil {
+		panic(err)
+	}
+	exclNames := strings.Split(string(exclCfg), "\n")
+	for _, v := range exclNames {
+		if v == "" || strings.Contains(v, "#") {
+			continue
+		}
+		path := strings.Replace(v, "\\", osPathSept, -1)
+		path = strings.Replace(v, "/", osPathSept, -1)
+		excludeDirs = append(excludeDirs, path)
+	}
+
 	levels = make([]bool, 72)
 	tree := GenDirectoryTree(rootpath, 0)
 	// tree := GenDirectoryTree2()
@@ -165,7 +178,7 @@ func GenReadme() {
 			if err != nil {
 				panic(err)
 			}
-			readme = append(content[:begin+1:begin+1], version...)
+			readme = slices.Concat(content[:begin+1:begin+1], version)
 			lastPoint = end - len(endVersion) + 1
 		}
 	}
@@ -175,14 +188,14 @@ func GenReadme() {
 		endTree   = []byte("\r\n───────────────────end───────────────────\r\n```\r\n")
 	)
 	if pos := composite.SearchSubSlice(content, beginTree); pos > 0 {
-		readme = append(readme, content[lastPoint:pos+1]...)
-		readme = append(readme, structureTree...)
+		readme = slices.Concat(readme, content[lastPoint:pos+1])
+		readme = slices.Concat(readme, structureTree)
 	}
 	if pos := composite.SearchSubSlice(content, endTree); pos > 0 {
 		lastPoint = pos - len(endTree) + 2
 	}
 	// 拼接剩下部分
-	readme = append(readme, content[lastPoint+1:]...)
+	readme = slices.Concat(readme, content[lastPoint+1:])
 
 	err = file.Truncate(0)
 	if err != nil {
@@ -233,7 +246,7 @@ func GenDirectoryTree(dir string, lv int) string {
 
 func isExcludeDir(dirName string) bool {
 	for _, exclude := range excludeDirs {
-		if strings.Contains(dirName, fmt.Sprintf("void-project%v%v", osPathSept, exclude)) {
+		if strings.Contains(dirName+osPathSept, "void-project"+osPathSept+exclude) {
 			return true
 		}
 	}

@@ -25,11 +25,13 @@ func SetApiRouter(gin *gin.Engine) {
 	{
 		u.POST("", userApi.Register)
 		u.POST("login", userApi.Login)
-		u.GET("/:id", middleware.JWTAuth(), userApi.Fetch)
-		u.GET("", middleware.JWTAuth(), userApi.List)
-		u.PUT("/:id", middleware.JWTAuth(), userApi.Update)
-		u.DELETE("/:id", middleware.JWTAuth(), userApi.Delete)
-		u.PUT("avatar", middleware.JWTAuth(), userApi.Avatar)
+		u.Use(middleware.JWTAuth())
+		u.GET("/:id", userApi.Fetch)
+		u.GET("", userApi.List)
+		u.PUT("", userApi.Update)
+		u.DELETE("", userApi.Delete)
+		u.PUT("avatar", userApi.Avatar)
+		u.PUT("password", userApi.UpdatePassword)
 	}
 
 	// 天文学词典系列

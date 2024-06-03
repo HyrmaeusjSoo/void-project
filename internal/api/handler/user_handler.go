@@ -64,7 +64,7 @@ func (u *User) Login(c *gin.Context) {
 		return
 	}
 	if param.Account == "" || param.Password == "" {
-		response.FailError(c, apierr.MissingAccountPassword)
+		response.FailError(c, apierr.MissingAcctPwd)
 		return
 	}
 	eu, err := u.service.GetByAccount(param.Account)
@@ -141,18 +141,13 @@ func (u *User) List(c *gin.Context) {
 
 // 更新
 func (u *User) Update(c *gin.Context) {
-	id, err := request.GetParamIntErr(c, "id")
-	if err != nil {
-		return
-	}
-
 	user := &model.User{}
-	err = c.ShouldBind(user)
+	err := c.ShouldBind(user)
 	if err != nil {
 		response.FailError(c, apierr.InvalidParameter, err)
 		return
 	}
-	user.ID = uint(id)
+	user.ID = request.GetAuthUserId(c)
 
 	err = u.service.Update(user)
 	if err != nil {
@@ -164,14 +159,32 @@ func (u *User) Update(c *gin.Context) {
 	response.Success(c, user)
 }
 
-// 删除
-func (u *User) Delete(c *gin.Context) {
-	id, err := request.GetParamIntErr(c, "id")
-	if err != nil {
+// 修改密码
+func (u *User) UpdatePassword(c *gin.Context) {
+	var param struct {
+		Password string
+	}
+	if err := c.ShouldBind(&param); err != nil {
+		logger.LogError(err)
+		response.FailError(c, apierr.InvalidParameter, err)
+		return
+	}
+	if param.Password == "" {
+		response.FailError(c, apierr.MissingPwd)
 		return
 	}
 
-	err = u.service.Delete(uint(id))
+	if err := u.service.UpdatePassword(request.GetAuthUserId(c), param.Password); err != nil {
+		logger.LogError(err)
+		response.FailError(c, apierr.UpdateFailed, err)
+		return
+	}
+	response.SuccessOk(c)
+}
+
+// 删除
+func (u *User) Delete(c *gin.Context) {
+	err := u.service.Delete(request.GetAuthUserId(c))
 	if err != nil {
 		logger.LogError(err)
 		response.FailError(c, apierr.DeleteFailed, err)

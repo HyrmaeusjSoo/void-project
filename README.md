@@ -5,14 +5,14 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.23
+    <img src="https://img.shields.io/badge/version-1.0.24
 -05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
-    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.4-blue"/></a>
-    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.2.1-red"/></a>
-    <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.7-green"/></a>
-    <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5-green"/></a>
+    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.9-blue"/></a>
+    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.5.1-red"/></a>
+    <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.11-green"/></a>
+    <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5.2.1-green"/></a>
 </div>
 
 <br/>
@@ -217,6 +217,21 @@ Logger: logger.New(
 ),
 
 ```  
+
+<br/>
+
+## 测试环境与部署
+测试环境直接执行文件启动更方便，但生产环境推荐nginx作为前置/反向代理服务器等等等更安全/保守的方式。
+##### 主要目录
+```Shell
+cmd     # web应用可执行文件目录，这里存放这服务运行文件和工具等。类似于桌面应用程序的bin目录。
+asset   # 存放内置的静态资源目录，不可或缺的静态资源文件。
+config  # 站点和应用的配置文件目录，包括json、yaml格式的配置文件。
+web     # 前端资源文件目录，页面模板、js、css等，还包含用户的上传文件(upload)。
+runtime # 运行时目录，主要有访问、运行、sql等日志，运行时的中间变量等。没必要拿过去，服务启动后时会自动生成对应的目录和文件。
+```
+
+<br/>
 
 ## 生产使用  
  *（2023年7月17号基于此架构fork的项目首次上线到生产环境，正式使用version版本号，初版号为1.0.0）  

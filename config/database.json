@@ -4,7 +4,10 @@
         "port": 3306,
         "user": "root",
         "password": "1234",
-        "dbname": "void-project"
+        "dbname": "void-project",
+        "max_idle_conns": 0,
+        "max_open_conns": 0,
+        "max_lifetime": 28800 
     },
     "sqlite": {
         "path": "/asset/database/astrodict.db",

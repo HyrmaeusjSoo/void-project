@@ -20,7 +20,7 @@ func Create(db *gorm.DB, model any) error {
 
 // 更新
 func Update(db *gorm.DB, model any, where ...any) error {
-	if tx := db.Updates(model); tx.RowsAffected == 0 {
+	if tx := db.Model(model).Updates(model); tx.RowsAffected == 0 {
 		if tx.Error != nil {
 			return tx.Error
 		}

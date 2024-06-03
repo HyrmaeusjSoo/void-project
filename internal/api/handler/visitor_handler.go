@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"os"
 	"void-project/internal/api/request"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
@@ -31,6 +32,10 @@ func (v *Visitor) FetchLog(c *gin.Context) {
 	end := request.GetQueryDate(c, "end_date")
 	logs, err := v.service.ReadLog(begin, end)
 	if err != nil {
+		if os.IsNotExist(err) {
+			response.FailError(c, apierr.RecordNotFound)
+			return
+		}
 		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}
@@ -42,6 +47,10 @@ func (v *Visitor) Stat(c *gin.Context) {
 	end := request.GetQueryDate(c, "end_date")
 	stats, err := v.service.Stat(begin, end)
 	if err != nil {
+		if os.IsNotExist(err) {
+			response.FailError(c, apierr.RecordNotFound)
+			return
+		}
 		response.FailError(c, apierr.FetchFailed, err)
 		return
 	}

@@ -1,0 +1,8 @@
+
+# * text=auto
+
+*.go text eol=lf
+
+# *.bat text eol=crlf
+*.exe binary
+

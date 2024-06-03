@@ -15,10 +15,10 @@ import (
 )
 
 var (
-	MySQL     *gorm.DB
-	SQLite    *gorm.DB
-	SQLServer *gorm.DB
-	Redis     *redis.Client
+	MySQL  *gorm.DB
+	SQLite *gorm.DB
+	//SQLServer *gorm.DB
+	Redis *redis.Client
 )
 
 // 初始化MySQL数据库连接
@@ -43,6 +43,19 @@ func InitMySQL() {
 	})
 	if err != nil {
 		panic(err)
+	}
+	db, err := MySQL.DB()
+	if err != nil {
+		panic(err)
+	}
+	if op.MaxIdleConns > 0 {
+		db.SetMaxIdleConns(op.MaxIdleConns)
+	}
+	if op.MaxOpenConns > 0 {
+		db.SetMaxOpenConns(op.MaxOpenConns)
+	}
+	if op.MaxLifetime > 0 {
+		db.SetConnMaxLifetime(time.Second * time.Duration(op.MaxLifetime))
 	}
 }
 

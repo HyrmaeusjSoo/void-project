@@ -19,11 +19,14 @@ var Config = struct {
 	DB struct {
 		// MySQL配置
 		MySQL struct {
-			User     string `json:"user" yaml:"user"`         // 用户
-			Password string `json:"password" yaml:"password"` // 密码
-			Host     string `json:"host" yaml:"host"`         // 主机地址
-			Port     uint16 `json:"port" yaml:"port"`         // 端口号
-			DBName   string `json:"dbname" yaml:"dbname"`     // 数据库名
+			User         string `json:"user" yaml:"user"`                     // 用户
+			Password     string `json:"password" yaml:"password"`             // 密码
+			Host         string `json:"host" yaml:"host"`                     // 主机地址
+			Port         uint16 `json:"port" yaml:"port"`                     // 端口号
+			DBName       string `json:"dbname" yaml:"dbname"`                 // 数据库名
+			MaxIdleConns int    `json:"max_idle_conns" yaml:"max_idle_conns"` // 空闲连接池中的最大数
+			MaxOpenConns int    `json:"max_open_conns" yaml:"max_open_conns"` // 与数据库打开的最大连接数
+			MaxLifetime  int    `json:"max_lifetime" yaml:"max_lifetime"`     // 连接保持时间
 		} `json:"mysql" yaml:"mysql"`
 		// SQLite配置
 		SQLite struct {
@@ -32,7 +35,7 @@ var Config = struct {
 			Password string `json:"password" yaml:"password"`
 		} `json:"sqlite"`
 		// SQLServer配置
-		SQLServer struct{} `json:"sqlserver" yaml:"sqlserver"`
+		//SQLServer struct{} `json:"sqlserver" yaml:"sqlserver"`
 	}
 
 	// 缓存库配置

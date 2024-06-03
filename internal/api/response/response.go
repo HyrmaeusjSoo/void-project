@@ -103,7 +103,7 @@ func Fail(c *gin.Context, code int, msg string) {
 	c.JSON(code, NewError(code, msg))
 }
 
-// 返回定义错误
+// 返回定义错误信息
 //
 //	c => gin.Context上下文对象指针
 //	err => 错误，apierr下的JsonResponse错误或是标准库error
@@ -126,7 +126,7 @@ func FailError(c *gin.Context, err error, ext ...any) {
 	}
 }
 
-// 拼接错误
+// 拼接错误信息
 func join(sep rune, errs ...any) string {
 	extBuilder := strings.Builder{}
 	if len(errs) > 0 {

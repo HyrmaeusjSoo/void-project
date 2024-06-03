@@ -23,18 +23,8 @@ func Extraction(entity any, name string) (val any, err error) {
 	if field.IsValid() {
 		val = field.Interface()
 	} else {
-		err = errors.New("reflect:元素非结构体")
+		err = errors.New("reflect:未找到指定的字段")
 	}
 
-	if chaos.Kind() == reflect.Struct {
-		field := chaos.FieldByName(name)
-		if field.IsValid() {
-			val = field.Interface()
-		} else {
-			err = errors.New("reflect:未找到指定的字段")
-		}
-	} else {
-		err = errors.New("reflect:元素非结构体")
-	}
 	return
 }

@@ -22,3 +22,8 @@ func (*ViewHandler) Chat(c *gin.Context) {
 func (*ViewHandler) Api(c *gin.Context) {
 	c.HTML(http.StatusOK, "api.tmpl", nil)
 }
+
+// 存储页面
+func (*ViewHandler) Storage(c *gin.Context) {
+	c.HTML(http.StatusOK, "storage.tmpl", nil)
+}
