@@ -24,4 +24,17 @@ const request = async (url, method='GET', data=null, contentType='application/js
     method != 'GET' && (option.headers['Content-Type'] = contentType, option.body = JSON.stringify(data));
     await fetch(host+url, option).then(r => r.json()).then(r => res = r);
     return res;
-}
+};
+const postForm = async (url, formData) => {
+    let res;
+    let option = {
+        method: 'POST',
+        headers: {
+            'user_id': localStorage.getItem('user_id'),
+            'token': localStorage.getItem('token'),
+        },
+    }
+    option.body = formData
+    await fetch(host+url, option).then(r => r.json()).then(r => res = r);
+    return res;
+};

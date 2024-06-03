@@ -14,6 +14,7 @@ func SetApiRouter(gin *gin.Engine) {
 		astroDictApi = handler.NewAstroDict()
 		messageApi   = handler.NewMessage()
 		visitorApi   = handler.NewVisitor()
+		storageApi   = handler.NewStorage()
 	)
 
 	gin.Use(middleware.Cors())
@@ -57,6 +58,16 @@ func SetApiRouter(gin *gin.Engine) {
 		v.GET("/ip/:ip", middleware.WriteRequestLog(), visitorApi.IP)
 		v.GET("/log", visitorApi.FetchLog)
 		v.GET("/stat", visitorApi.Stat)
+	}
+
+	// 文件存储系列
+	stg := v1.Group("storage").Use(middleware.JWTAuth())
+	{
+		stg.GET("", storageApi.List)
+		stg.POST("", storageApi.Mkdir)
+		stg.GET("/download", storageApi.Download)
+		stg.POST("/upload", storageApi.Upload)
+		stg.DELETE("", storageApi.Delete)
 	}
 
 }

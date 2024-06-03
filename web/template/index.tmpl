@@ -13,7 +13,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>index</title>
+    <title>void-project</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" href="/static/css/json.css">
     <link rel="stylesheet" href="/static/css/main.css">
@@ -22,22 +22,25 @@
     <script>
         const login = (account, password) => {
             request('user/login', 'POST', {account: account, password: password}).then(r => {
-                (r.data && r.data.user_id && r.data.token && r.data.expire_time && (
+                (r.data && r.data.user_id && r.data.token && r.data.expire_time && ((
                     localStorage.setItem('user_id', r.data.user_id),
                     localStorage.setItem('token', r.data.token),
                     localStorage.setItem('expire_time', r.data.expire_time),
                     document.cookie = 'user_id='+r.data.user_id,
-                    document.cookie = 'token='+r.data.token
-                ), true) || (r.message && alert(r.message), true) || alert('登录失败');
+                    document.cookie = 'token='+r.data.token, true
+                ), true)) || (r.message && alert(r.message), true) || alert('登录失败');
             });
         }
     </script>
 </head>
 
-<body class="body">
-    <input type="button" id="loginBtn" value="login">
-    <a href="/web/chat">chat</a>
-    <a href="/web/api">api</a>
+<body>
+    <div class="index-container">
+        <div><input type="button" id="loginBtn" value="login"></div>
+        <div><a href="/web/chat">chat</a></div>
+        <div><a href="/web/api">api</a></div>
+        <div><a href="/web/storage">storage</a></div>
+    </div>
     <script>
         loginBtn.onclick = _ => login(...prompt().split(','));
     </script>

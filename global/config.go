@@ -58,6 +58,7 @@ var Config = struct {
 		PProfAddr            string `json:"pprof_addr" yaml:"pprof_addr"`                           // 性能分析链接地址
 		VolcAccessKey        string `json:"volc_access_key" yaml:"volc_access_key"`                 // 火山翻译AccessKey
 		VolcSecretKey        string `json:"volc_secret_key" yaml:"volc_secret_key"`                 // 火山翻译SecretKey
+		StorageLocation      string `json:"storage_location" yaml:"storage_location"`               // 文件存储的本地路径
 	}
 }{}
 

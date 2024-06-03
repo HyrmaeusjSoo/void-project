@@ -11,6 +11,10 @@
     <script src="/static/js/rium.js"></script>
     <script src="/static/js/main.js"></script>
     <script>
+        const date = new Date();
+        const month = date.getMonth() + 1;
+        const day = date.getDate()
+        const todayStr = `${date.getFullYear()}-${month<10 ? "0"+month : month}-${day<10 ? "0"+day : day}`;
         const router = {
             'user/fetch': ['user/' + localStorage.getItem('user_id')],
             'user/list': ['user' + object2UrlQuery({page: 1})],
@@ -41,8 +45,8 @@
             'astro/remote': ['astro/remote/nebula'],
             'astro/translate': ['astro/translate' + object2UrlQuery({text: 'hello world!', source: 'en', target: 'zh'})],
             'visitor/ip': ['visitor/ip/' + '123.123.123.123'],
-            'visitor/log': ['visitor/log' + object2UrlQuery({begin_date: '2023-09-13', end_date: '2023-09-15'})],
-            'visitor/stat': ['visitor/stat' + object2UrlQuery({begin_date: '2023-09-13', end_date: '2023-09-15'})],
+            'visitor/log': ['visitor/log' + object2UrlQuery({begin_date: todayStr, end_date: todayStr})],
+            'visitor/stat': ['visitor/stat' + object2UrlQuery({begin_date: todayStr, end_date: todayStr})],
         };
     </script>
     <script>

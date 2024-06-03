@@ -22,6 +22,7 @@ func SetWebRouter(gin *gin.Engine) {
 		v1.Use(middleware.JWTAuth())
 		v1.GET("chat", vr.Chat)
 		v1.GET("api", vr.Api)
+		v1.GET("storage", vr.Storage)
 	}
 
 }

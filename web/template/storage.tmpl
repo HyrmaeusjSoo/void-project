@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Storage</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="/static/css/storage.css">
+    <script src="/static/js/rium.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        const setCurrentPath = path => {
+            let currentPath = document.getElementById('currentPath');
+            currentPath.value = path;
+        };
+        const renderDir = (data, prtPath) => {
+            if (data.code != 200) {
+                alert(data.message);
+                return false;
+            }
+            if (!data.data) {
+                return false;
+            }
+
+            setCurrentPath(prtPath);
+            let prt = document.getElementById('prt');
+            prt.innerText = '.' + prtPath;
+            prt.onclick = _ => getDir(prtPath.substr(0, prtPath.lastIndexOf('/')));
+            //prt.style = 'color:blue;'
+            prt.className = 'color-blue'
+            let dirs = document.getElementById('dirs');
+            dirs.innerHTML = '';
+            data.data.map(i => {
+                let path = prtPath + '/' + i.name;
+                let link = i.is_dir ? '' : `<a href="/api/v1/storage/download?path=${path}">下载</a>`;
+                let click = i.is_dir ? `getDir('${path}')` : '';
+                let icon = i.is_dir ? '60x48' : '32x22';
+                let h = `<td><a onclick="${click}"><img src="/static/image/icon/${icon}.gif" height="12" width="12" alt="${i.is_dir?'文件夹':'文件'}"></a></td>
+                         <td><a onclick="${click}">${i.name}</a></td>
+                         <td><a onclick="${click}">${formatBytes(i.size)}</a></td>
+                         <td><a onclick="${click}">${formatDateTime(new Date(i.mod_time))}</a></td>
+                         <td>${link}&nbsp;&nbsp;<a onclick="deleteDir('${path}')">删除</a></td>`;
+                let tr = document.createElement('tr');
+                tr.innerHTML = h;
+                //i.is_dir && (tr.onclick = _ => getDir(path));
+                //tr.style = `color:${i.is_dir ? 'blue' : 'green'}`;
+                tr.className = `color-${i.is_dir ? 'blue' : 'green'}`;
+                dirs.appendChild(tr);
+            });
+        };
+        const getDir = path => {
+            let query = path ? object2UrlQuery({path}) : '';
+            request('storage' + query).then(r => renderDir(r, path));
+        };
+        const deleteDir = path => {
+            if (!confirm('确定要删除吗？')) {
+                return false;
+            }
+            let query = path ? object2UrlQuery({path}) : '';
+            request('storage' + query, 'DELETE').then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                    return false;
+                } 
+                getDir(path.substr(0, path.lastIndexOf('/')));
+            });
+        };
+        const mkdir = _ => {
+            let name = prompt("文件夹名称：")
+            if (!name) {
+                return false;
+            }
+            let path = document.getElementById('currentPath').value;
+            request('storage', 'POST', {path, name}).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                }
+                getDir(path);
+            });
+        };
+        const upload = _ => {
+            let form = document.getElementById('form');
+            let formData = new FormData(form);
+            postForm('storage/upload', formData).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                }
+                document.getElementById('file').value = '';
+                let path = document.getElementById('currentPath').value;
+                getDir(path);
+            });
+        };
+        
+        window.onload = getDir('');
+    </script>
+</head>
+
+<body class="body">
+    <div class="top10px">
+        <p id="prt"></p>
+        <table>
+            <!--<thead>
+                <th>文件</th>
+                <th>是否目录</th>
+                <th>大小</th>
+                <th>修改时间</th>
+            </thead>-->
+            <tbody id="dirs"></tbody>
+        </table>
+    </div>
+    <div class="top10px">
+        <div>
+            <p><input type="button" onclick="mkdir()" value="创建文件夹"></p>
+        </div>
+        <div class="top5px">
+            <form id="form">
+                <input type="hidden" id="currentPath" name="path" value="">
+                <input type="file" id="file" name="file">
+                <input type="button" value="上传" onclick="upload()">
+            </form>
+        </div>
+    </dir>
+</body>
+</html>
