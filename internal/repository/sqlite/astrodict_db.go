@@ -37,25 +37,12 @@ func (a *AstrodictRepository) Create(lang string, ad []*model.Astrodict) error {
 		m = &model.AstrodictEC{}
 	}
 	a.db.Where("TRUE").Delete(m)
-	tx := a.db.Model(m)
-
-	// 分批存
-	err := tx.Transaction(func(tx *gorm.DB) error {
-		cursor := len(ad) / 100
-		if rema := len(ad) % 100; rema > 0 {
-			cursor++
-		}
-		for i := 0; i < cursor; i++ {
-			x := i * 100
-			y := (i + 1) * 100
-			if i == cursor-1 {
-				y = len(ad)
-			}
-			if rtx := tx.Create(ad[x:y]); rtx.RowsAffected == 0 || rtx.Error != nil {
-				return errors.New("保存失败")
-			}
-		}
-		return nil
-	})
-	return err
+	tx := a.db.Model(m).CreateInBatches(ad, 500)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("保存失败")
+	}
+	return nil
 }

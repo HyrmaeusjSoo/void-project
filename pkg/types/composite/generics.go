@@ -8,4 +8,3 @@ func Convert[T any](v any) T {
 	}
 	return *new(T)
 }
-

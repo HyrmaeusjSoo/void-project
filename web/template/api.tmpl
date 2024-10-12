@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cmn-Hans">
 
 <head>
     <meta charset='utf-8'>
@@ -50,14 +50,15 @@
         };
     </script>
     <script>
-        function doRequest(route) {
+        /*function doRequest(route) {
             request(...router[route]).then(r => document.getElementById('json-area').replaceChildren(renderJson(r)));
-        }
+        }*/
+        const doRequest = route => request(...router[route]).then(r => document.getElementById('json-area').replaceChildren(renderJson(r)));
     </script>
 </head>
 
 <body class="body">
-    <div id="apis">
+    <div id="apis" class="top10px">
         <ol>
             <li><a onclick="doRequest('user/fetch')">user/fetch</a></li>
             <li><a onclick="doRequest('user/list')">user/list</a></li>
@@ -77,6 +78,8 @@
             <li><a onclick="doRequest('visitor/stat')">visitor/stat</a></li>
         </ol>
     </div>
-    <div id="json-area"><pre class="jsonData"></pre></div>
+    <div id="json-area" class="top10px">
+        <pre class="jsonData"></pre>
+    </div>
 </body>
 </html>

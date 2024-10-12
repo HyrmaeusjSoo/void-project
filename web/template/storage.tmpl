@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-cmn-Hans">
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
@@ -32,14 +32,15 @@
             dirs.innerHTML = '';
             data.data.map(i => {
                 let path = prtPath + '/' + i.name;
-                let link = i.is_dir ? '' : `<a href="/api/v1/storage/download?path=${path}">下载</a>`;
+                let downloadLink = i.is_dir ? '' : `<a href="/api/v1/storage/download?path=${path}">下载</a>`;
+                let renameLink = `<a onclick="rename('${i.name}')">重命名</a>`;
                 let click = i.is_dir ? `getDir('${path}')` : '';
                 let icon = i.is_dir ? '60x48' : '32x22';
                 let h = `<td><a onclick="${click}"><img src="/static/image/icon/${icon}.gif" height="12" width="12" alt="${i.is_dir?'文件夹':'文件'}"></a></td>
                          <td><a onclick="${click}">${i.name}</a></td>
                          <td><a onclick="${click}">${formatBytes(i.size)}</a></td>
                          <td><a onclick="${click}">${formatDateTime(new Date(i.mod_time))}</a></td>
-                         <td>${link}&nbsp;&nbsp;<a onclick="deleteDir('${path}')">删除</a></td>`;
+                         <td>${downloadLink}&nbsp;&nbsp;${renameLink}&nbsp;&nbsp;<a onclick="deleteDir('${path}')">删除</a></td>`;
                 let tr = document.createElement('tr');
                 tr.innerHTML = h;
                 //i.is_dir && (tr.onclick = _ => getDir(path));
@@ -66,7 +67,7 @@
             });
         };
         const mkdir = _ => {
-            let name = prompt("文件夹名称：")
+            let name = prompt("文件夹名称：");
             if (!name) {
                 return false;
             }
@@ -88,6 +89,24 @@
                 document.getElementById('file').value = '';
                 let path = document.getElementById('currentPath').value;
                 getDir(path);
+            });
+        };
+        const rename = oldname => {
+            if (!oldname) {
+                return false;
+            }
+            let newname = prompt("新名称：", oldname);
+            if (!newname) {
+                return false;
+            }
+            let currentPath = document.getElementById('currentPath').value;
+            let oldpath = currentPath + '/' + oldname;
+            let newpath = currentPath + '/' + newname;
+            request('storage/rename', 'PUT', {oldpath, newpath}).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                }
+                getDir(currentPath);
             });
         };
         

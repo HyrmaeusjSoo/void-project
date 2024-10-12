@@ -78,6 +78,38 @@ func (s *Storage) Download(c *gin.Context) {
 	c.File(path)
 }
 
+func (s *Storage) Rename(c *gin.Context) {
+	var param struct {
+		Oldpath string
+		Newpath string
+	}
+	if err := c.ShouldBind(&param); err != nil {
+		response.FailError(c, apierr.InvalidParameter, err)
+		return
+	}
+	if param.Oldpath == "" || param.Newpath == "" {
+		response.FailError(c, apierr.InvalidPath)
+		return
+	}
+
+	param.Oldpath = global.Config.System.StorageLocation + param.Oldpath
+	if _, err := os.Stat(param.Oldpath); err != nil {
+		if os.IsNotExist(err) {
+			response.FailError(c, apierr.FileNotExist)
+			return
+		} else {
+			response.FailError(c, apierr.UpdateFailed, err)
+			return
+		}
+	}
+	param.Newpath = global.Config.System.StorageLocation + param.Newpath
+	if err := os.Rename(param.Oldpath, param.Newpath); err != nil {
+		response.FailError(c, apierr.UpdateFailed, err)
+		return
+	}
+	response.SuccessOk(c)
+}
+
 func (s *Storage) Delete(c *gin.Context) {
 	path := c.Query("path")
 	if path == "" {
@@ -99,3 +131,7 @@ func (s *Storage) Delete(c *gin.Context) {
 	}
 	response.SuccessOk(c)
 }
+
+func (s *Storage) Copy(c *gin.Context) {}
+
+func (s *Storage) Move(c *gin.Context) {}

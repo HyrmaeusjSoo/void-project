@@ -24,3 +24,7 @@ func (*Astrodict) TableName() string {
 func (*AstrodictEC) TableName() string {
 	return "Astrodict_EC"
 }
+
+func (*AstroDictJson) Name() string {
+	return "astrodict_ce"
+}

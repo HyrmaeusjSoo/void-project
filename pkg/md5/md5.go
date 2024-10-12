@@ -11,7 +11,9 @@ import (
 // GenerateLower 加密后返回小写值
 func GenerateLower(code string) string {
 	m := md5.New()
-	io.WriteString(m, code)
+	if _, err := io.WriteString(m, code); err != nil {
+		return ""
+	}
 	return hex.EncodeToString(m.Sum(nil))
 }
 

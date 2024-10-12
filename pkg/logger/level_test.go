@@ -50,17 +50,16 @@ func TestLevelValue(t *testing.T) {
 	}
 }
 
-func BenchmarkLevelName(b *testing.B){
-	for i:=0;i<b.N;i++{
+func BenchmarkLevelName(b *testing.B) {
+	for i := 0; i < b.N; i++ {
 		AllLevel.Name()
 		ServerLevel.Name()
 	}
 }
 
-func BenchmarkLevelValue(b *testing.B){
-	for i:=0;i<b.N;i++{
+func BenchmarkLevelValue(b *testing.B) {
+	for i := 0; i < b.N; i++ {
 		AllLevel.Value()
 		ServerLevel.Value()
 	}
 }
-

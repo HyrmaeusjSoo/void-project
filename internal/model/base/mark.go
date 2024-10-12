@@ -2,6 +2,7 @@ package base
 
 import (
 	"fmt"
+	"void-project/pkg/clicolor"
 )
 
 func NewMark() []string {
@@ -46,4 +47,54 @@ func Echo() {
 	fmt.Println([]rune("\x1b[0;32m├───────────────────────────────────────────────────────────────────────────────────────────┤\x1b[0m"))
 	fmt.Println([]rune("\x1b[0;32m│\x1b[0m                                                                  \x1b[0;37m—\x1b[0m\x1b[0;36m—\x1b[0m\x1b[0;35m—\x1b[0m\x1b[0;34m—\x1b[0m\x1b[0;33m—\x1b[0m\x1b[0;32m—\x1b[0m\x1b[0;31m—\x1b[0m \x1b[0;36mHyrmaeusj 苏\x1b[0m"))
 	fmt.Println([]rune("\x1b[0;32m└───────────────────────────────────────────────────────────────────────────────────────────┘\x1b[0m"))
+}
+
+func EchoMark() {
+	border := clicolor.New(clicolor.FgGreen, clicolor.BgDefault)
+	content := clicolor.New(clicolor.FgGreen, clicolor.BgDefault)
+	border.Println("┌───────────────────────────────────────────────────────────────────────────────────────────┐")
+	border.Print("│")
+	content.Print("                                       void-")
+	content.SetForeground(clicolor.FgRed).Print("p")
+	content.SetForeground(clicolor.FgGreen).Print("r")
+	content.SetForeground(clicolor.FgYellow).Print("o")
+	content.SetForeground(clicolor.FgBlue).Print("j")
+	content.SetForeground(clicolor.FgMagenta).Print("e")
+	content.SetForeground(clicolor.FgCyan).Print("c")
+	content.SetForeground(clicolor.FgWhite).Println("t")
+	border.SetForeground(clicolor.FgGreen).Println("├───────────────────────────────────────────────────────────────────────────────────────────┤")
+	border.Print("│ ")
+	content.SetStyle(clicolor.StyleItalic).SetForeground(clicolor.FgCyan).Print("Sū Shēngxǜ's ")
+	content.Reset().SetForeground(clicolor.FgCyan).Print("void-project is a web application architecture developed in ")
+	content.SetForeground(clicolor.FgBlue).Print("Go")
+	content.SetForeground(clicolor.FgCyan).Println(".")
+	border.SetForeground(clicolor.FgGreen).Println("├───────────────────────────────────────────────────────────────────────────────────────────┤")
+	border.Print("│ ")
+	content.SetForeground(clicolor.FgCyan).Print("Project repository link:")
+	content.SetStyle(clicolor.StyleBlinkSlow, clicolor.StyleUnderline, clicolor.StyleItalic).SetForeground(clicolor.FgBlue).Println("https://github.com/HyrmaeusjSoo/void-project")
+	content.Reset()
+	border.Println("├───────────────────────────────────────────────────────────────────────────────────────────┤")
+	border.Print("│ ")
+	content.SetForeground(clicolor.FgBlue).Print("银")
+	content.SetForeground(clicolor.FgDefault).Print("河")
+	content.SetForeground(clicolor.FgCyan).Print("系")
+	content.Reset().Print(" 🌌⚛️🧬🧊🔮🗡️✡️🏞️🌈🎮🪞🫧 ")
+	content.SetForeground(clicolor.FgMagenta).Print("Requests")
+	content.SetForeground(clicolor.FgRed).Print(".")
+	content.Reset().Print("                                 ")
+	content.SetForeground(clicolor.FgGreen).Print("2023")
+	content.Reset().Print("-")
+	content.SetForeground(clicolor.FgYellow).Println("2024")
+	border.Println("├───────────────────────────────────────────────────────────────────────────────────────────┤")
+	border.Print("│                                                                  ")
+	content.SetForeground(clicolor.FgWhite).Print("-")
+	content.SetForeground(clicolor.FgCyan).Print("-")
+	content.SetForeground(clicolor.FgMagenta).Print("-")
+	content.SetForeground(clicolor.FgBlue).Print("-")
+	content.SetForeground(clicolor.FgYellow).Print("-")
+	content.SetForeground(clicolor.FgGreen).Print("-")
+	content.SetForeground(clicolor.FgRed).Print("-")
+	content.SetForeground(clicolor.FgBlack).Print("- ")
+	content.SetForeground(clicolor.FgCyan).Println("Hyrmaeusj 苏")
+	border.Println("└───────────────────────────────────────────────────────────────────────────────────────────┘")
 }

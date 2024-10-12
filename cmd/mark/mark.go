@@ -115,7 +115,7 @@ func writeFile(path string, mark []byte, isSet bool) {
 		panic(err)
 	}
 	// 删旧注释
-	if composite.CompareSlice(content[:6], mark[:6]) {
+	if slices.Equal(content[:6], mark[:6]) {
 		if pos := composite.SearchSubSlice(content, mark[len(mark)-8:]); pos > 0 {
 			content = content[pos+1:]
 		}

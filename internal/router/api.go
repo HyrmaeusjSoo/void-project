@@ -68,6 +68,9 @@ func SetApiRouter(gin *gin.Engine) {
 		stg.GET("/download", storageApi.Download)
 		stg.POST("/upload", storageApi.Upload)
 		stg.DELETE("", storageApi.Delete)
+		stg.PUT("rename", storageApi.Rename)
+		stg.PUT("copy", storageApi.Copy)
+		stg.PUT("move", storageApi.Move)
 	}
 
 }

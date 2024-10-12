@@ -29,13 +29,13 @@ func (ad *AstroDict) Save(astrodict model.AstroDictJson) error {
 	if err != nil {
 		return err
 	}
-	err = ad.db.Set(ad.ctx, "astrodict_ce", string(val), time.Duration(global.Config.System.AstroDictCacheExpire)*time.Hour).Err()
+	err = ad.db.Set(ad.ctx, astrodict.Name(), string(val), time.Duration(global.Config.System.AstroDictCacheExpire)*time.Hour).Err()
 	return err
 }
 
 // 查询
 func (ad *AstroDict) Fetch() (astro *model.AstroDictJson, err error) {
-	val, redisErr := ad.db.Get(ad.ctx, "astrodict_ce").Result()
+	val, redisErr := ad.db.Get(ad.ctx, astro.Name()).Result()
 	if redisErr != nil && redisErr != redis.Nil {
 		return nil, redisErr
 	}

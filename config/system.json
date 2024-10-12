@@ -1,6 +1,6 @@
 {
     "mode": "dev",
-    "listen_addr": ":5555",
+    "listen_addr": ":5050",
     "auth_token_expire": 2,
     "auth_jwt_secret": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]{}\\|;:'\",.<>/?",
     "pagesize": 15,

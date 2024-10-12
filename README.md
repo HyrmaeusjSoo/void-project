@@ -5,12 +5,12 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.25
+    <img src="https://img.shields.io/badge/version-1.0.26
 -05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
-    <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.9.1-blue"/></a>
-    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.9-blue"/></a>
-    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.5.1-red"/></a>
+    <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.10.0-blue"/></a>
+    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.11-blue"/></a>
+    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.6.1-red"/></a>
     <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.11-green"/></a>
     <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5.2.1-green"/></a>
 </div>
@@ -189,6 +189,16 @@ go env -w CGO_ENABLED=0 # 关闭cgo，某些系统下的cgo都不一样。目前
 
 # 2. 接下来在cmd目录下的某项内执行编译命令，就自动打包成目标系统的可执行文件了
 go build -ldflags "-s -w" -v -trimpath
+```
+
+##### LSP-DAP
+在Terminal工作流写代码时需要配置DAP，Go默认使用的是%GOPATH%/bin/dlv。  
+vim、helix等编辑器选择binary方式启动debugger需要手动编译
+```Shell
+# -N: 禁止编译器优化
+# -l: 禁止内联函数
+# -v: 打印包编译顺序(可选)
+go build -gcflags "-N -l" -v
 ```
 
 <br/>

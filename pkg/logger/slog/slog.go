@@ -139,7 +139,10 @@ func Read(s, e time.Time) ([]LogFile, error) {
 				return logFile, err
 			}
 			log := LogInfo{}
-			json.Unmarshal(l, &log)
+			err = json.Unmarshal(l, &log)
+			if err != nil {
+				break
+			}
 			logs = append(logs, log)
 		}
 

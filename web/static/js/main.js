@@ -11,7 +11,7 @@
 */
 
 const hostname = '127.0.0.1';
-const host = `http://${hostname}:5555/api/v1/`;
+const host = `http://${hostname}:5050/api/v1/`;
 const request = async (url, method='GET', data=null, contentType='application/json;charset=utf-8') => {
     let res;
     let option = {

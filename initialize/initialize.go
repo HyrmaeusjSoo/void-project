@@ -1,7 +1,6 @@
 package initialize
 
 import (
-	"fmt"
 	"void-project/global"
 	"void-project/internal/middleware"
 	"void-project/internal/model/base"
@@ -9,22 +8,24 @@ import (
 	"void-project/pkg"
 	"void-project/pkg/logger"
 	"void-project/pkg/logger/slog"
+	"void-project/pkg/necromancy"
 	"void-project/pkg/translation"
 
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	echoMark()
+	// echoMark()
+	base.EchoMark()
 }
 
 // 输出标记
-func echoMark() {
+/* func echoMark() {
 	mark := base.NewMark()
 	for _, v := range mark {
 		fmt.Println(v)
 	}
-}
+} */
 
 // 初始化配置信息
 func InitConfig() {
@@ -39,9 +40,15 @@ func InitLogger() {
 
 // 初始化数据库连接
 func InitRepository() {
-	driver.InitMySQL()
-	driver.InitRedis()
-	driver.InitSQLite()
+	if necromancy.NotEmpty(global.Config.DB.MySQL) {
+		driver.InitMySQL()
+	}
+	if necromancy.NotEmpty(global.Config.Cache) {
+		driver.InitRedis()
+	}
+	if necromancy.NotEmpty(global.Config.DB.SQLite) {
+		driver.InitSQLite()
+	}
 }
 
 // 初始化翻译接口配置
