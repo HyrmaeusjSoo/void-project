@@ -27,3 +27,7 @@ func (*ViewHandler) Api(c *gin.Context) {
 func (*ViewHandler) Storage(c *gin.Context) {
 	c.HTML(http.StatusOK, "storage.tmpl", nil)
 }
+
+func (*ViewHandler) Gallery(c *gin.Context) {
+	c.HTML(http.StatusOK, "gallery.tmpl", nil)
+}

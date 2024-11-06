@@ -86,3 +86,31 @@ func keyboardLayout(s string, typ int) string {
 
 	return string(r)
 }
+
+// abcdef转换为T9键盘
+func ConvertAbcToT9(abc string) string {
+	t9 := strings.Builder{}
+	for _, v := range strings.ToUpper(abc) {
+		switch {
+		case v >= 65 && v <= 67:
+			t9.WriteByte(50)
+		case v >= 68 && v <= 70:
+			t9.WriteByte(51)
+		case v >= 71 && v <= 73:
+			t9.WriteByte(52)
+		case v >= 74 && v <= 76:
+			t9.WriteByte(53)
+		case v >= 77 && v <= 79:
+			t9.WriteByte(54)
+		case v >= 80 && v <= 83:
+			t9.WriteByte(55)
+		case v >= 84 && v <= 86:
+			t9.WriteByte(56)
+		case v >= 87 && v <= 90:
+			t9.WriteByte(57)
+		default:
+			t9.WriteRune(v)
+		}
+	}
+	return t9.String()
+}

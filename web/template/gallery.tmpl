@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>gallery</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="icon" href="/static/image/icon/1001.ico">
+    <link rel="stylesheet" href="/static/css/gallery.css">
+    <script src="/static/js/rium.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        window.selectMode = false;
+
+        const onSelect = _ => {
+            let gallery = document.getElementById('gallery');
+            let images = gallery.querySelectorAll('figure');
+            images.forEach(i =>{
+                i.classList.add('border-gray');
+                i.addEventListener('click', _ => select(i));
+            });
+            window.selectMode = true;
+        };
+        const select = e => {
+            if (e.getAttribute('select') == 1) {
+                e.setAttribute('select', 0);
+                e.classList.remove('border-blue');
+                e.classList.add('border-gray');
+            } else {
+                e.setAttribute('select', 1);
+                e.classList.remove('border-gray');
+                e.classList.add('border-blue');
+            }
+        };
+        const offSelect = _ => {
+            let gallery = document.getElementById('gallery');
+            let images = gallery.querySelectorAll('figure');
+            images.forEach(i =>{
+                i.classList.remove('border-gray');
+                i.classList.remove('border-blue');
+                i.removeEventListener('click', _ => select(i));
+                i.setAttribute('select', 0);
+            });
+            window.selectMode = false;
+        };
+        document.addEventListener('keyup', e => {
+            if (e.key == 'Escape') {
+                offSelect();
+            }
+        });
+
+        function showModal(img) {
+            if (selectMode) {
+                return false;
+            }
+            var modal = document.getElementById("modal");
+            var modalImg = document.getElementById("modal-img");
+            modal.style.display = "block";
+            modalImg.src = img.src;
+        }
+        function hideModal() {
+            var modal = document.getElementById("modal");
+            modal.style.display = "none";
+        }
+
+        const renderDir = (data, prtPath) => {
+            if (data.code != 200) {
+                alert(data.message);
+                return false;
+            }
+            if (!data.data) {
+                return false;
+            }
+
+            document.getElementById('currentPath').value = prtPath;
+            let prt = document.getElementById('prt');
+            prt.innerText = '.' + prtPath;
+            prt.onclick = _ => getDir(prtPath.substr(0, prtPath.lastIndexOf('/')));
+            document.getElementById('backBtn').onclick = _ => getDir(prtPath.substr(0, prtPath.lastIndexOf('/')));
+            let gallery = document.getElementById('gallery');
+            gallery.innerHTML = '';
+            data.data.map(i => {
+                let path = prtPath + '/' + i.name;
+                let click = '';
+                let src = '';
+                if (i.is_dir){
+                    src = '/static/image/icon/folder.png';
+                    click = `getDir('${path}')`;
+                } else if (isImage(i.name)) {
+                    src = `/api/v1/storage/download?path=${path}`;
+                    click = `showModal(this)`;
+                } else {
+                    src = '/static/image/icon/file.png'
+                }
+                let figure = document.createElement('figure');
+                figure.innerHTML = `<img src="${src}" onclick="${click}"><figcaption>${shortText(i.name)}</figcaption>`;
+                figure.className = 'item';
+                figure.setAttribute('value', path);
+                gallery.appendChild(figure);
+            });
+        };
+        const getDir = path => {
+            if (selectMode) {
+                return false;
+            }
+            let query = path ? object2UrlQuery({path}) : '';
+            request('storage' + query).then(r => renderDir(r, path));
+        };
+        const del = _ => {
+            if (!selectMode) {
+                onSelect();
+                return false;
+            }
+            if (!confirm('确定要删除吗？')) {
+                return false;
+            }
+            
+            let path = [];
+            document.getElementById('gallery').querySelectorAll('figure').forEach(i =>{
+                if (i.getAttribute('select') == 1) {
+                    path.push(i.getAttribute('value'));
+                }
+            });
+            offSelect();
+            
+            request('storage', 'DELETE', {path}).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                    return false;
+                } 
+                getDir(document.getElementById('currentPath').value);
+            });
+        };
+        const mkdir = _ => {
+            let name = prompt("文件夹名称：");
+            if (!name) {
+                return false;
+            }
+            let path = document.getElementById('currentPath').value;
+            request('storage', 'POST', {path, name}).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                }
+                getDir(path);
+            });
+        };
+        const upload = _ => {
+            let form = document.getElementById('form');
+            let formData = new FormData(form);
+            postForm('storage/upload', formData).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                }
+                document.getElementById('file').value = '';
+                let path = document.getElementById('currentPath').value;
+                getDir(path);
+            });
+        };
+        const download = _ => {
+            alert('download');
+            return false;
+        };
+        const rename = oldname => {
+            if (!oldname) {
+                return false;
+            }
+            let newname = prompt("新名称：", oldname);
+            if (!newname) {
+                return false;
+            }
+            let currentPath = document.getElementById('currentPath').value;
+            let oldpath = currentPath + '/' + oldname;
+            let newpath = currentPath + '/' + newname;
+            request('storage/rename', 'PUT', {oldpath, newpath}).then(r => {
+                if (r.code != 200) {
+                    alert(r.message);
+                }
+                getDir(currentPath);
+            });
+        };
+
+        window.onload = getDir('');
+    </script>
+</head>
+
+<body class="body">
+    <div>
+        <div>
+            <img src="/static/image/icon/back.png" class="width50" id="backBtn" alt="返回">
+            <img src="/static/image/icon/add.png" class="width50 float-right" alt="新建文件夹" onclick="mkdir()">
+            <img src="/static/image/icon/download.png" class="width50 float-right" alt="下载" onclick="download()">
+            <img src="/static/image/icon/delete.png" class="width50 float-right" alt="删除" onclick="del()">
+            <div class="uploader">
+                <form id="form">
+                    <input type="hidden" id="currentPath" name="path" value="">
+                    <input id="file" name="file" class="upload-btn width50" type="file" onchange="upload()">
+                    <div class="width50">
+                        <img src="/static/image/icon/upload.png" class="width50">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div><span id="prt"></span></div>
+        <section id="gallery" class="gallery"></section>
+    </div>
+    <div id="modal" class="modal" onclick="hideModal()">
+        <img id="modal-img" class="modal-img">
+    </div>
+</body>
+</html>

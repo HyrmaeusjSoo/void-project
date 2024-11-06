@@ -70,7 +70,7 @@ func EchoMark() {
 	content.SetForeground(clicolor.FgCyan).Println(".")
 	border.SetForeground(clicolor.FgGreen).Println("├───────────────────────────────────────────────────────────────────────────────────────────┤")
 	border.Print("│ ")
-	content.SetForeground(clicolor.FgCyan).Print("Project repository link:")
+	content.SetForeground(clicolor.FgCyan).Print("Project repository link: ")
 	content.SetStyle(clicolor.StyleBlinkSlow, clicolor.StyleUnderline, clicolor.StyleItalic).SetForeground(clicolor.FgBlue).Println("https://github.com/HyrmaeusjSoo/void-project")
 	content.Reset()
 	border.Println("├───────────────────────────────────────────────────────────────────────────────────────────┤")

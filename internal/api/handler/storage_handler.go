@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 存储
 type Storage struct {
 	service *service.StorageService
 }
@@ -20,6 +21,7 @@ func NewStorage() *Storage {
 	return &Storage{service.NewStorageService()}
 }
 
+// 获取文件列表
 func (s *Storage) List(c *gin.Context) {
 	dirs, err := s.service.List(c.Query("path"))
 	if err != nil {
@@ -33,6 +35,7 @@ func (s *Storage) List(c *gin.Context) {
 	response.Success(c, dirs)
 }
 
+// 创建目录
 func (s *Storage) Mkdir(c *gin.Context) {
 	var param struct {
 		Path string
@@ -51,6 +54,7 @@ func (s *Storage) Mkdir(c *gin.Context) {
 	response.SuccessOk(c)
 }
 
+// 上传文件
 func (s *Storage) Upload(c *gin.Context) {
 	err := s.service.Upload(c)
 	if err != nil {
@@ -60,6 +64,7 @@ func (s *Storage) Upload(c *gin.Context) {
 	response.SuccessOk(c)
 }
 
+// 下载文件
 func (s *Storage) Download(c *gin.Context) {
 	path := global.Config.System.StorageLocation + c.Query("path")
 	if _, err := os.Stat(path); err != nil {
@@ -78,6 +83,7 @@ func (s *Storage) Download(c *gin.Context) {
 	c.File(path)
 }
 
+// 重命名文件
 func (s *Storage) Rename(c *gin.Context) {
 	var param struct {
 		Oldpath string
@@ -110,28 +116,36 @@ func (s *Storage) Rename(c *gin.Context) {
 	response.SuccessOk(c)
 }
 
+// 删除文件
 func (s *Storage) Delete(c *gin.Context) {
-	path := c.Query("path")
-	if path == "" {
-		response.FailError(c, apierr.InvalidPath)
+	var paths struct {
+		Path []string
+	}
+	if err := c.ShouldBind(&paths); err != nil {
+		response.FailError(c, apierr.InvalidParameter, err)
 		return
 	}
-	path = global.Config.System.StorageLocation + path
-	if _, err := os.Stat(path); err != nil {
-		if os.IsNotExist(err) {
-			response.FailError(c, apierr.FileNotExist)
-			return
-		} else {
-			response.FailError(c, apierr.DeleteFailed, err)
-			return
+
+	for _, v := range paths.Path {
+		path := global.Config.System.StorageLocation + v
+		if _, err := os.Stat(path); err != nil {
+			if os.IsNotExist(err) {
+				response.FailError(c, apierr.FileNotExist)
+				return
+			} else {
+				response.FailError(c, apierr.DeleteFailed, err)
+				return
+			}
 		}
-	}
-	if err := os.RemoveAll(path); err != nil {
-		response.FailError(c, apierr.DeleteFailed, err)
+		if err := os.RemoveAll(path); err != nil {
+			response.FailError(c, apierr.DeleteFailed, err)
+		}
 	}
 	response.SuccessOk(c)
 }
 
+// 复制文件
 func (s *Storage) Copy(c *gin.Context) {}
 
+// 移动文件
 func (s *Storage) Move(c *gin.Context) {}

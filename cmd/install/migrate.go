@@ -23,8 +23,7 @@ func main() {
 	initialize.InitConfig()
 	driver.InitMySQL()
 
-	err := driver.MySQL.AutoMigrate(&model.User{}, &model.Message{})
-	if err != nil {
+	if err := driver.MySQL.AutoMigrate(&model.User{}, &model.Message{}); err != nil {
 		panic(err)
 	}
 }
