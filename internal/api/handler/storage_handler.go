@@ -46,7 +46,7 @@ func (s *Storage) Mkdir(c *gin.Context) {
 		return
 	}
 
-	path := global.Config.System.StorageLocation + param.Path + "/" + param.Name
+	path := global.Configs.System.StorageLocation + param.Path + "/" + param.Name
 	if err := os.Mkdir(path, os.ModePerm); err != nil {
 		response.FailError(c, apierr.CreateFailed, err)
 		return
@@ -66,7 +66,7 @@ func (s *Storage) Upload(c *gin.Context) {
 
 // 下载文件
 func (s *Storage) Download(c *gin.Context) {
-	path := global.Config.System.StorageLocation + c.Query("path")
+	path := global.Configs.System.StorageLocation + c.Query("path")
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {
 			response.FailError(c, apierr.FileNotExist)
@@ -98,7 +98,7 @@ func (s *Storage) Rename(c *gin.Context) {
 		return
 	}
 
-	param.Oldpath = global.Config.System.StorageLocation + param.Oldpath
+	param.Oldpath = global.Configs.System.StorageLocation + param.Oldpath
 	if _, err := os.Stat(param.Oldpath); err != nil {
 		if os.IsNotExist(err) {
 			response.FailError(c, apierr.FileNotExist)
@@ -108,7 +108,7 @@ func (s *Storage) Rename(c *gin.Context) {
 			return
 		}
 	}
-	param.Newpath = global.Config.System.StorageLocation + param.Newpath
+	param.Newpath = global.Configs.System.StorageLocation + param.Newpath
 	if err := os.Rename(param.Oldpath, param.Newpath); err != nil {
 		response.FailError(c, apierr.UpdateFailed, err)
 		return
@@ -127,7 +127,7 @@ func (s *Storage) Delete(c *gin.Context) {
 	}
 
 	for _, v := range paths.Path {
-		path := global.Config.System.StorageLocation + v
+		path := global.Configs.System.StorageLocation + v
 		if _, err := os.Stat(path); err != nil {
 			if os.IsNotExist(err) {
 				response.FailError(c, apierr.FileNotExist)
@@ -145,7 +145,33 @@ func (s *Storage) Delete(c *gin.Context) {
 }
 
 // 复制文件
-func (s *Storage) Copy(c *gin.Context) {}
+func (s *Storage) Copy(c *gin.Context) {
+	var param struct {
+		Origin string
+		Target string
+	}
+	if err := c.ShouldBind(&param); err != nil {
+		response.FailError(c, apierr.InvalidParameter, err)
+		return
+	}
+
+	//复制
+
+	response.SuccessOk(c)
+}
 
 // 移动文件
-func (s *Storage) Move(c *gin.Context) {}
+func (s *Storage) Move(c *gin.Context) {
+	var param struct {
+		Oldpath string
+		Newpath string
+	}
+	if err := c.ShouldBind(&param); err != nil {
+		response.FailError(c, apierr.InvalidParameter, err)
+		return
+	}
+
+	// 移动
+
+	response.SuccessOk(c)
+}

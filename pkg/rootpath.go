@@ -3,6 +3,7 @@ package pkg
 import (
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -10,24 +11,42 @@ import (
 
 // 获取根目录
 func GetRootPath() string {
+	// 获取执行目录
 	dir := osExecutable()
+
+	// 判断是否为开发"go run *"执行
+	//获取环境变量%TEMP%
 	tmpEnv, _ := filepath.EvalSymlinks(os.TempDir())
+	//判断‘执行目录’是否在环境变量%TEMP%中
 	if strings.Contains(dir, tmpEnv) {
-		return runtimeCaller()
+		return runtimeCaller() //返回运行时路径
+	}
+
+	//获取go env GOCACHE
+	cmd := exec.Command("go", "env", "GOCACHE")
+	out, err := cmd.Output()
+	if err != nil {
+		log.Fatal(err)
+	}
+	GOCACHE := string(out)
+	GOCACHE = GOCACHE[:len(GOCACHE)-1] //去掉结尾换行
+	// 判断‘执行目录’是否在go env GOCACHE
+	if strings.Contains(dir, GOCACHE) {
+		return runtimeCaller() //返回运行时路径
 	}
 	return dir
 }
 
-// 编译后运行
+// 执行目录
 func osExecutable() string {
-	osexePath, err := os.Executable()
+	OSExePath, err := os.Executable()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return filepath.Join(osexePath, "../../../")
+	return filepath.Join(OSExePath, "../../../")
 }
 
-// 开发时运行
+// 运行时目录
 func runtimeCaller() string {
 	_, current, _, ok := runtime.Caller(0)
 	if !ok {

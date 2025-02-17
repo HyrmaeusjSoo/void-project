@@ -5,11 +5,10 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.27
--05e5a5">
+    <img src="https://img.shields.io/badge/version-1.0.28-05e5a5">
     <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.10.0-blue"/></a>
-    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.11-blue"/></a>
+    <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.12-blue"/></a>
     <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.6.1-red"/></a>
     <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.11-green"/></a>
     <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5.2.1-green"/></a>
@@ -248,11 +247,6 @@ runtime # 运行时目录，主要有访问、运行、sql等日志，运行时�
 ## 生产使用  
  *（2023年7月17号基于此架构fork的项目首次上线到生产环境，正式使用version版本号，初版号为1.0.0）  
  2023年基于此项目架构给某市政府下辖某委员会开发过一套项目。由于敏感原因这里不贴出具体机构名！  
-
-<br/>
-
-## 特别鸣谢
-#### 在此感谢JetBrains对非商业开源项目的支持，慷慨提供旗下系列优秀IDE的激活许可！Thank You!
 
 <br/>
 

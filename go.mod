@@ -9,9 +9,11 @@ require (
 	github.com/redis/go-redis/v9 v9.6.1
 	github.com/volcengine/volc-sdk-golang v1.0.170
 	golang.org/x/crypto v0.25.0
+	golang.org/x/net v0.27.0
+	golang.org/x/text v0.20.0
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.7
-	gorm.io/gorm v1.25.11
+	gorm.io/gorm v1.25.12
 	nhooyr.io/websocket v1.8.11
 )
 
@@ -34,7 +36,6 @@ require (
 	github.com/go-playground/validator/v10 v10.22.0 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/goccy/go-json v0.10.3 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
@@ -53,12 +54,11 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	golang.org/x/arch v0.8.0 // indirect
-	golang.org/x/net v0.27.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
+	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
+	golang.org/x/sys v0.27.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
-	modernc.org/libc v1.55.7 // indirect
+	modernc.org/libc v1.61.3 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
-	modernc.org/sqlite v1.31.1 // indirect
+	modernc.org/sqlite v1.34.1 // indirect
 )

@@ -11,6 +11,7 @@ package necromancy
 import (
 	"errors"
 	"reflect"
+	"strings"
 )
 
 // 萃取 在interface中对应struct的字段值
@@ -19,7 +20,9 @@ func Extraction(entity any, name string) (val any, err error) {
 	if chaos.Kind() != reflect.Struct {
 		return nil, errors.New("reflect:元素非结构体")
 	}
-	field := chaos.FieldByName(name)
+	field := chaos.FieldByNameFunc(func(e string) bool {
+		return strings.EqualFold(e, name)
+	})
 	if field.IsValid() {
 		val = field.Interface()
 	} else {

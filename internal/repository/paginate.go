@@ -29,7 +29,7 @@ func Paginate(db *gorm.DB, list any, pager base.Pager) (total int64, err error) 
 // 分页查询Scope
 func PageScope(pager base.Pager) func(db *gorm.DB) *gorm.DB {
 	pager.Page = pkg.IfElse(pager.Page < 1, 1, pager.Page)
-	pager.Size = pkg.IfElse(pager.Size < 1, global.Config.System.PageSize, pager.Size)
+	pager.Size = pkg.IfElse(pager.Size < 1, global.Configs.System.PageSize, pager.Size)
 
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Limit(pager.Size).Offset((pager.Page - 1) * pager.Size)
@@ -41,12 +41,20 @@ func PageScope(pager base.Pager) func(db *gorm.DB) *gorm.DB {
 //	使用Scope方法要在查询后手动base.Next = Cursor.Encode()
 func CursorScope(cursor base.Cursor) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if strings.ToLower(cursor.SortType) == "desc" {
-			db = db.Where(cursor.Field+" < ?", cursor.CursorID).Order(cursor.Field + " DESC")
-		} else {
-			db = db.Where(cursor.Field+" > ?", cursor.CursorID).Order(cursor.Field + " ASC")
+		sort := cursor.Field
+		if necromancy.NotEmpty(cursor.CursorID) {
+			if strings.EqualFold(cursor.SortType, "desc") {
+				db = db.Where(cursor.Field+" < ?", cursor.CursorID)
+			} else {
+				db = db.Where(cursor.Field+" > ?", cursor.CursorID)
+			}
 		}
-		return db.Limit(cursor.Size)
+		if strings.EqualFold(cursor.SortType, "desc") {
+			sort += " DESC"
+		} else {
+			sort += " ASC"
+		}
+		return db.Order(sort).Limit(cursor.Size)
 	}
 }
 
@@ -62,7 +70,13 @@ func CursorPaginate[T any](db *gorm.DB, list *[]T, cursor base.Cursor) (next bas
 	next = base.Next("")
 	// 默认分页条数
 	if cursor.Size == 0 {
-		cursor.Size = global.Config.System.PageSize
+		cursor.Size = global.Configs.System.PageSize
+	}
+	if cursor.Field == "" {
+		cursor.Field = "id"
+	}
+	if cursor.SortType == "" {
+		cursor.SortType = "ASC"
 	}
 
 	// 查询
@@ -74,9 +88,6 @@ func CursorPaginate[T any](db *gorm.DB, list *[]T, cursor base.Cursor) (next bas
 		return
 	}
 
-	if cursor.Field == "" {
-		cursor.Field = "id"
-	}
 	// 以下是反射字段值
 	nameSlc := strings.Split(cursor.Field, ".")
 	val, err := necromancy.Extraction((*list)[len(*list)-1], primitive.SnakeToPascal(nameSlc[len(nameSlc)-1]))

@@ -29,7 +29,7 @@ func (ad *AstroDict) Save(astrodict model.AstroDictJson) error {
 	if err != nil {
 		return err
 	}
-	err = ad.db.Set(ad.ctx, astrodict.Name(), string(val), time.Duration(global.Config.System.AstroDictCacheExpire)*time.Hour).Err()
+	err = ad.db.Set(ad.ctx, astrodict.Name(), string(val), time.Duration(global.Configs.System.AstroDictCacheExpire)*time.Hour).Err()
 	return err
 }
 

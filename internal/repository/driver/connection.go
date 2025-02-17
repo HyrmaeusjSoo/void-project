@@ -1,7 +1,6 @@
 package driver
 
 import (
-	"fmt"
 	"time"
 	"void-project/global"
 	"void-project/pkg"
@@ -21,72 +20,85 @@ var (
 	Redis *redis.Client
 )
 
-// 初始化MySQL数据库连接
-func InitMySQL() {
+type DBType string
+
+var (
+	DBTypeMySQL     DBType = "MySQL"
+	DBTypeSQLite    DBType = "SQLite"
+	DBTypeSQLServer DBType = "SQLServer"
+)
+
+// 初始化数据库
+func InitDatabase(typ DBType) (gormDB *gorm.DB) {
 	// 读取配置文件
-	op := global.Config.DB.MySQL
-	isColorful := pkg.IfElse(global.Config.System.Mode == global.ReleaseMode, false, true)
+	var op global.Databaser
+	var dialector gorm.Dialector
+	switch typ {
+	case DBTypeMySQL:
+		op = &global.Configs.DB.MySQL
+		dialector = mysql.Open(op.Dsn())
+	case DBTypeSQLite:
+		op = &global.Configs.DB.SQLite
+		dialector = sqlite.Open(op.Dsn())
+	}
+	isColorful := pkg.IfElse(global.Configs.System.Mode == global.ReleaseMode, false, true)
 
 	var err error
-	MySQL, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", op.User, op.Password, op.Host, op.Port, op.DBName)), &gorm.Config{
+	gormDB, err = gorm.Open(dialector, &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 		// SQL语句记录日志
 		Logger: logger.New(
 			log.NewSQLLogger(),
 			logger.Config{
-				SlowThreshold:             time.Second, // 慢SQL阈值
-				LogLevel:                  logger.Info, // 日志级别
-				IgnoreRecordNotFoundError: true,        // 忽略‘记录未找到’错误
-				Colorful:                  isColorful,  // 彩色打印
+				SlowThreshold:             time.Second,                    // 慢SQL阈值
+				LogLevel:                  gormLogLevel(op.SQLLogLevel()), // 日志级别
+				IgnoreRecordNotFoundError: true,                           // 忽略‘记录未找到’错误
+				Colorful:                  isColorful,                     // 彩色打印
 			},
 		),
 	})
 	if err != nil {
 		panic(err)
 	}
-	db, err := MySQL.DB()
+	db, err := gormDB.DB()
 	if err != nil {
 		panic(err)
 	}
-	if op.MaxIdleConns > 0 {
-		db.SetMaxIdleConns(op.MaxIdleConns)
+	maxIdleConns, maxOpenConns, maxLifetime := op.ConnsNumber()
+	if maxIdleConns > 0 {
+		db.SetMaxIdleConns(maxIdleConns)
 	}
-	if op.MaxOpenConns > 0 {
-		db.SetMaxOpenConns(op.MaxOpenConns)
+	if maxOpenConns > 0 {
+		db.SetMaxOpenConns(maxOpenConns)
 	}
-	if op.MaxLifetime > 0 {
-		db.SetConnMaxLifetime(time.Second * time.Duration(op.MaxLifetime))
+	if maxLifetime > 0 {
+		db.SetConnMaxLifetime(time.Second * time.Duration(maxLifetime))
 	}
+	return
+}
+
+// 初始化MySQL连接
+func InitMySQL() {
+	MySQL = InitDatabase(DBTypeMySQL)
 }
 
 // 初始化SQLite连接
 // ！这里sqlite驱动没使用gorm下的，因为它使用了cgo，这样的话交叉编译时候底层依赖库、编译工具链都不一样会导致编译时报错
 func InitSQLite() {
-	//读取配置文件
-	op := global.Config.DB.SQLite
-	isColorful := pkg.IfElse(global.Config.System.Mode == global.ReleaseMode, false, true)
-
-	var err error
-	SQLite, err = gorm.Open(sqlite.Open(pkg.GetRootPath()+op.Path), &gorm.Config{
-		DisableForeignKeyConstraintWhenMigrating: true,
-		// SQL语句记录
-		Logger: logger.New(
-			log.NewSQLLogger(),
-			logger.Config{
-				SlowThreshold:             time.Second, // 慢SQL阈值
-				LogLevel:                  logger.Info, // 日志级别
-				IgnoreRecordNotFoundError: true,        // 忽略‘记录未找到’错误
-				Colorful:                  isColorful,  // 彩色打印
-			},
-		),
-	})
-	if err != nil {
-		panic(err)
-	}
+	SQLite = InitDatabase(DBTypeSQLite)
 }
 
 // 初始化Redis连接
 func InitRedis() {
-	op := global.Config.Cache.Redis
+	op := global.Configs.Cache.Redis
 	Redis = redis.NewClient(&op)
+}
+
+func gormLogLevel(level string) logger.LogLevel {
+	return map[string]logger.LogLevel{
+		"silent": logger.Silent,
+		"error":  logger.Error,
+		"warn":   logger.Warn,
+		"info":   logger.Info,
+	}[level]
 }

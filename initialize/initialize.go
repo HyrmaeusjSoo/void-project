@@ -1,11 +1,13 @@
 package initialize
 
 import (
+	"time"
 	"void-project/global"
 	"void-project/internal/middleware"
 	"void-project/internal/model/base"
 	"void-project/internal/repository/driver"
 	"void-project/pkg"
+	"void-project/pkg/jwt"
 	"void-project/pkg/logger"
 	"void-project/pkg/logger/slog"
 	"void-project/pkg/necromancy"
@@ -15,17 +17,8 @@ import (
 )
 
 func init() {
-	// echoMark()
 	base.EchoMark()
 }
-
-// 输出标记
-/* func echoMark() {
-	mark := base.NewMark()
-	for _, v := range mark {
-		fmt.Println(v)
-	}
-} */
 
 // 初始化配置信息
 func InitConfig() {
@@ -34,31 +27,36 @@ func InitConfig() {
 
 // 初始化自定义日志
 func InitLogger() {
-	logger.InitLogger(pkg.GetRootPath()+global.LogDir, global.Config.System.Mode)
-	slog.InitSLog(pkg.GetRootPath()+global.SLogDir, global.Config.System.Mode)
+	logger.InitLogger(pkg.GetRootPath()+global.LogDir, global.Configs.System.Mode)
+	slog.InitSLog(pkg.GetRootPath()+global.SLogDir, global.Configs.System.Mode)
 }
 
 // 初始化数据库连接
 func InitRepository() {
-	if necromancy.NotEmpty(global.Config.DB.MySQL) {
+	if necromancy.NotEmpty(global.Configs.DB.MySQL) {
 		driver.InitMySQL()
 	}
-	if necromancy.NotEmpty(global.Config.Cache) {
+	if necromancy.NotEmpty(global.Configs.Cache) {
 		driver.InitRedis()
 	}
-	if necromancy.NotEmpty(global.Config.DB.SQLite) {
+	if necromancy.NotEmpty(global.Configs.DB.SQLite) {
 		driver.InitSQLite()
 	}
 }
 
+// 初始化Auth
+func InitAuth() {
+	jwt.InitJwt(time.Hour*time.Duration(global.Configs.System.AuthTokenExpire), global.Configs.System.AuthJwtSecret)
+}
+
 // 初始化翻译接口配置
 func InitTranslate() {
-	translation.InitVolc(global.Config.System.VolcAccessKey, global.Config.System.VolcSecretKey)
+	translation.InitVolc(global.Configs.System.VolcAccessKey, global.Configs.System.VolcSecretKey)
 }
 
 // 初始化Server
 func InitServer() *gin.Engine {
-	if global.Config.System.Mode == global.ReleaseMode {
+	if global.Configs.System.Mode == global.ReleaseMode {
 		gin.SetMode(gin.ReleaseMode) //发布模式
 		gin.DisableConsoleColor()    //禁用彩色日志
 	} else {

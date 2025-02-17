@@ -4,6 +4,7 @@ mysql:
   user: root
   password: 1234
   dbname: void-project
+  log_level: info
   max_idle_conns: 0
   max_open_conns: 0
   max_lifetime: 28800
@@ -11,3 +12,7 @@ sqlite:
   path: /asset/database/astro.db
   user:
   password:
+  log_level: info
+  max_idle_conns: 0
+  max_open_conns: 0
+  max_lifetime: 28800

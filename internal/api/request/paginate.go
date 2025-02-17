@@ -13,7 +13,7 @@ import (
 
 // 分页请求 参数验证/转换
 func PageQuery(c *gin.Context) (pager base.Pager, err error) {
-	pager = base.Pager{Page: 1, Size: global.Config.System.PageSize}
+	pager = base.Pager{Page: 1, Size: global.Configs.System.PageSize}
 	if page := c.Query("page"); page != "" {
 		pager.Page, err = strconv.Atoi(page)
 		if err != nil {

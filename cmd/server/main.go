@@ -16,6 +16,7 @@ import (
 // 再启动Gin服务。给Gin绑定自定义日志的io.Writer，给Gin绑定路由。
 // 如果放在服务器上做成守护进程的话，要把fmt.Scanln类似的卡住控制台的代码都去掉。开发阶段可以留着看服务启动的最后报错信息。
 func main() {
+	// 意外panic捕捉
 	defer func() {
 		if err := recover(); err != nil {
 			logger.LogServer(err)
@@ -32,6 +33,8 @@ func main() {
 	initialize.InitLogger()
 	// 初始化数据库连接
 	initialize.InitRepository()
+	// 初始化Jwt
+	initialize.InitAuth()
 	// 初始化翻译接口配置
 	initialize.InitTranslate()
 
@@ -42,14 +45,14 @@ func main() {
 	router.SetWebRouter(r) // view router (html templates)
 
 	// 性能分析 http://address:port/debug/pprof/
-	if global.Config.System.PProf {
+	if global.Configs.System.PProf {
 		go func() {
-			logger.LogServer(http.ListenAndServe(global.Config.System.PProfAddr, nil))
+			logger.LogServer(http.ListenAndServe(global.Configs.System.PProfAddr, nil))
 		}()
 	}
 
 	// 启动监听服务
-	err := r.Run(global.Config.System.ListenAddr)
+	err := r.Run(global.Configs.System.ListenAddr)
 	if err != nil {
 		logger.LogError("服务启动失败或意外关闭：" + err.Error())
 	}

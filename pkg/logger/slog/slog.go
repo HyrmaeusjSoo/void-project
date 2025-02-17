@@ -158,6 +158,9 @@ func Read(s, e time.Time) ([]LogFile, error) {
 		date := i.Format(time.DateOnly)
 		file, err := readLog(date)
 		if err != nil {
+			if os.IsNotExist(err) {
+				continue
+			}
 			return nil, err
 		}
 		files = append(files, file)

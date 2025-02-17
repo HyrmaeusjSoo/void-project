@@ -16,7 +16,7 @@ func NewStorageService() *StorageService {
 
 func (s *StorageService) List(path string) ([]model.DirEntry, error) {
 	dirs := []model.DirEntry{}
-	entries, err := os.ReadDir(global.Config.System.StorageLocation + path)
+	entries, err := os.ReadDir(global.Configs.System.StorageLocation + path)
 	if err != nil {
 		return dirs, err
 	}
@@ -37,5 +37,5 @@ func (s *StorageService) Upload(c *gin.Context) error {
 	}
 
 	path := c.PostForm("path") + "/" + file.Filename
-	return c.SaveUploadedFile(file, global.Config.System.StorageLocation+path)
+	return c.SaveUploadedFile(file, global.Configs.System.StorageLocation+path)
 }

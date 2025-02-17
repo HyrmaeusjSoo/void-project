@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"time"
 	"void-project/internal/model"
 	"void-project/internal/model/base"
 	"void-project/internal/repository"
@@ -36,7 +35,7 @@ func (m *MessageRepository) GetListClean(uId, targetId uint, cursor base.Cursor)
 	var list []model.Message
 	if cursor.IsEmpty() {
 		cursor.Field = "message.send_time"
-		cursor.CursorID = time.Now()
+		//cursor.CursorID = time.Now()
 		cursor.SortType = "DESC"
 	}
 	next, err := repository.CursorPaginate(m.db.
