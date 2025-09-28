@@ -8,7 +8,8 @@ var (
 	// 原始http status错误
 
 	BadRequest          = response.NewError(400_00_000, "请求不合法") // 请求不合法
-	Unauthorized        = response.NewError(401_00_000, "访问未授权") // 访问未授权
+	UnAuthorized        = response.NewError(401_00_000, "访问未授权") // 访问未授权
+	UnLogin             = response.NewError(401_00_000, "未登录")   // 访问未登录
 	Forbidden           = response.NewError(403_00_000, "无权限访问") // 无权限访问
 	NotFound            = response.NewError(404_00_000, "资源未找到") // 资源未找到
 	InternalServerError = response.NewError(500_00_000, "系统错误")  // 系统错误

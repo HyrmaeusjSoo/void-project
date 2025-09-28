@@ -18,7 +18,7 @@ func NewTime(t time.Time) *Time {
 	}
 }
 
-func (n *Time) Scan(value interface{}) error {
+func (n *Time) Scan(value any) error {
 	return (*sql.NullTime)(n).Scan(value)
 }
 

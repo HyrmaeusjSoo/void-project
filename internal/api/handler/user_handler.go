@@ -1,6 +1,9 @@
 package handler
 
 import (
+	"strconv"
+	"time"
+	"void-project/global"
 	"void-project/internal/api/request"
 	"void-project/internal/api/response"
 	"void-project/internal/api/response/apierr"
@@ -102,6 +105,11 @@ func (u *User) Login(c *gin.Context) {
 		response.FailError(c, apierr.InternalServerError, err)
 		return
 	}
+
+	configExpire := time.Hour * time.Duration(global.Configs.System.AuthTokenExpire)
+	maxAge := int(configExpire.Seconds())
+	c.SetCookie("token", token, maxAge, "/web", "", false, true)
+	c.SetCookie("user_id", strconv.Itoa(int(user.ID)), maxAge, "/web", "", false, true)
 
 	response.Success(c, map[string]any{
 		"token":       token,

@@ -10,6 +10,11 @@ type ViewHandler struct{}
 
 // 首页
 func (*ViewHandler) Index(c *gin.Context) {
+	/* message := c.Param("message")
+	var h map[string]any
+	if message != "" {
+		h = map[string]any{"message": message}
+	} */
 	c.HTML(http.StatusOK, "index.tmpl", nil)
 }
 

@@ -1,7 +1,13 @@
 
-.index-container{
-	text-align:center;
-	margin-top:20px;
+.disabled-link {
+    pointer-events:none;
+    color:gray;
+    cursor:not-allowed;
+}
+
+.index-container {
+    text-align:center;
+    margin-top:20px;
 }
 
 *{

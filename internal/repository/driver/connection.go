@@ -43,8 +43,7 @@ func InitDatabase(typ DBType) (gormDB *gorm.DB) {
 	}
 	isColorful := pkg.IfElse(global.Configs.System.Mode == global.ReleaseMode, false, true)
 
-	var err error
-	gormDB, err = gorm.Open(dialector, &gorm.Config{
+	gormDB, err := gorm.Open(dialector, &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 		// SQL语句记录日志
 		Logger: logger.New(

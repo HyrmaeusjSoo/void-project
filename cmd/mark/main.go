@@ -33,14 +33,14 @@ var (
 // g => 生成和替换README文档中目录树部分、version版本号部分。
 // g => 往源代码里添加头部标记注释。注释内容读取的是同目录c.mark和html.mark插入到对应的Go，JS，HTML代码文件头部。
 func main() {
-	fmt.Println("Which one?  [g]=Generate README  [c]=Insert comment")
+	fmt.Println("g=Generate README, c=Insert comment")
 	var input string
 	fmt.Scanln(&input)
 	input = strings.ToLower(input)
 	if input == "g" {
 		GenReadme()
 	} else if input == "c" {
-		fmt.Println("Which one?  [a]=insert  [d]=delete")
+		fmt.Println("a=insert, d=delete")
 		fmt.Scanln(&input)
 		input = strings.ToLower(input)
 		if input != "a" && input != "d" {
@@ -141,8 +141,8 @@ func GenReadme() {
 	if err != nil {
 		panic(err)
 	}
-	exclNames := strings.Split(string(exclCfg), "\n")
-	for _, v := range exclNames {
+	exclNames := strings.SplitSeq(string(exclCfg), "\n")
+	for v := range exclNames {
 		if v == "" || strings.Contains(v, "#") {
 			continue
 		}
@@ -231,7 +231,7 @@ func GenDirectoryTree(dir string, lv int) string {
 		isLast := i == len(directory)-1
 		levels[lv] = !isLast
 		if strings.Count(current, osPathSept)-strings.Count(rootpath, osPathSept) > 0 {
-			for j := 0; j < lv; j++ {
+			for j := range lv {
 				tree.WriteString(pkg.IfElse(levels[j], elegansLine, elegansSpace))
 			}
 			tree.WriteString(pkg.IfElse(isLast, elegansLast, elegansMiddle))

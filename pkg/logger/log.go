@@ -53,6 +53,10 @@ func NewSQLLogger() *Logger {
 
 // 实现gorm.Logger接口
 func (l Logger) Printf(format string, msg ...any) {
+	if mode != release {
+		lastIndex := len(msg) - 1
+		msg[lastIndex] = fmt.Sprintf("\x1b[7m%s\x1b[0m", msg[lastIndex])
+	}
 	err := l.UseOrCreate()
 	if err != nil {
 		return
@@ -106,7 +110,7 @@ func (l *Logger) UseOrCreate() error {
 
 // 打开日志文件
 func openLogFile(lv Level) (file *os.File, err error) {
-	logPath := fmt.Sprintf("%v%v/", path, lv.Name())
+	logPath := filepath.Join(path, lv.Name()) + string(os.PathSeparator)
 	if _, err = os.Stat(logPath); err != nil {
 		if os.IsNotExist(err) {
 			if err = os.MkdirAll(logPath, os.ModePerm); err != nil {
@@ -198,7 +202,7 @@ func LogServer(msg any) error {
 func ClearLog(lv Level) error {
 	logPath := path
 	if lv != 0 {
-		logPath = fmt.Sprintf("%v%v/", path, lv.Name())
+		logPath = filepath.Join(path, lv.Name()) + string(os.PathSeparator)
 	}
 	return os.RemoveAll(logPath)
 }

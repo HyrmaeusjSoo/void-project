@@ -45,17 +45,17 @@ type System struct {
 // 缓存库配置
 type Cache struct {
 	// Redis配置 直接使用go-redis的配置字段更方便
-	Redis redis.Options `json:"redis" yaml:"redis"`
+	Redis redis.Options `json:"redis,omitzero" yaml:"redis,omitzero"`
 }
 
 // 数据库配置
 type DB struct {
 	// MySQL配置
-	MySQL MySQL `json:"mysql" yaml:"mysql"`
+	MySQL MySQL `json:"mysql,omitzero" yaml:"mysql,omitzero"`
 	// SQLite配置
-	SQLite SQLite `json:"sqlite" yaml:"sqlite"`
+	SQLite SQLite `json:"sqlite,omitzero" yaml:"sqlite,omitzero"`
 	// SQLServer配置
-	//SQLServer struct{} `json:"sqlserver" yaml:"sqlserver"`
+	//SQLServer struct{} `json:"sqlserver,omitzero" yaml:"sqlserver,omitzero"`
 }
 
 // 数据库
@@ -127,7 +127,7 @@ func InitConfig() {
 		"system":   &Configs.System,
 	}
 
-	root := fmt.Sprintf("%v%vconfig", pkg.GetRootPath(), string(os.PathSeparator))
+	root := filepath.Join(pkg.GetRootPath(), "config")
 	err := filepath.Walk(root, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err

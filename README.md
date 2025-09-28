@@ -5,12 +5,12 @@
   
 
 <div align=center>
-    <img src="https://img.shields.io/badge/version-1.0.28-05e5a5">
-    <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.21-blue"/></a>
+    <img src="https://img.shields.io/badge/version-1.0.29-05e5a5">
+    <a href="https://go.dev/doc/effective_go"><img src="https://img.shields.io/badge/Go-v1.24-blue"/></a>
     <a href="https://gin-gonic.com"><img src="https://img.shields.io/badge/Gin-v1.10.0-blue"/></a>
     <a href="https://gorm.io"><img src="https://img.shields.io/badge/GORM-v1.25.12-blue"/></a>
-    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.6.1-red"/></a>
-    <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.11-green"/></a>
+    <a href="https://redis.uptrace.dev"><img src="https://img.shields.io/badge/go--redis-v9.7.1-red"/></a>
+    <a href="https://github.com/nhooyr/websocket"><img src="https://img.shields.io/badge/nhooyr.io/websocket-v1.8.17-green"/></a>
     <a href="https://github.com/golang-jwt/jwt"><img src="https://img.shields.io/badge/golang--jwt-v5.2.1-green"/></a>
 </div>
 

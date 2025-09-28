@@ -87,7 +87,7 @@
                     src = '/static/image/icon/folder.png';
                     click = `getDir('${path}')`;
                 } else if (isImage(i.name)) {
-                    src = `/api/v1/storage/download?path=${path}`;
+                    src = `/api/v1/storage/download?path=${path}&token=${localStorage.getItem('token')}&user_id=${localStorage.getItem('user_id')}`;
                     click = `showModal(this)`;
                 } else {
                     src = '/static/image/icon/file.png'

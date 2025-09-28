@@ -11,28 +11,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// 从cookie,header,query,postform上获取鉴权信息
+func getParam(c *gin.Context, key string) (val string) {
+	if val, _ = c.Cookie(key); val != "" {
+		return
+	} else if val = c.GetHeader(key); val != "" {
+		return
+	} else if val = c.Query(key); val != "" {
+		return
+	} else if val = c.PostForm(key); val != "" {
+		return
+	}
+	return
+}
+
 // 鉴权
 // JWT方式
 func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token, user := "", ""
-
-		if token, _ = c.Cookie("token"); token != "" {
-		} else if token = c.GetHeader("token"); token != "" {
-		} else if token = c.Query("token"); token != "" {
-		} else if token = c.PostForm("token"); token != "" {
-		} else {
-			response.FailError(c, apierr.Unauthorized)
+		if token = getParam(c, "token"); token == "" {
+			response.FailError(c, apierr.UnAuthorized)
 			c.Abort()
 			return
 		}
-
-		if user, _ = c.Cookie("user_id"); user != "" {
-		} else if user = c.GetHeader("user_id"); user != "" {
-		} else if user = c.Query("user_id"); user != "" {
-		} else if user = c.PostForm("user_id"); user != "" {
-		} else {
-			response.FailError(c, apierr.Unauthorized)
+		if user = getParam(c, "user_id"); user == "" {
+			response.FailError(c, apierr.UnAuthorized)
 			c.Abort()
 			return
 		}

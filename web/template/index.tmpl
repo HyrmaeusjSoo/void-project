@@ -1,12 +1,3 @@
-<!-- ┌───────────────────────────────────────────────────────────────────────────────────────┐ -->
-<!-- │ Sū Shēngxǜ's from past to present VOID CHAOS False Philosophy code.                     -->
-<!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
-<!-- │ Elysium, in the Blue Sky. ファンタジーアドベンチャー。 泡泡枪、七彩、环世界宇宙飞船               -->
-<!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
-<!-- │ 银河系 🌌⚛️🔮🗡️✡️🏞️🎮 Requests.                                          2023-2024      -->
-<!-- ├───────────────────────────────────────────────────────────────────────────────────────┤ -->
-<!-- │                                                                —————— Hyrmaeusj 苏      -->
-<!-- └───────────────────────────────────────────────────────────────────────────────────────┘ -->
 <!DOCTYPE html>
 <html lang="zh-cmn-Hans">
 
@@ -27,10 +18,22 @@
                     localStorage.setItem('user_id', r.data.user_id),
                     localStorage.setItem('token', r.data.token),
                     localStorage.setItem('expire_time', r.data.expire_time),
-                    document.cookie = 'user_id='+r.data.user_id,
-                    document.cookie = 'token='+r.data.token, true
+                    toggleLinkActive()
                 ), true)) || (r.message && alert(r.message), true) || alert('登录失败');
             });
+        };
+        const toggleLinkActive = _ => {
+            let links = document.querySelectorAll(".page");
+            if (Date.now() > localStorage.getItem('expire_time')) {
+                links.forEach(e => {
+                    e.classList.add('disabled-link');
+                });
+            } else {
+                links.forEach(e => {
+                    e.classList.remove('disabled-link');
+                });
+            }
+            return true;
         };
     </script>
 </head>
@@ -38,12 +41,13 @@
 <body>
     <div class="index-container">
         <div><input type="button" id="loginBtn" value="login"></div>
-        <div><a href="/web/chat">chat</a></div>
-        <div><a href="/web/api">api</a></div>
-        <div><a href="/web/storage">storage</a></div>
-        <div><a href="/web/gallery">gallery</a></div>
+        <div><a href="/web/chat" class="page">chat</a></div>
+        <div><a href="/web/api" class="page">api</a></div>
+        <div><a href="/web/storage" class="page">storage</a></div>
+        <div><a href="/web/gallery" class="page">gallery</a></div>
     </div>
     <script>
+        toggleLinkActive();
         loginBtn.onclick = _ => login(...prompt().split(','));
     </script>
 </body>
